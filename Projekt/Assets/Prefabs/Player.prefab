@@ -267,7 +267,8 @@ MonoBehaviour:
   jumpAllowed: 1
   wallJumpAllowed: 0
   movementVector: {x: 0, y: 0}
-  GameOver: {fileID: 0}
+  GameOverScreen: {fileID: 0}
+  VictoryScreen: {fileID: 0}
 --- !u!135 &6007592036615363736
 SphereCollider:
   m_ObjectHideFlags: 0

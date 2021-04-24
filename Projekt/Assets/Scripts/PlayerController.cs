@@ -15,7 +15,9 @@ public class PlayerController : MonoBehaviour
 	private Vector3 lastCheckPoint; //Respawn Position für den Respawn
     public Vector2 movementVector;
     private float movementZ;
-	public GameObject GameOver;
+	public GameObject GameOverScreen;
+	public GameObject VictoryScreen;
+	public GameObject dustCloud;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +25,8 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Start");
         rb = GetComponent<Rigidbody>();
 		lastCheckPoint = transform.position;
-		GameOver.SetActive(false); //Fühlt sich wie die falsche Stelle an um das zu machen, maybe GameManagerObject?
+		GameOverScreen.SetActive(false); //Fühlt sich wie die falsche Stelle an um das zu machen, maybe GameManagerObject?
+		VictoryScreen.SetActive(false);
     }
     
     void OnMovement(InputValue movementValue) //Beim Drücken der Move Tasten
@@ -35,13 +38,14 @@ public class PlayerController : MonoBehaviour
     {
         if (wallJumpAllowed)
         {
-            //Fügt in die umgedrehte Ballrichtigung
-            Debug.Log("SPRUNGGG");
+            //Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
+			Instantiate (dustCloud, transform.position, dustCloud.transform.rotation);
             rb.AddForce(new Vector3(-1000.0f*wallJumpDirection.x, 1000.0f, -1000.0f*wallJumpDirection.z));
         }
         else if (jumpAllowed)
         {
             jumpAllowed = false;
+			Instantiate (dustCloud, transform.position, dustCloud.transform.rotation);
             rb.AddForce(new Vector3(0.0f, 20*jumpSpeed, 0.0f));
         }
     }
@@ -91,8 +95,13 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("Trigger");
             transform.parent.parent = other.transform;
         }else if(other.gameObject.CompareTag("Death")){
-			GameOver.SetActive(true);
+			GameOverScreen.SetActive(true);
 		}
+		if(other.gameObject.CompareTag("Goal")){
+			VictoryScreen.SetActive(true);
+			rb.isKinematic = true; ////Deaktiviert den Body
+		}
+		
 
     }
 
@@ -105,11 +114,18 @@ public class PlayerController : MonoBehaviour
             transform.parent.SetParent(null);
         }
     }
-    void OnRespawn(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
+    void OnRespawnButtonPressed(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 		transform.position = lastCheckPoint;
 		rb.velocity = new Vector3(0, 0, 0);
 		rb.angularVelocity = new Vector3(0, 0, 0);
-		GameOver.SetActive(false);
+		rb.isKinematic = false; //Aktivert den Body wieder
+		GameOverScreen.SetActive(false);
+		VictoryScreen.SetActive(false);
 		movementAllowed = true;
+	}
+	void OnNextLevelButtonPressed(){
+		//WechselZumNächstenLevel
+		//Fürs erste einfach Respawn
+		OnRespawnButtonPressed();
 	}
 }
