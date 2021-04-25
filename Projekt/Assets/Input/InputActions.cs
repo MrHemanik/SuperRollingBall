@@ -24,7 +24,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""id"": ""9a9659bc-e1a1-4489-83dd-5a98d53c06ee"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": """"
+                    ""interactions"": ""Press(behavior=2)""
                 },
                 {
                     ""name"": ""Jump"",
@@ -40,7 +40,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""name"": ""Walking"",
                     ""id"": ""fddc28a4-dd33-45c4-844b-6e18a890e4d4"",
                     ""path"": ""2DVector"",
-                    ""interactions"": ""Press(behavior=2)"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Movement"",
@@ -95,7 +95,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""e9d65b49-1881-4dd9-a2a2-810b9026eac6"",
                     ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Jump"",

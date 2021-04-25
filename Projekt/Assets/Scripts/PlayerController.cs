@@ -1,93 +1,123 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.InputSystem.Interactions;
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 10;
-    public float jumpSpeed = 10;
-    private Rigidbody rb;
-	public bool movementAllowed = true;
-    public bool jumpAllowed = false; // Gibt an, ob ein Sprung erlaubt ist (Bodenberührung)
-    public bool wallJumpAllowed = false;
-    private Vector3 wallJumpDirection; //Richtung, in der die Wand liegt - von der man weggeschleudert wird
-	private Vector3 lastCheckPoint; //Respawn Position für den Respawn
+	/* Movement */
+	
+    public float speed = 20;
     public Vector2 movementVector;
-    private float movementZ;
-	public GameObject GameOverScreen;
-	public GameObject VictoryScreen;
+    public float minJumpSpeed = 10;
+    public float maxJumpSpeed = 20;
+    public float timeTilMaxJump = 3.0f; //Sekunden, bis der volle Sprung ausgeführt wird
+    private float _currentJumpCharge;
+    private bool _jumpAllowed; // Gibt an, ob ein Sprung erlaubt ist (Bodenberührung)
+    private bool _chargeJump;
+    private bool _wallJumpAllowed;
+    private Vector3 _wallJumpDirection; //Richtung, in der die Wand liegt - von der man weggeschleudert wird
+    
+    /* General */
+    
+    private Rigidbody _rb;
+    private Vector3 _lastCheckPoint; //Respawn Position für den Respawn
+	public GameObject gameOverScreen;
+	public GameObject victoryScreen;
 	public GameObject dustCloud;
-
+	
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         Debug.Log("Start");
-        rb = GetComponent<Rigidbody>();
-		lastCheckPoint = transform.position;
-		GameOverScreen.SetActive(false); //Fühlt sich wie die falsche Stelle an um das zu machen, maybe GameManagerObject?
-		VictoryScreen.SetActive(false);
-    }
-    
-    void OnMovement(InputValue movementValue) //Beim Drücken der Move Tasten
-    {
-        movementVector = movementValue.Get<Vector2>(); //Holt Vector2 Daten aus Movement
+        _rb = GetComponent<Rigidbody>();
+        _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
+        _lastCheckPoint = transform.position;
+		_currentJumpCharge = minJumpSpeed;
+		gameOverScreen.SetActive(false); //Fühlt sich wie die falsche Stelle an um das zu machen, maybe GameManagerObject?
+		victoryScreen.SetActive(false);
     }
 
-    void OnJump()
+    public void OnMovement(InputAction.CallbackContext context) //Beim Drücken der Move Tasten
     {
-        if (wallJumpAllowed)
-        {
-            //Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
-			Instantiate (dustCloud, transform.position, dustCloud.transform.rotation);
-            rb.AddForce(new Vector3(-1000.0f*wallJumpDirection.x, 1000.0f, -1000.0f*wallJumpDirection.z));
-        }
-        else if (jumpAllowed)
-        {
-            jumpAllowed = false;
-			Instantiate (dustCloud, transform.position, dustCloud.transform.rotation);
-            rb.AddForce(new Vector3(0.0f, 20*jumpSpeed, 0.0f));
-        }
+	    movementVector = context.ReadValue<Vector2>(); //Holt Vector2 Daten aus Movement
     }
-    void FixedUpdate() //Updated 1-Mal pro Frame
-    {
-        if (movementVector.sqrMagnitude < 0.01 || !movementAllowed)
-            return;
 
-        Vector3 movement = new Vector3(movementVector.x, 0.0f,movementVector.y);
-        rb.AddForce(movement * speed);
+    public void OnJump(InputAction.CallbackContext context)
+    {
+	    if (_wallJumpAllowed)
+        {
+	        _jumpAllowed = false; //Damit man sich nicht gegen eine Wand stellen kann, springt und dann noch einmal in der Luft springen kann
+	        //Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
+			Instantiate (dustCloud, transform.position, dustCloud.transform.rotation);
+            _rb.AddForce(new Vector3(-500.0f*_wallJumpDirection.x, 400.0f, -500.0f*_wallJumpDirection.z));
+             
+        }
+        else if (_jumpAllowed)
+	    {
+		    switch (context.phase)
+		    {
+			    case InputActionPhase.Started:
+				    _chargeJump = true;
+				    break;
+			    case InputActionPhase.Canceled:
+				    //Debug.Log("Jump losgelassen, speed:"+_currentJumpCharge*20);
+				    _jumpAllowed = false;
+				    _chargeJump = false;
+				    Instantiate(dustCloud, transform.position, dustCloud.transform.rotation);
+				    _rb.AddForce(new Vector3(0.0f, _currentJumpCharge*20, 0.0f));
+				    _currentJumpCharge = minJumpSpeed;
+				    break;
+		    }
+	    }
+    }
+
+    private void FixedUpdate() //Updated 1-Mal pro Frame
+    {
+	    //Jump
+	    if (_chargeJump)
+	    {
+		    if (_currentJumpCharge < maxJumpSpeed) 
+			    _currentJumpCharge += ((maxJumpSpeed - minJumpSpeed) / timeTilMaxJump) * Time.fixedDeltaTime;
+		    if (_currentJumpCharge > maxJumpSpeed) _currentJumpCharge = maxJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
+	    }
+
+		//Movement
+		if (movementVector.sqrMagnitude < 0.01) 
+			return;
+		Vector3 movement = new Vector3(movementVector.x, 0.0f,movementVector.y);
+        _rb.AddForce(movement * speed);
         //Entfernt die Physikelemente des RigidBodys
         //rb.velocity = new Vector3(0, 0, 0);
         //rb.angularVelocity = new Vector3(0, 0, 0);
     }
-    void OnCollisionEnter(Collision other) //Bei Berührung eines Objektes (Kollision)
+
+    private void OnCollisionEnter(Collision other) //Bei Berührung eines Objektes (Kollision)
     {
         if(other.gameObject.CompareTag("Ground")) //Berührung mit Boden
         {
-            jumpAllowed = true;
+            _jumpAllowed = true;
         }
         else if (other.gameObject.CompareTag("Walljump")) //Berührung mit Abspringbarer Wand
         {
-            rb.velocity = new Vector3(0, 0, 0);
-            wallJumpAllowed = true;
-            wallJumpDirection = other.contacts[0].point - transform.position;
+            _rb.velocity = new Vector3(0, 0, 0);
+            _wallJumpAllowed = true;
+            _wallJumpDirection = other.contacts[0].point - transform.position;
 			//TODO wallJumpDirection werte MathSignen, wo aber 0 auch 0 bleibt;
-            print("Wand in Richtung: " + wallJumpDirection);
+            print("Wand in Richtung: " + _wallJumpDirection);
         }
     }
-    
 
-    void OnCollisionExit(Collision other)
+    private void OnCollisionExit(Collision other)
     {
         if(other.gameObject.CompareTag("Walljump")) //Berührung mit Boden
         {
-            wallJumpAllowed = false;
+            _wallJumpAllowed = false;
         }
 
         //transform.SetParent(null);
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Moving"))
         {
@@ -95,17 +125,17 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("Trigger");
             transform.parent.parent = other.transform;
         }else if(other.gameObject.CompareTag("Death")){
-			GameOverScreen.SetActive(true);
+			gameOverScreen.SetActive(true);
 		}
 		if(other.gameObject.CompareTag("Goal")){
-			VictoryScreen.SetActive(true);
-			rb.isKinematic = true; ////Deaktiviert den Body
+			victoryScreen.SetActive(true);
+			_rb.isKinematic = true; ////Deaktiviert den Body
 		}
 		
 
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Moving"))
         {
@@ -114,16 +144,17 @@ public class PlayerController : MonoBehaviour
             transform.parent.SetParent(null);
         }
     }
-    void OnRespawnButtonPressed(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
-		transform.position = lastCheckPoint;
-		rb.velocity = new Vector3(0, 0, 0);
-		rb.angularVelocity = new Vector3(0, 0, 0);
-		rb.isKinematic = false; //Aktivert den Body wieder
-		GameOverScreen.SetActive(false);
-		VictoryScreen.SetActive(false);
-		movementAllowed = true;
-	}
-	void OnNextLevelButtonPressed(){
+
+    private void OnRespawnButtonPressed(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
+		transform.position = _lastCheckPoint;
+		_rb.velocity = new Vector3(0, 0, 0);
+		_rb.angularVelocity = new Vector3(0, 0, 0);
+		_rb.isKinematic = false; //Aktivert den Body wieder
+		gameOverScreen.SetActive(false);
+		victoryScreen.SetActive(false);
+    }
+
+    private void OnNextLevelButtonPressed(){
 		//WechselZumNächstenLevel
 		//Fürs erste einfach Respawn
 		OnRespawnButtonPressed();
