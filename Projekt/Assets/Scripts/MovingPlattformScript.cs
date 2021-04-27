@@ -7,17 +7,16 @@ public class MovingPlattformScript : MonoBehaviour
     private Vector3 _startPoint;
     private Vector3 _endPoint;
     public Vector3 moveDirection;
-    public float movingTime = 4.0f;
+    public float movingTime = 4.0f; //Zeit, die bis zum Punkt gebraucht wird (exklusive pauseTime)
     public float pauseTime = 1.0f; //Zeit, die er am Punkt wartet.
-    public bool pauseInMid = true;
-    private float _waitTilNextCheckTime;
+    private float _waitTilNextCheckTime; //Zum Schutz gegen Festhängen durch Lags
     private float _timer = 0.0f;
 
     void Start()
     {
         _startPoint = transform.position;
         _endPoint = _startPoint + moveDirection;
-        _waitTilNextCheckTime = movingTime / 2 + pauseTime;
+        _waitTilNextCheckTime = movingTime/2 + pauseTime;
     }
 
     void Update()
