@@ -13,7 +13,7 @@ public class MovingPlattformScript : MonoBehaviour
     {
         _startPoint = transform.position;
         _endPoint = _startPoint + moveDirection;
-        Debug.Log(_startPoint +""+ _endPoint);
+        //Debug.Log(_startPoint +""+ _endPoint);
     }
 
     private void Update()

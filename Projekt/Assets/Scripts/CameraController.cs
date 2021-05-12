@@ -73,7 +73,7 @@ public class CameraController : MonoBehaviour
             float ballSpeed = Mathf.Sqrt(Mathf.Pow(ballVelocity.x, 2.0f) + Mathf.Pow(ballVelocity.y, 2.0f) +
                                          Mathf.Pow(ballVelocity.z, 2.0f));
             _camera.fieldOfView =
-                defaultFOV + ballSpeed / 2; //TODO: Globale Referenz auf genau dieses Objekt, muss geändert werden
+                defaultFOV + ballSpeed / 2;
         }
     }
 }

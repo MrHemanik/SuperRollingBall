@@ -9,6 +9,8 @@ TagManager:
   - Walljump
   - Moving
   - Death
+  - Coin
+  - Bounce
   layers:
   - Default
   - TransparentFX

@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 public class PlayerController : MonoBehaviour
 {
+	/* GameManager */
+	private GameManager gm;
 	/* Movement */
 	
     public float speed = 20;
@@ -29,12 +31,11 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         Debug.Log("Start");
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         _rb = GetComponent<Rigidbody>();
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
         _lastCheckPoint = transform.position;
 		_currentJumpCharge = minJumpSpeed;
-		gameOverScreen.SetActive(false); //Fühlt sich wie die falsche Stelle an um das zu machen, maybe GameManagerObject?
-		victoryScreen.SetActive(false);
     }
 
     public void OnMovement(InputAction.CallbackContext context) //Beim Drücken der Move Tasten
@@ -124,7 +125,12 @@ public class PlayerController : MonoBehaviour
             //Wird mit der Moving Plattform mitbewegt (Moving Plattform muss Scale (1,1,1) haben!
             //Debug.Log("Trigger");
             transform.parent.parent = other.transform;
-        }else if(other.gameObject.CompareTag("Death")){
+        }else if(other.gameObject.CompareTag("Coin"))
+        {
+	        other.gameObject.SetActive(false);
+			gm.CoinCollected();
+			
+		}else if(other.gameObject.CompareTag("Death")){
 			gameOverScreen.SetActive(true);
 		}
 		if(other.gameObject.CompareTag("Goal")){
