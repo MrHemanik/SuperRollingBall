@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
+    private static GameManager _instance;
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
     public int maxUnlockedLevel = 0;
     public int maxLivePoints = 3;
@@ -22,7 +23,23 @@ public class GameManager : MonoBehaviour
     public GameObject victoryScreen;
     public GameObject playerBody;
     public GameObject hud;
-    public void Start()
+
+    /*
+     //Den Teil aktivieren, sobald eventlistener eingebaut sind!
+     private void Awake()
+    {
+        if (_instance != null)
+        {
+            Destroy(gameObject);//Zerstört alle weitere erstellten
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }*/
+
+    private void Start()
     {
         deathScreen.SetActive(false);
         victoryScreen.SetActive(false);
@@ -43,9 +60,15 @@ public class GameManager : MonoBehaviour
         /*Wird beim Eintritt des Death Triggers von Player aufgerufen*/
     {
         livePoints--;
-        if(livePoints <= 0) OpenGameOverScene();
-        hud.GetComponent<HudScript>().UpdateDisplay(livePoints,collectedCoinsInLevel);
-        deathScreen.SetActive(true);
+        if (livePoints <= 0)
+        {
+            OpenGameOverScene();
+        }
+        else
+        {
+            hud.GetComponent<HudScript>().UpdateDisplay(livePoints, collectedCoinsInLevel);
+            deathScreen.SetActive(true);
+        }
     }
 
     public void Victory() 
@@ -56,7 +79,8 @@ public class GameManager : MonoBehaviour
 
     private void OpenGameOverScene()
     {
-        //TODO: Öffnet GameOver Scene
+        Time.timeScale = 1;
+        SceneManager.LoadScene("GameOverScene");
     }
     /* UI Screen Aufrufe */
     public void OnRespawnButtonPressed()
@@ -69,13 +93,20 @@ public class GameManager : MonoBehaviour
     public void OnNextLevelButtonPressed()
     {
         //TODO: Speicher shit und geht zum nächsten Level
-        playerBody.GetComponent<PlayerController>().Respawn();
+        Time.timeScale = 1;
+        SceneManager.LoadScene("DemoLevel");
+        
     }
 
     public void OnMainMenuButtonPressed()
     {
         //TODO: Speicher shit und Openscene MainMenu
+        Time.timeScale = 1;
         SceneManager.LoadScene("StartScene");
+    }
+    public void OnExitGameButton()
+    {
+        Application.Quit();
     }
     
 }

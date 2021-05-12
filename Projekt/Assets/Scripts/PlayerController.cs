@@ -23,9 +23,7 @@ public class PlayerController : MonoBehaviour
     
     private Rigidbody _rb;
     private Vector3 _lastCheckPoint; //Respawn Position für den Respawn
-	public GameObject gameOverScreen;
-	public GameObject victoryScreen;
-	public GameObject dustCloud;
+    public GameObject dustCloud;
 	
     // Start is called before the first frame update
     private void Start()
@@ -79,7 +77,7 @@ public class PlayerController : MonoBehaviour
 	    {
 		    if (_currentJumpCharge < maxJumpSpeed) 
 			    _currentJumpCharge += ((maxJumpSpeed - minJumpSpeed) / timeTilMaxJump) * Time.fixedDeltaTime;
-		    if (_currentJumpCharge > maxJumpSpeed) _currentJumpCharge = maxJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
+		    else _currentJumpCharge = maxJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
 	    }
 
 		//Movement

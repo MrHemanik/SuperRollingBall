@@ -60,12 +60,12 @@ PrefabInstance:
     - target: {fileID: 3505384422170371417, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.9016172
+      value: 0.6563342
       objectReference: {fileID: 0}
     - target: {fileID: 3505384422170371417, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.9016172
+      value: 0.88834655
       objectReference: {fileID: 0}
     - target: {fileID: 3505384422170371417, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
@@ -180,7 +180,7 @@ PrefabInstance:
     - target: {fileID: 4913134223586091346, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_Name
-      value: OpenMenuButton
+      value: OpenMenu (Button Variant)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b106d2eca40067347abd33c7c2e27fe3, type: 3}
