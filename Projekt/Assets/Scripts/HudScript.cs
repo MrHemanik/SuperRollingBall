@@ -7,17 +7,13 @@ using UnityEngine.UI;
 public class HudScript : MonoBehaviour
 {
     /* GameManager */
-    private GameManager _gm;
     private TextMeshProUGUI liveText;
     private TextMeshProUGUI coinText;
     // Start is called before the first frame update
     private void Start()
     {
-        _gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         liveText = GameObject.Find("LiveNumber").GetComponent<TextMeshProUGUI>();
         coinText = GameObject.Find("CoinNumber").GetComponent<TextMeshProUGUI>();
-        liveText.text = _gm.livePoints.ToString();
-        coinText.text = _gm.collectedCoinsInLevel.ToString();
     }
 
     // Update is called once per frame
@@ -26,9 +22,9 @@ public class HudScript : MonoBehaviour
         
     }
 
-    public void UpdateDisplay()
+    public void UpdateDisplay(int liveCount, int coinCount)
     {
-        liveText.text = _gm.livePoints.ToString();
-        coinText.text = _gm.collectedCoinsInLevel.ToString();
+        liveText.text = liveCount.ToString();
+        coinText.text = coinCount.ToString();
     }
 }

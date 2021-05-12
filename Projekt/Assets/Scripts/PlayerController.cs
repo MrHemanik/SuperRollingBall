@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
             _wallJumpAllowed = true;
             _wallJumpDirection = other.contacts[0].point - transform.position;
 			//TODO wallJumpDirection werte MathSignen, wo aber 0 auch 0 bleibt;
-            print("Wand in Richtung: " + _wallJumpDirection);
+            //print("Wand in Richtung: " + _wallJumpDirection);
         }
     }
 
@@ -130,12 +130,15 @@ public class PlayerController : MonoBehaviour
 	        other.gameObject.SetActive(false);
 			gm.CoinCollected();
 			
-		}else if(other.gameObject.CompareTag("Death")){
-			gameOverScreen.SetActive(true);
-		}
+		}else if(other.gameObject.CompareTag("Death"))
+        {
+	        Time.timeScale = 0;
+	        Debug.Log("DEATHHH");
+	        gm.Death();	//Deaktiviert den Body
+        }
 		if(other.gameObject.CompareTag("Goal")){
-			victoryScreen.SetActive(true);
-			_rb.isKinematic = true; ////Deaktiviert den Body
+			Time.timeScale = 0;
+			gm.Victory();
 		}
 		
 
@@ -151,18 +154,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnRespawnButtonPressed(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
-		transform.position = _lastCheckPoint;
+    public void Respawn(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
+	    transform.position = _lastCheckPoint;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
-		_rb.isKinematic = false; //Aktivert den Body wieder
-		gameOverScreen.SetActive(false);
-		victoryScreen.SetActive(false);
+		Time.timeScale = 1; //Aktiviert die Zeit
     }
-
-    private void OnNextLevelButtonPressed(){
-		//WechselZumNächstenLevel
-		//Fürs erste einfach Respawn
-		OnRespawnButtonPressed();
-	}
 }
