@@ -4,8 +4,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 public class PlayerController : MonoBehaviour
 {
-	/* GameManager */
-	private GameManager gm;
 	/* Movement */
 	
     public float speed = 20;
@@ -24,13 +22,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rb;
     private Vector3 _lastCheckPoint; //Respawn Position für den Respawn
     public GameObject dustCloud;
-	
-    // Start is called before the first frame update
+
+    private void Awake()
+    { 
+	    GameManager.StartListening("Respawn", Respawn);
+    }
+
     private void Start()
     {
-        Debug.Log("Start");
-        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
-        _rb = GetComponent<Rigidbody>();
+	    _rb = GetComponent<Rigidbody>();
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
         _lastCheckPoint = transform.position;
 		_currentJumpCharge = minJumpSpeed;
@@ -126,17 +126,17 @@ public class PlayerController : MonoBehaviour
         }else if(other.gameObject.CompareTag("Coin"))
         {
 	        other.gameObject.SetActive(false);
-			gm.CoinCollected();
+			GameManager.TriggerEvent("CoinCollected",0);
 			
 		}else if(other.gameObject.CompareTag("Death"))
         {
 	        Time.timeScale = 0;
 	        Debug.Log("DEATHHH");
-	        gm.Death();	//Deaktiviert den Body
+	        GameManager.TriggerEvent("Death",0);
         }
 		if(other.gameObject.CompareTag("Goal")){
 			Time.timeScale = 0;
-			gm.Victory();
+			GameManager.TriggerEvent("Victory",0);
 		}
 		
 
@@ -152,10 +152,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Respawn(){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
+    private void Respawn(float f){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 	    transform.position = _lastCheckPoint;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
-		Time.timeScale = 1; //Aktiviert die Zeit
     }
 }

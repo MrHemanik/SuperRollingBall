@@ -1268,19 +1268,13 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1 &109089338 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6007592036615363742, guid: d265878b21cdaba4a83bc7137e7a7021,
-    type: 3}
-  m_PrefabInstance: {fileID: 6007592036707602084}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &109089342 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6007592036615363813, guid: d265878b21cdaba4a83bc7137e7a7021,
     type: 3}
   m_PrefabInstance: {fileID: 6007592036707602084}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109089338}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0de4fe994ed80264b9165f114f854f29, type: 3}
@@ -3943,6 +3937,7 @@ GameObject:
   - component: {fileID: 307220903}
   - component: {fileID: 307220902}
   - component: {fileID: 307220901}
+  - component: {fileID: 307220904}
   m_Layer: 5
   m_Name: VictoryScreen
   m_TagString: Untagged
@@ -4034,6 +4029,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &307220904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 307220899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f037d6b527fb834bb11e877a30cc4f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &318176165
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8472,7 +8479,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-260392
+  m_Name: pb_Mesh-275642
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -35888,6 +35895,7 @@ GameObject:
   - component: {fileID: 1406895482}
   - component: {fileID: 1406895481}
   - component: {fileID: 1406895480}
+  - component: {fileID: 1406895483}
   m_Layer: 5
   m_Name: DeathScreen
   m_TagString: Untagged
@@ -35979,6 +35987,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1406895483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406895478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd50e55873d660418c7ffac69a0f399, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &1422604112
 Mesh:
   m_ObjectHideFlags: 0
@@ -55239,10 +55259,6 @@ MonoBehaviour:
   currentLevel: 0
   collectedCoinsInLevel: 0
   livePoints: 0
-  deathScreen: {fileID: 1406895478}
-  victoryScreen: {fileID: 307220899}
-  playerBody: {fileID: 109089338}
-  hud: {fileID: 157445748}
 --- !u!4 &1844637199
 Transform:
   m_ObjectHideFlags: 0

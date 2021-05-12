@@ -8,7 +8,15 @@ using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
-    /*Fremdcode Anfang vom UnityTutorial https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa*/
+    /*Fremdcode Anfang
+    Vom UnityTutorial:
+    https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
+    Mit StackOverflow Änderungen für Parameterübergabe (UnityEvent zu  Action):
+    https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent
+    Dazu Anpassung auf Singleton:
+    https://www.youtube.com/watch?v=5p2JlI7PV1w&ab_channel=SpeedTutor
+    //TODO: Zum Singleton machen
+    */
     private Dictionary <string, Action<float>> _eventDictionary;
     private static GameManager _gameManager;
 
@@ -65,7 +73,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void TriggerEvent (string eventName,float f)
+    public static void TriggerEvent (string eventName) //TriggerEvent wenn man keine Floatübergabe braucht
+    {
+        Action<float> thisEvent = null;
+        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        {
+            thisEvent.Invoke(0);
+        }
+    }public static void TriggerEvent (string eventName,float f)
     {
         Action<float> thisEvent = null;
         if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
@@ -74,6 +89,7 @@ public class GameManager : MonoBehaviour
         }
     }
     /*Fremdcode ENDE*/
+    
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
     public int maxUnlockedLevel = 0;
     public int maxLivePoints = 3;
@@ -82,13 +98,6 @@ public class GameManager : MonoBehaviour
     public int currentLevel = 0;
     public int collectedCoinsInLevel = 0;
     public int livePoints = 0;
-    // Start is called before the first frame update
-
-    //TODO: Zu Eventsender und Listener umbauen
-    public GameObject deathScreen;
-    public GameObject victoryScreen;
-    public GameObject playerBody;
-    public GameObject hud;
 
     /*
      //Den Teil aktivieren, sobald eventlistener eingebaut sind!
@@ -105,57 +114,55 @@ public class GameManager : MonoBehaviour
         }
     }*/
 
+    private void Awake()
+    {
+        StartListening("CoinCollected", CoinCollected);
+        StartListening("Death", Death);
+        StartListening("Victory", Victory);
+    }
+
     private void Start()
     {
-        deathScreen.SetActive(false);
-        victoryScreen.SetActive(false);
+        TriggerEvent("CloseDeathScreen");
+        TriggerEvent("CloseVictoryScreen");
         livePoints = maxLivePoints;
         TriggerEvent("UpdateLiveDisplay", livePoints);
         TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel);
     }
 
-    /* Player Trigger */
-    public void CoinCollected()
+    /* Eventfunktionen */
+    private void CoinCollected(float f)
     {
         collectedCoinsTotal++;
         collectedCoinsInLevel++;
         TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel);
-        Debug.Log(collectedCoinsTotal);
     }
 
-    public void Death() 
-        /*Wird beim Eintritt des Death Triggers von Player aufgerufen*/
+    private void Death(float f)
     {
         livePoints--;
         if (livePoints <= 0)
         {
-            OpenGameOverScene();
+            Time.timeScale = 1;
+            SceneManager.LoadScene("GameOverScene");
         }
         else
         {
+            TriggerEvent("OpenDeathScreen");
             TriggerEvent("UpdateLiveDisplay", livePoints);
-            deathScreen.SetActive(true);
         }
     }
 
-    public void Victory() 
-        /*Wird beim Eintritt des Victory Triggers von Player aufgerufen*/
+    private void Victory(float f)
     {
-        victoryScreen.SetActive(true);
-    }
-
-    private void OpenGameOverScene()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("GameOverScene");
+        TriggerEvent("OpenVictoryScreen");
     }
     /* UI Screen Aufrufe */
     public void OnRespawnButtonPressed()
     {
-        deathScreen.SetActive(false);
-        victoryScreen.SetActive(false);
-        Debug.Log("Respawn");
-        playerBody.GetComponent<PlayerController>().Respawn();
+        TriggerEvent("CloseDeathScreen");
+        TriggerEvent("CloseVictoryScreen");
+        TriggerEvent("Respawn");
     }
     public void OnNextLevelButtonPressed()
     {

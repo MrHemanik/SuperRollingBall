@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,10 +11,14 @@ public class HudScript : MonoBehaviour
     private TextMeshProUGUI liveText;
     private TextMeshProUGUI coinText;
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         GameManager.StartListening ("UpdateLiveDisplay", UpdateLiveDisplay);
         GameManager.StartListening ("UpdateCoinDisplay", UpdateCoinDisplay);
+    }
+
+    private void Start()
+    {
         liveText = GameObject.Find("LiveNumber").GetComponent<TextMeshProUGUI>();
         coinText = GameObject.Find("CoinNumber").GetComponent<TextMeshProUGUI>();
     }
