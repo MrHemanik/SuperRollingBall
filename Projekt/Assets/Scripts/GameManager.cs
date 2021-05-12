@@ -2,12 +2,78 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager _instance;
+    /*Fremdcode Anfang vom UnityTutorial https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa*/
+    private Dictionary <string, Action<float>> _eventDictionary;
+    private static GameManager _gameManager;
+
+    private static GameManager Instance
+    {
+        get
+        {
+            if (!_gameManager)
+            {
+                _gameManager = FindObjectOfType (typeof (GameManager)) as GameManager;
+
+                if (!_gameManager)
+                {
+                    Debug.LogError ("There needs to be one active GameManger script on a GameObject in your scene.");
+                }
+                else
+                {
+                    _gameManager.Init (); 
+                }
+            }
+
+            return _gameManager;
+        }
+    }
+    void Init ()
+    {
+        if (_eventDictionary == null)
+        {
+            _eventDictionary = new Dictionary<string, Action<float>>();
+        }
+    }
+
+    public static void StartListening (string eventName, Action<float> listener)
+    {
+        Action<float> thisEvent = null;
+        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        {
+            thisEvent+=listener;
+        } 
+        else
+        {
+            thisEvent+=listener;
+            Instance._eventDictionary.Add (eventName, thisEvent);
+        }
+    }
+
+    public static void StopListening (string eventName, Action<float> listener)
+    {
+        if (_gameManager == null) return;
+        Action<float> thisEvent = null;
+        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        {
+            thisEvent -= listener;
+        }
+    }
+
+    public static void TriggerEvent (string eventName,float f)
+    {
+        Action<float> thisEvent = null;
+        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        {
+            thisEvent.Invoke(f);
+        }
+    }
+    /*Fremdcode ENDE*/
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
     public int maxUnlockedLevel = 0;
     public int maxLivePoints = 3;
@@ -44,7 +110,8 @@ public class GameManager : MonoBehaviour
         deathScreen.SetActive(false);
         victoryScreen.SetActive(false);
         livePoints = maxLivePoints;
-        hud.GetComponent<HudScript>().UpdateDisplay(livePoints,collectedCoinsInLevel);
+        TriggerEvent("UpdateLiveDisplay", livePoints);
+        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel);
     }
 
     /* Player Trigger */
@@ -52,7 +119,7 @@ public class GameManager : MonoBehaviour
     {
         collectedCoinsTotal++;
         collectedCoinsInLevel++;
-        hud.GetComponent<HudScript>().UpdateDisplay(livePoints,collectedCoinsInLevel);
+        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel);
         Debug.Log(collectedCoinsTotal);
     }
 
@@ -66,7 +133,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            hud.GetComponent<HudScript>().UpdateDisplay(livePoints, collectedCoinsInLevel);
+            TriggerEvent("UpdateLiveDisplay", livePoints);
             deathScreen.SetActive(true);
         }
     }

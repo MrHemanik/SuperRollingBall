@@ -12,6 +12,8 @@ public class HudScript : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        GameManager.StartListening ("UpdateLiveDisplay", UpdateLiveDisplay);
+        GameManager.StartListening ("UpdateCoinDisplay", UpdateCoinDisplay);
         liveText = GameObject.Find("LiveNumber").GetComponent<TextMeshProUGUI>();
         coinText = GameObject.Find("CoinNumber").GetComponent<TextMeshProUGUI>();
     }
@@ -22,9 +24,11 @@ public class HudScript : MonoBehaviour
         
     }
 
-    public void UpdateDisplay(int liveCount, int coinCount)
+    public void UpdateLiveDisplay(float liveCount)
     {
         liveText.text = liveCount.ToString();
+    }public void UpdateCoinDisplay(float coinCount)
+    {
         coinText.text = coinCount.ToString();
     }
 }
