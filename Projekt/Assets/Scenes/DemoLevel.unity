@@ -60605,7 +60605,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1844637198}
+      objectReference: {fileID: 11500000, guid: 7fc4c5ac0560f004aaa1f871c6fb8cc0,
+        type: 3}
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
@@ -60614,12 +60615,12 @@ PrefabInstance:
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnRespawnButtonPressed
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameManager, Assembly-CSharp
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}

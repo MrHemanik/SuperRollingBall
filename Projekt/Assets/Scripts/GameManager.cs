@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -13,11 +14,8 @@ public class GameManager : MonoBehaviour
     https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
     Mit StackOverflow Änderungen für Parameterübergabe (UnityEvent zu  Action):
     https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent
-    Dazu Anpassung auf Singleton:
-    https://www.youtube.com/watch?v=5p2JlI7PV1w&ab_channel=SpeedTutor
-    //TODO: Zum Singleton machen
     */
-    private Dictionary <string, Action<float>> _eventDictionary;
+    private Dictionary <string, Action<string>> _eventDictionary;
     private static GameManager _gameManager;
 
     private static GameManager Instance
@@ -30,11 +28,13 @@ public class GameManager : MonoBehaviour
 
                 if (!_gameManager)
                 {
+                    
                     Debug.LogError ("There needs to be one active GameManger script on a GameObject in your scene.");
                 }
                 else
                 {
                     _gameManager.Init (); 
+                    
                 }
             }
 
@@ -45,13 +45,13 @@ public class GameManager : MonoBehaviour
     {
         if (_eventDictionary == null)
         {
-            _eventDictionary = new Dictionary<string, Action<float>>();
+            _eventDictionary = new Dictionary<string, Action<string>>();
         }
     }
 
-    public static void StartListening (string eventName, Action<float> listener)
+    public static void StartListening (string eventName, Action<string> listener)
     {
-        Action<float> thisEvent = null;
+        Action<string> thisEvent = null;
         if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
         {
             thisEvent+=listener;
@@ -63,30 +63,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void StopListening (string eventName, Action<float> listener)
+    public static void StopListening (string eventName, Action<string> listener)
     {
         if (_gameManager == null) return;
-        Action<float> thisEvent = null;
+        Action<string> thisEvent = null;
         if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
         {
+            //Eigenes Codestück, welches den Listener auch wirklich entfernt
+            Instance._eventDictionary.Remove(eventName);
+            //
             thisEvent -= listener;
         }
     }
 
-    public static void TriggerEvent (string eventName) //TriggerEvent wenn man keine Floatübergabe braucht
+    
+    public static void TriggerEvent (string eventName,string f)//Eigenanpassung mit Übergabefloat
     {
-        Action<float> thisEvent = null;
-        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
-        {
-            thisEvent.Invoke(0);
-        }
-    }public static void TriggerEvent (string eventName,float f)
-    {
-        Action<float> thisEvent = null;
+        Action<string> thisEvent = null;
         if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
         {
             thisEvent.Invoke(f);
         }
+    }
+    public static void TriggerEvent (string eventName) //TriggerEvent wenn man keine Floatübergabe braucht
+    {
+        TriggerEvent(eventName,"");
     }
     /*Fremdcode ENDE*/
     
@@ -98,68 +99,64 @@ public class GameManager : MonoBehaviour
     public int currentLevel = 0;
     public int collectedCoinsInLevel = 0;
     public int livePoints = 0;
-
-    /*
-     //Den Teil aktivieren, sobald eventlistener eingebaut sind!
-     private void Awake()
-    {
-        if (_instance != null)
-        {
-            Destroy(gameObject);//Zerstört alle weitere erstellten
-        }
-        else
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-    }*/
+    
 
     private void Awake()
     {
+        // Sorgt dafür, dass es nicht mehrere GameManager im Objekt gibt
+        if(this == _gameManager) DontDestroyOnLoad(gameObject);
+        else Destroy(gameObject);
+        
         StartListening("CoinCollected", CoinCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
+        StartListening("FetchDisplayData", UpdateHud);
     }
 
     private void Start()
     {
-        TriggerEvent("CloseDeathScreen");
-        TriggerEvent("CloseVictoryScreen");
+        Time.timeScale = 1;
         livePoints = maxLivePoints;
-        TriggerEvent("UpdateLiveDisplay", livePoints);
-        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel);
+        collectedCoinsInLevel = 0;
     }
 
     /* Eventfunktionen */
-    private void CoinCollected(float f)
+    private void CoinCollected(string s)
     {
         collectedCoinsTotal++;
         collectedCoinsInLevel++;
-        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel);
+        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
     }
-
-    private void Death(float f)
+    
+    private void Death(string s)
     {
         livePoints--;
         if (livePoints <= 0)
         {
-            Time.timeScale = 1;
-            SceneManager.LoadScene("GameOverScene");
+            LoadScene("GameOverScene");
         }
         else
         {
+            Time.timeScale = 0;
             TriggerEvent("OpenDeathScreen");
-            TriggerEvent("UpdateLiveDisplay", livePoints);
+            TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
         }
     }
-
-    private void Victory(float f)
+    private void Victory(string s)
     {
+        Time.timeScale = 0;
         TriggerEvent("OpenVictoryScreen");
+    }
+
+    private void UpdateHud(string s)
+    {
+        TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
+        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
     }
     /* UI Screen Aufrufe */
     public void OnRespawnButtonPressed()
     {
+        Time.timeScale = 1;
         TriggerEvent("CloseDeathScreen");
         TriggerEvent("CloseVictoryScreen");
         TriggerEvent("Respawn");
@@ -167,20 +164,23 @@ public class GameManager : MonoBehaviour
     public void OnNextLevelButtonPressed()
     {
         //TODO: Speicher shit und geht zum nächsten Level
-        Time.timeScale = 1;
-        SceneManager.LoadScene("DemoLevel");
+        LoadScene("DemoLevel");
         
     }
-
     public void OnMainMenuButtonPressed()
     {
-        //TODO: Speicher shit und Openscene MainMenu
-        Time.timeScale = 1;
-        SceneManager.LoadScene("StartScene");
+        //TODO: Speicher shit
+        LoadScene("StartScene");
     }
     public void OnExitGameButton()
     {
         Application.Quit();
     }
-    
+
+    /** Lädt die Szene sceneName und setzt die die lokalen Variablen zurück**/
+    private void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+        Start();
+    }
 }

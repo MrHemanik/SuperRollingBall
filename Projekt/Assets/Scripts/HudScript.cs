@@ -16,11 +16,17 @@ public class HudScript : MonoBehaviour
         GameManager.StartListening ("UpdateLiveDisplay", UpdateLiveDisplay);
         GameManager.StartListening ("UpdateCoinDisplay", UpdateCoinDisplay);
     }
-
+    private void OnDestroy()
+    {
+        GameManager.StopListening ("UpdateLiveDisplay", UpdateLiveDisplay);
+        GameManager.StopListening ("UpdateCoinDisplay", UpdateCoinDisplay);
+    }
     private void Start()
     {
         liveText = GameObject.Find("LiveNumber").GetComponent<TextMeshProUGUI>();
         coinText = GameObject.Find("CoinNumber").GetComponent<TextMeshProUGUI>();
+        GameManager.TriggerEvent("FetchDisplayData");
+        
     }
 
     // Update is called once per frame
@@ -29,11 +35,11 @@ public class HudScript : MonoBehaviour
         
     }
 
-    public void UpdateLiveDisplay(float liveCount)
+    public void UpdateLiveDisplay(string liveCount)
     {
-        liveText.text = liveCount.ToString();
-    }public void UpdateCoinDisplay(float coinCount)
+        liveText.text = liveCount;
+    }public void UpdateCoinDisplay(string coinCount)
     {
-        coinText.text = coinCount.ToString();
+        coinText.text = coinCount;
     }
 }

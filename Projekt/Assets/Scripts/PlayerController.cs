@@ -28,6 +28,11 @@ public class PlayerController : MonoBehaviour
 	    GameManager.StartListening("Respawn", Respawn);
     }
 
+    private void OnDestroy()
+    {
+	    GameManager.StopListening("Respawn", Respawn);
+    }
+
     private void Start()
     {
 	    _rb = GetComponent<Rigidbody>();
@@ -126,17 +131,16 @@ public class PlayerController : MonoBehaviour
         }else if(other.gameObject.CompareTag("Coin"))
         {
 	        other.gameObject.SetActive(false);
-			GameManager.TriggerEvent("CoinCollected",0);
+			GameManager.TriggerEvent("CoinCollected","");
 			
 		}else if(other.gameObject.CompareTag("Death"))
         {
 	        Time.timeScale = 0;
-	        Debug.Log("DEATHHH");
-	        GameManager.TriggerEvent("Death",0);
+	        GameManager.TriggerEvent("Death","");
         }
 		if(other.gameObject.CompareTag("Goal")){
 			Time.timeScale = 0;
-			GameManager.TriggerEvent("Victory",0);
+			GameManager.TriggerEvent("Victory","");
 		}
 		
 
@@ -152,7 +156,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Respawn(float f){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
+    private void Respawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 	    transform.position = _lastCheckPoint;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
