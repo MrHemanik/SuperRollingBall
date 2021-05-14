@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rb;
     private Vector3 _lastCheckPoint; //Respawn Position für den Respawn
     public GameObject dustCloud;
+    public GameObject confetti;
 
     private void Awake()
     { 
@@ -70,6 +71,9 @@ public class PlayerController : MonoBehaviour
 				    _jumpAllowed = false;
 				    _chargeJump = false;
 				    Instantiate(dustCloud, transform.position, dustCloud.transform.rotation);
+				    //Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, selbst, wenn man fällt.
+				    var velocity = _rb.velocity;
+				    _rb.velocity = new Vector3(velocity.x, 0, velocity.y);
 				    _rb.AddForce(new Vector3(0.0f, _currentJumpCharge*20, 0.0f));
 				    _currentJumpCharge = minJumpSpeed;
 				    break;
@@ -132,16 +136,18 @@ public class PlayerController : MonoBehaviour
         }else if(other.gameObject.CompareTag("Coin"))
         {
 	        other.gameObject.SetActive(false);
-			GameManager.TriggerEvent("CoinCollected","");
+			GameManager.TriggerEvent("CoinCollected");
 			
 		}else if(other.gameObject.CompareTag("Death"))
         {
-	        Time.timeScale = 0;
-	        GameManager.TriggerEvent("Death","");
+	        _rb.isKinematic = true;
+	        GameManager.TriggerEvent("Death");
         }
-		if(other.gameObject.CompareTag("Goal")){
-			Time.timeScale = 0;
-			GameManager.TriggerEvent("Victory","");
+		if(other.gameObject.CompareTag("Goal"))
+		{
+			_rb.isKinematic = true;
+			GameManager.TriggerEvent("Victory");
+			Instantiate(confetti, transform.position, dustCloud.transform.rotation);
 		}
 		
 
@@ -159,6 +165,7 @@ public class PlayerController : MonoBehaviour
 
     private void Respawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 	    transform.position = _lastCheckPoint;
+	    _rb.isKinematic = false;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
     }

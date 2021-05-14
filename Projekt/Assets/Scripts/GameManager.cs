@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using TMPro;
+
 public class GameManager : MonoBehaviour
 {
     /*Fremdcode Anfang
@@ -118,7 +120,6 @@ public class GameManager : MonoBehaviour
     
     private void Reset()
     {
-        Time.timeScale = 1;
         livePoints = _maxLivePoints;
         collectedCoinsInLevel = 0;
     }
@@ -171,14 +172,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Time.timeScale = 0;
             TriggerEvent("OpenDeathScreen");
             TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
         }
     }
     private void Victory(string s)
     {
-        Time.timeScale = 0;
         TriggerEvent("OpenVictoryScreen",collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
     }
 

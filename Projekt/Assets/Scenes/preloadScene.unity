@@ -152,9 +152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fc4c5ac0560f004aaa1f871c6fb8cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxUnlockedLevel: 0
-  maxLivePoints: 3
-  collectedCoinsTotal: 0
   collectedCoinsInLevel: 0
   livePoints: 0
 --- !u!4 &1736316798
