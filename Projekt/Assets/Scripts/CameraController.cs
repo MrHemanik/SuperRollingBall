@@ -13,6 +13,7 @@ public class CameraController : MonoBehaviour
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
     private Animator _animator;
+    private PlayerInput _playerInput;
 
     private Camera _camera;
     // Start is called before the first frame update
@@ -22,6 +23,8 @@ public class CameraController : MonoBehaviour
         _playerRigidbody = player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
         _animator = GetComponent<Animator>();
+        _playerInput = GetComponent<PlayerInput>();
+        _playerInput.enabled = false;
     }
 
     // Update is called once per frame
@@ -60,6 +63,7 @@ public class CameraController : MonoBehaviour
                 _cutScene = false;
                 _playerRigidbody.isKinematic = false;
                 _animator.enabled = false; //SUPER unschöne Lösung, aber ich lebe erstmal damit.
+                _playerInput.enabled = true;
             }
         }
         else

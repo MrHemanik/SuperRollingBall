@@ -50,8 +50,11 @@ public class PlayerController : MonoBehaviour
 	    if (_wallJumpAllowed)
         {
 	        _jumpAllowed = false; //Damit man sich nicht gegen eine Wand stellen kann, springt und dann noch einmal in der Luft springen kann
-	        //Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
-			Instantiate (dustCloud, transform.position, dustCloud.transform.rotation);
+	        Instantiate (dustCloud, transform.position, dustCloud.transform.rotation); //Partikelwolke
+			//Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, egal, wie lange man fällt.
+			var velocity = _rb.velocity;
+			_rb.velocity = new Vector3(velocity.x, 0, velocity.y);
+			//Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
             _rb.AddForce(new Vector3(-500.0f*_wallJumpDirection.x, 400.0f, -500.0f*_wallJumpDirection.z));
              
         }
@@ -105,7 +108,6 @@ public class PlayerController : MonoBehaviour
             _rb.velocity = new Vector3(0, 0, 0);
             _wallJumpAllowed = true;
             _wallJumpDirection = other.contacts[0].point - transform.position;
-			//TODO wallJumpDirection werte MathSignen, wo aber 0 auch 0 bleibt;
             //print("Wand in Richtung: " + _wallJumpDirection);
         }
     }

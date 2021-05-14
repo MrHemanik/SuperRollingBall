@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 public class GameManager : MonoBehaviour
 {
     /*Fremdcode Anfang
@@ -21,11 +22,10 @@ public class GameManager : MonoBehaviour
             if (!_gameManager)
             {
                 _gameManager = FindObjectOfType (typeof (GameManager)) as GameManager;
-
                 if (!_gameManager)
                 {
                     
-                    Debug.LogError ("There needs to be one active GameManger script on a GameObject in your scene.");
+                    Debug.LogError ("Kein aktiver GameManager gefunden!");
                 }
                 else
                 {
@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
     }
 
     
-    public static void TriggerEvent (string eventName,string f)//Eigenanpassung mit Übergabefloat
+    public static void TriggerEvent (string eventName,string f = "")//Eigenanpassung mit Übergabefloat
     {
         Action<string> thisEvent = null;
         if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
@@ -81,15 +81,12 @@ public class GameManager : MonoBehaviour
             thisEvent.Invoke(f);
         }
     }
-    public static void TriggerEvent (string eventName) //TriggerEvent wenn man keine Floatübergabe braucht
-    {
-        TriggerEvent(eventName,"");
-    }
     /*Fremdcode ENDE*/
     
+    //Variablen
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
     private static int _maxUnlockedLevel = 0;
-    private static  int _maxLivePoints = 3;
+    private static int _maxLivePoints = 3;
     private static int _collectedCoinsTotal = 0; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
     public static int currentLevel = 0;
     /* Lokal */
@@ -99,24 +96,64 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        // Sorgt dafür, dass es nicht mehrere GameManager im Objekt gibt
-        if(this == _gameManager) DontDestroyOnLoad(gameObject);
-        //else Destroy(gameObject);
-        
         StartListening("CoinCollected", CoinCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
         StartListening("FetchDisplayData", UpdateHud);
+        StartListening("FetchMainMenuData", UpdateMainMenu);
         StartListening("LoadScene", LoadScene);
     }
 
     private void Start()
     {
+        // Sorgt dafür, dass es nicht mehrere GameManager im Objekt gibt
+        if (this == _gameManager)
+        {
+            DontDestroyOnLoad(gameObject);
+            LoadDataFromFile();
+            LoadScene("StartScene");
+        }
+        else Destroy(gameObject);
+    }
+    
+    private void Reset()
+    {
         Time.timeScale = 1;
         livePoints = _maxLivePoints;
         collectedCoinsInLevel = 0;
     }
+    /*Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
+    
+    private void LoadDataFromFile()
+    {
+        string path = Application.persistentDataPath + "/gameData.binary";
+        if (File.Exists(path))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream stream = new FileStream(path, FileMode.Open);
+            int[] data = formatter.Deserialize(stream) as int[];
+            stream.Close();
+            _maxUnlockedLevel = data[0];
+            _maxLivePoints = data[1];
+            _collectedCoinsTotal = data[2];
+        }
+        else
+        {
+            Debug.Log("Keine Daten zum Laden gefunden!");
+        }
+    }
 
+    private void SaveDataToFile()
+    {
+        string path = Application.persistentDataPath + "/gameData.binary";
+        BinaryFormatter formatter = new BinaryFormatter();
+        
+        FileStream stream = new FileStream(path, FileMode.Create);
+        int[] data = new[] {_maxUnlockedLevel, _maxLivePoints, _collectedCoinsTotal};
+        formatter.Serialize(stream, data);
+        stream.Close();
+    }
+    /*Ende Fremdcode zum Savingsystem*/
     /* Eventfunktionen */
     private void CoinCollected(string s)
     {
@@ -150,10 +187,16 @@ public class GameManager : MonoBehaviour
         TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
         TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
     }
+
+    private void UpdateMainMenu(string s)
+    {
+        TriggerEvent("UpdateCollectedCoinsTotal",_collectedCoinsTotal.ToString());
+    }
     /** Lädt die Szene sceneName und setzt die die lokalen Variablen zurück**/
     private void LoadScene(string sceneName)
     {
+        SaveDataToFile();
         SceneManager.LoadScene(sceneName);
-        Start();
+        Reset();
     }
 }
