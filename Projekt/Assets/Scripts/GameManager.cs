@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
@@ -92,11 +88,11 @@ public class GameManager : MonoBehaviour
     /*Fremdcode ENDE*/
     
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
-    public int maxUnlockedLevel = 0;
-    public int maxLivePoints = 3;
-    public int collectedCoinsTotal = 0; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
+    private static int _maxUnlockedLevel = 0;
+    private static  int _maxLivePoints = 3;
+    private static int _collectedCoinsTotal = 0; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
+    public static int currentLevel = 0;
     /* Lokal */
-    public int currentLevel = 0;
     public int collectedCoinsInLevel = 0;
     public int livePoints = 0;
     
@@ -105,25 +101,26 @@ public class GameManager : MonoBehaviour
     {
         // Sorgt dafür, dass es nicht mehrere GameManager im Objekt gibt
         if(this == _gameManager) DontDestroyOnLoad(gameObject);
-        else Destroy(gameObject);
+        //else Destroy(gameObject);
         
         StartListening("CoinCollected", CoinCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
         StartListening("FetchDisplayData", UpdateHud);
+        StartListening("LoadScene", LoadScene);
     }
 
     private void Start()
     {
         Time.timeScale = 1;
-        livePoints = maxLivePoints;
+        livePoints = _maxLivePoints;
         collectedCoinsInLevel = 0;
     }
 
     /* Eventfunktionen */
     private void CoinCollected(string s)
     {
-        collectedCoinsTotal++;
+        _collectedCoinsTotal++;
         collectedCoinsInLevel++;
         TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
     }
@@ -145,7 +142,7 @@ public class GameManager : MonoBehaviour
     private void Victory(string s)
     {
         Time.timeScale = 0;
-        TriggerEvent("OpenVictoryScreen");
+        TriggerEvent("OpenVictoryScreen",collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
     }
 
     private void UpdateHud(string s)
@@ -153,30 +150,6 @@ public class GameManager : MonoBehaviour
         TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
         TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
     }
-    /* UI Screen Aufrufe */
-    public void OnRespawnButtonPressed()
-    {
-        Time.timeScale = 1;
-        TriggerEvent("CloseDeathScreen");
-        TriggerEvent("CloseVictoryScreen");
-        TriggerEvent("Respawn");
-    }
-    public void OnNextLevelButtonPressed()
-    {
-        //TODO: Speicher shit und geht zum nächsten Level
-        LoadScene("DemoLevel");
-        
-    }
-    public void OnMainMenuButtonPressed()
-    {
-        //TODO: Speicher shit
-        LoadScene("StartScene");
-    }
-    public void OnExitGameButton()
-    {
-        Application.Quit();
-    }
-
     /** Lädt die Szene sceneName und setzt die die lokalen Variablen zurück**/
     private void LoadScene(string sceneName)
     {

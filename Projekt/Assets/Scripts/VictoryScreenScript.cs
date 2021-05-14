@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class VictoryScreenScript : MonoBehaviour
@@ -16,10 +17,10 @@ public class VictoryScreenScript : MonoBehaviour
         GameManager.StopListening ("CloseVictoryScreen", CloseVictoryScreen);
     }
 
-    // Update is called once per frame
-    private void OpenVictoryScreen(string s)
+    private void OpenVictoryScreen(string coins)
     {
         gameObject.SetActive(true);
+        GameObject.Find("CollectedCoinsNumber").GetComponent<TextMeshProUGUI>().text = coins;
     }
     private void CloseVictoryScreen(string s)
     {

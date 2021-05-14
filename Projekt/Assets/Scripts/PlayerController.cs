@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
     { 
 	    GameManager.StartListening("Respawn", Respawn);
     }
-
     private void OnDestroy()
     {
 	    GameManager.StopListening("Respawn", Respawn);
