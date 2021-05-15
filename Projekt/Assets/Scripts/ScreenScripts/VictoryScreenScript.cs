@@ -7,6 +7,7 @@ namespace ScreenScripts
     {
         private void Awake()
         {
+            Debug.Log("Load "+gameObject.name);
             CloseVictoryScreen("");
             GameManager.StartListening("OpenVictoryScreen", OpenVictoryScreen);
             GameManager.StartListening ("CloseVictoryScreen", CloseVictoryScreen);
@@ -16,6 +17,8 @@ namespace ScreenScripts
         {
             GameManager.StopListening("OpenVictoryScreen", OpenVictoryScreen);
             GameManager.StopListening ("CloseVictoryScreen", CloseVictoryScreen);
+            Debug.Log("Dest "+gameObject.name);
+            
         }
 
         private void OpenVictoryScreen(string coins)

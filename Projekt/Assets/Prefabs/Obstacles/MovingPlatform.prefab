@@ -479,9 +479,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21f61ab8102a5174b96daf01d3b8131b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDirection: {x: 0, y: 0, z: 0}
+  moveDirection: {x: 10, y: 0, z: 0}
   movingTime: 4
-  pauseTime: 1
+  pauseTimeStartEnd: 1
+  pauseTimeMid: 1
 --- !u!1 &7147692453800790793
 GameObject:
   m_ObjectHideFlags: 0

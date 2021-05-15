@@ -13,7 +13,7 @@ namespace ScreenScripts
         }
         public void OnNextLevelButtonPressed()
         {
-            GameManager.TriggerEvent("LoadScene", "DemoLevel");
+            GameManager.TriggerEvent("LoadScene", "1.1_Level");
 
         }
         public void OnMainMenuButtonPressed()

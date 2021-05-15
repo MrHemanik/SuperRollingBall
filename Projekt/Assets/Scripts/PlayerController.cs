@@ -2,6 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using UnityEngine.Serialization;
+
 public class PlayerController : MonoBehaviour
 {
 	/* Movement */
@@ -20,7 +22,7 @@ public class PlayerController : MonoBehaviour
     /* General */
     
     private Rigidbody _rb;
-    private Vector3 _lastCheckPoint; //Respawn Position für den Respawn
+    public Vector3 lastCheckPoint; //Respawn Position für den Respawn
     public GameObject dustCloud;
     public GameObject confetti;
 
@@ -37,7 +39,7 @@ public class PlayerController : MonoBehaviour
     {
 	    _rb = GetComponent<Rigidbody>();
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
-        _lastCheckPoint = transform.position;
+        lastCheckPoint = transform.position;
 		_currentJumpCharge = minJumpSpeed;
     }
 
@@ -54,7 +56,7 @@ public class PlayerController : MonoBehaviour
 	        Instantiate (dustCloud, transform.position, dustCloud.transform.rotation); //Partikelwolke
 			//Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, egal, wie lange man fällt.
 			var velocity = _rb.velocity;
-			_rb.velocity = new Vector3(velocity.x, 0, velocity.y);
+			_rb.velocity = new Vector3(velocity.x, 0, velocity.z);
 			//Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
             _rb.AddForce(new Vector3(-500.0f*_wallJumpDirection.x, 400.0f, -500.0f*_wallJumpDirection.z));
              
@@ -73,7 +75,7 @@ public class PlayerController : MonoBehaviour
 				    Instantiate(dustCloud, transform.position, dustCloud.transform.rotation);
 				    //Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, selbst, wenn man fällt.
 				    var velocity = _rb.velocity;
-				    _rb.velocity = new Vector3(velocity.x, 0, velocity.y);
+				    _rb.velocity = new Vector3(velocity.x, 0, velocity.z);
 				    _rb.AddForce(new Vector3(0.0f, _currentJumpCharge*20, 0.0f));
 				    _currentJumpCharge = minJumpSpeed;
 				    break;
@@ -140,11 +142,13 @@ public class PlayerController : MonoBehaviour
 			
 		}else if(other.gameObject.CompareTag("Death"))
         {
+	        _rb.GetComponent<SphereCollider>().enabled = false;
 	        _rb.isKinematic = true;
 	        GameManager.TriggerEvent("Death");
         }
 		if(other.gameObject.CompareTag("Goal"))
 		{
+			_rb.GetComponent<SphereCollider>().enabled = false;
 			_rb.isKinematic = true;
 			GameManager.TriggerEvent("Victory");
 			Instantiate(confetti, transform.position, dustCloud.transform.rotation);
@@ -164,7 +168,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void Respawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
-	    transform.position = _lastCheckPoint;
+	    _rb.GetComponent<SphereCollider>().enabled = true;
+	    transform.position = lastCheckPoint;
 	    _rb.isKinematic = false;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);

@@ -5,10 +5,8 @@ namespace ScreenScripts
 {
     public class HudScript : MonoBehaviour
     {
-        /* GameManager */
-        private TextMeshProUGUI liveText;
-        private TextMeshProUGUI coinText;
-        // Start is called before the first frame update
+        private TextMeshProUGUI _liveText;
+        private TextMeshProUGUI _coinText;
         private void Awake()
         {
             GameManager.StartListening ("UpdateLiveDisplay", UpdateLiveDisplay);
@@ -21,24 +19,17 @@ namespace ScreenScripts
         }
         private void Start()
         {
-            liveText = GameObject.Find("LiveNumber").GetComponent<TextMeshProUGUI>();
-            coinText = GameObject.Find("CoinNumber").GetComponent<TextMeshProUGUI>();
+            _liveText = GameObject.Find("LiveNumber").GetComponent<TextMeshProUGUI>();
+            _coinText = GameObject.Find("CoinNumber").GetComponent<TextMeshProUGUI>();
             GameManager.TriggerEvent("FetchDisplayData");
-        
         }
-
-        // Update is called once per frame
-        void Update()
+        private void UpdateLiveDisplay(string liveCount)
         {
-        
+            _liveText.text = liveCount;
         }
-
-        public void UpdateLiveDisplay(string liveCount)
+        private void UpdateCoinDisplay(string coinCount)
         {
-            liveText.text = liveCount;
-        }public void UpdateCoinDisplay(string coinCount)
-        {
-            coinText.text = coinCount;
+            _coinText.text = coinCount;
         }
     }
 }
