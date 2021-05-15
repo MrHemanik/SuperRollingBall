@@ -198,4 +198,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
         Reset();
     }
+
+    public void OnPause()
+    {
+        if (Time.timeScale != 0) Time.timeScale = 0;
+        else Time.timeScale = 1;
+        TriggerEvent("TogglePauseScreen");
+    }
 }

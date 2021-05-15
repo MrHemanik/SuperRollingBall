@@ -64,6 +64,7 @@ public class CameraController : MonoBehaviour
                 _playerRigidbody.isKinematic = false;
                 _animator.enabled = false; //SUPER unschöne Lösung, aber ich lebe erstmal damit.
                 _playerInput.enabled = true;
+                GameManager.TriggerEvent("DestroyMissionGoalScreen");
             }
         }
         else
