@@ -116,6 +116,8 @@ public class GameManager : MonoBehaviour
             LoadScene("StartScene");
         }
         else Destroy(gameObject);
+        
+        
     }
     
     private void Reset()

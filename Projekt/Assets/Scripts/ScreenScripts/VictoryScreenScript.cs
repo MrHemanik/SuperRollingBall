@@ -7,21 +7,18 @@ namespace ScreenScripts
     {
         private void Awake()
         {
-            Debug.Log("Load "+gameObject.name);
             CloseVictoryScreen("");
-            GameManager.StartListening("OpenVictoryScreen", OpenVictoryScreen);
+            GameManager.StartListening("OpenVictoryScreen", OpenVictoryScreen1);
             GameManager.StartListening ("CloseVictoryScreen", CloseVictoryScreen);
         }
 
         private void OnDestroy()
         {
-            GameManager.StopListening("OpenVictoryScreen", OpenVictoryScreen);
+            GameManager.StopListening("OpenVictoryScreen", OpenVictoryScreen1);
             GameManager.StopListening ("CloseVictoryScreen", CloseVictoryScreen);
-            Debug.Log("Dest "+gameObject.name);
-            
         }
 
-        private void OpenVictoryScreen(string coins)
+        private void OpenVictoryScreen1(string coins)
         {
             gameObject.SetActive(true);
             GameObject.Find("CollectedCoinsNumber").GetComponent<TextMeshProUGUI>().text = coins;

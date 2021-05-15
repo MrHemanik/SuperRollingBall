@@ -27,6 +27,7 @@ public class PopupScreenScript : MonoBehaviour
         {
             _textColor.a = (ttl- _currentTime)/(ttl/16);
         }
+        
         _textMesh.color = _textColor;
     }
 }
