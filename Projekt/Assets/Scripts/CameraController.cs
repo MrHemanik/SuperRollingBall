@@ -12,7 +12,6 @@ public class CameraController : MonoBehaviour
     private float _cutSceneDuration = 6.0f;
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
-    private Animator _animator;
     private PlayerInput _playerInput;
 
     private Camera _camera;
@@ -22,7 +21,6 @@ public class CameraController : MonoBehaviour
         _offset = new Vector3(0.0f, currentZoom, -currentZoom);
         _playerRigidbody = player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
-        _animator = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
         _playerInput.enabled = false;
     }
@@ -62,7 +60,6 @@ public class CameraController : MonoBehaviour
             {
                 _cutScene = false;
                 _playerRigidbody.isKinematic = false;
-                _animator.enabled = false; //SUPER unschöne Lösung, aber ich lebe erstmal damit.
                 _playerInput.enabled = true;
             }
         }
@@ -70,8 +67,7 @@ public class CameraController : MonoBehaviour
         {
             //Position der Kamera
             transform.position = player.transform.position + _offset;
-
-            //Field Of View (To Be Removed - sieht nicht so schön aus)
+            //Field of View
             Vector3 ballVelocity = _playerRigidbody.velocity;
             //Da ich speed aus der RigidBody info nicht auslesen konnte, habe ich aus der Velocity die Speed berechnet (Vektorbetrag = Länge = Speed)
             float ballSpeed = Mathf.Sqrt(Mathf.Pow(ballVelocity.x, 2.0f) + Mathf.Pow(ballVelocity.y, 2.0f) +

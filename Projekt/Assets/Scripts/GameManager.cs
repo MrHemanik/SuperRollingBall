@@ -90,7 +90,8 @@ public class GameManager : MonoBehaviour
     private static int _maxUnlockedLevel = 0;
     private static int _maxLivePoints = 3;
     private static int _collectedCoinsTotal = 0; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
-    public static int currentLevel = 0;
+    private int _curWorld = 0;
+    private int _curLevel = 0;
     /* Lokal */
     private int _collectedCoinsInLevel = 0;
     private int _livePoints = 0;
@@ -105,6 +106,7 @@ public class GameManager : MonoBehaviour
         StartListening("FetchDisplayData", UpdateHud);
         StartListening("FetchMainMenuData", UpdateMainMenu);
         StartListening("LoadScene", LoadScene);
+        StartListening("FetchCurrentWorld", GiveCurrentWorld);
     }
 
     private void Start()
@@ -137,9 +139,12 @@ public class GameManager : MonoBehaviour
             FileStream stream = new FileStream(path, FileMode.Open);
             int[] data = formatter.Deserialize(stream) as int[];
             stream.Close();
-            _maxUnlockedLevel = data[0];
-            _maxLivePoints = data[1];
-            _collectedCoinsTotal = data[2];
+            if (data != null)
+            {
+                _maxUnlockedLevel = data[0];
+                _maxLivePoints = data[1];
+                _collectedCoinsTotal = data[2];
+            }
         }
         else
         {
@@ -202,10 +207,22 @@ public class GameManager : MonoBehaviour
     private void LoadScene(string sceneName)
     {
         SaveDataToFile();
+        try //sceneName muss im Format "[int].[int]_[Beliebig]" sein, damit World und Level rausgelesen werden können
+        {
+            _curWorld = int.Parse(sceneName.Split('.')[0]); //Zahlen bis .; 1.2_Level = 1
+            _curLevel = int.Parse(sceneName.Split('.')[1].Split('_')[0]); //Zahlen zwischen . und _; 1.2_Level = 2;
+        }
+        catch{}
         SceneManager.LoadScene(sceneName);
         Reset();
     }
 
+    private void GiveCurrentWorld(string s)
+    {
+        TriggerEvent("StartCameraAnimation",_curWorld+";"+_curLevel);
+    }
+    
+    // * Input System Methoden* //
     public void OnPause()
     {
         if (Time.timeScale != 0) Time.timeScale = 0;
