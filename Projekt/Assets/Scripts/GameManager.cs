@@ -92,13 +92,14 @@ public class GameManager : MonoBehaviour
     private static int _collectedCoinsTotal = 0; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
     public static int currentLevel = 0;
     /* Lokal */
-    public int collectedCoinsInLevel = 0;
-    public int livePoints = 0;
+    private int _collectedCoinsInLevel = 0;
+    private int _livePoints = 0;
     
 
     private void Awake()
     {
         StartListening("CoinCollected", CoinCollected);
+        StartListening("HeartCollected", HeartCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
         StartListening("FetchDisplayData", UpdateHud);
@@ -122,8 +123,8 @@ public class GameManager : MonoBehaviour
     
     private void Reset()
     {
-        livePoints = _maxLivePoints;
-        collectedCoinsInLevel = 0;
+        _livePoints = _maxLivePoints;
+        _collectedCoinsInLevel = 0;
     }
     /*Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
     
@@ -161,32 +162,36 @@ public class GameManager : MonoBehaviour
     private void CoinCollected(string s)
     {
         _collectedCoinsTotal++;
-        collectedCoinsInLevel++;
-        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
+        _collectedCoinsInLevel++;
+        TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel.ToString());
+    }private void HeartCollected(string s)
+    {
+        _livePoints++;
+        TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
     }
     
     private void Death(string s)
     {
-        livePoints--;
-        if (livePoints <= 0)
+        _livePoints--;
+        if (_livePoints <= 0)
         {
             LoadScene("GameOverScene");
         }
         else
         {
             TriggerEvent("OpenDeathScreen");
-            TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
+            TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
         }
     }
     private void Victory(string s)
     {
-        TriggerEvent("OpenVictoryScreen",collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
+        TriggerEvent("OpenVictoryScreen",_collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
     }
 
     private void UpdateHud(string s)
     {
-        TriggerEvent("UpdateLiveDisplay", livePoints.ToString());
-        TriggerEvent("UpdateCoinDisplay", collectedCoinsInLevel.ToString());
+        TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
+        TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel.ToString());
     }
 
     private void UpdateMainMenu(string s)

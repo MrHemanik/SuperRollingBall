@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace ScreenScripts
 {
@@ -23,6 +25,11 @@ namespace ScreenScripts
         public void OnExitGameButton()
         {
             Application.Quit();
+        }
+
+        public void OnLevelSelectionButtonPressed()
+        {
+            GameManager.TriggerEvent("ToggleLevelSelectionScreen");
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using ObjectScripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
@@ -27,7 +28,8 @@ public class PlayerController : MonoBehaviour
     public GameObject confetti;
 
     private void Awake()
-    { 
+    {
+	    transform.position = GameObject.Find("SpawnpointTrigger").GetComponent<SpawnpointScript>().transform.position;
 	    GameManager.StartListening("Respawn", Respawn);
     }
     private void OnDestroy()
@@ -139,12 +141,19 @@ public class PlayerController : MonoBehaviour
         {
 	        other.gameObject.SetActive(false);
 			GameManager.TriggerEvent("CoinCollected");
-			
-		}else if(other.gameObject.CompareTag("Death"))
+		}else if(other.gameObject.CompareTag("Heart"))
         {
-	        _rb.GetComponent<SphereCollider>().enabled = false;
-	        _rb.isKinematic = true;
-	        GameManager.TriggerEvent("Death");
+	        other.gameObject.SetActive(false);
+			GameManager.TriggerEvent("HeartCollected");
+
+        }else if(other.gameObject.CompareTag("Death"))
+        {
+	        if (!_rb.isKinematic) //Beugt doppelten "death" trigger vor
+	        {
+		        _rb.GetComponent<SphereCollider>().enabled = false;
+		        _rb.isKinematic = true;
+		        GameManager.TriggerEvent("Death");
+	        }
         }
 		if(other.gameObject.CompareTag("Goal"))
 		{
