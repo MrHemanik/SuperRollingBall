@@ -13,8 +13,8 @@ namespace ScreenScripts
         }
         private void OnDestroy()
         {
-            GameManager.StopListening("OpenDeathScreen", OpenDeathScreen);
-            GameManager.StopListening ("CloseDeathScreen", CloseDeathScreen);
+            GameManager.StopListening("OpenDeathScreen");
+            GameManager.StopListening ("CloseDeathScreen");
         }
 
         // Update is called once per frame

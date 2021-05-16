@@ -12,7 +12,7 @@ public class PauseScreenScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.StopListening("TogglePauseScreen", TogglePauseScreen);
+        GameManager.StopListening("TogglePauseScreen");
     }
 
     private void TogglePauseScreen(string coins)

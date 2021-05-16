@@ -14,7 +14,7 @@ namespace ScreenScripts
 
         private void OnDestroy()
         {
-            GameManager.StopListening("UpdateCollectedCoinsTotal", UpdateCoinCount);
+            GameManager.StopListening("UpdateCollectedCoinsTotal");
         }
         private void UpdateCoinCount(string count)
         {

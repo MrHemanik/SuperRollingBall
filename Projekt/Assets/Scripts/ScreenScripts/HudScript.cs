@@ -14,8 +14,8 @@ namespace ScreenScripts
         }
         private void OnDestroy()
         {
-            GameManager.StopListening ("UpdateLiveDisplay", UpdateLiveDisplay);
-            GameManager.StopListening ("UpdateCoinDisplay", UpdateCoinDisplay);
+            GameManager.StopListening ("UpdateLiveDisplay");
+            GameManager.StopListening ("UpdateCoinDisplay");
         }
         private void Start()
         {

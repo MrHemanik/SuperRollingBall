@@ -1301,6 +1301,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 175236021982704042, guid: 5e77e54c4e3b31a43b81d8db232c14d5,
         type: 3}
+      propertyPath: m_text
+      value: "Zur\xFCck zum Hauptmen\xFC"
+      objectReference: {fileID: 0}
+    - target: {fileID: 175236021982704042, guid: 5e77e54c4e3b31a43b81d8db232c14d5,
+        type: 3}
       propertyPath: m_fontSize
       value: 70
       objectReference: {fileID: 0}

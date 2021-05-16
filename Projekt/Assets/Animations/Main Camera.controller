@@ -9,11 +9,8 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: World
-    m_EventTreshold: 1
-  - m_ConditionMode: 6
     m_ConditionEvent: Level
-    m_EventTreshold: 2
+    m_EventTreshold: 1002
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8342032451354634973}
   m_Solo: 0
@@ -63,11 +60,8 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 6
-    m_ConditionEvent: World
-    m_EventTreshold: 1
-  - m_ConditionMode: 6
     m_ConditionEvent: Level
-    m_EventTreshold: 1
+    m_EventTreshold: 1001
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4909364930059025836}
   m_Solo: 0
@@ -92,12 +86,6 @@ AnimatorController:
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Level
-    m_Type: 3
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: World
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0

@@ -1,9 +1,6 @@
-using System;
 using ObjectScripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
-using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
@@ -34,7 +31,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDestroy()
     {
-	    GameManager.StopListening("Respawn", Respawn);
+	    GameManager.StopListening("Respawn");
     }
 
     private void Start()

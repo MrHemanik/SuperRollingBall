@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using TMPro;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
     Mit StackOverflow Änderungen für Parameterübergabe (UnityEvent zu  Action):
     https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent
+    Und eigenen Anpassungen
     */
     private Dictionary <string, Action<string>> _eventDictionary;
     private static GameManager _gameManager;
@@ -46,90 +47,34 @@ public class GameManager : MonoBehaviour
             _eventDictionary = new Dictionary<string, Action<string>>();
         }
     }
-
+    //Viel umgeschrieben in den Listenern ... verstehen tu ich sie trotzdem nicht wirklich
     public static void StartListening (string eventName, Action<string> listener)
     {
-        Action<string> thisEvent = null;
-        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        if (!Instance._eventDictionary.TryGetValue (eventName, out _))
         {
-            thisEvent+=listener;
-        } 
-        else
-        {
-            thisEvent+=listener;
-            Instance._eventDictionary.Add (eventName, thisEvent);
+            Instance._eventDictionary.Add (eventName, listener);
         }
     }
 
-    public static void StopListening (string eventName, Action<string> listener)
+    public static void StopListening (string eventName)
     {
         if (_gameManager == null) return;
-        Action<string> thisEvent = null;
-        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        if (Instance._eventDictionary.TryGetValue (eventName, out _))
         {
             //Eigenes Codestück, welches den Listener auch wirklich entfernt
             Instance._eventDictionary.Remove(eventName);
-            //
-            thisEvent -= listener;
         }
     }
-
-    
-    public static void TriggerEvent (string eventName,string f = "")//Eigenanpassung mit Übergabefloat
+    public static void TriggerEvent (string eventName,string f = "") //Eigenanpassung mit Übergabefloat
     {
-        Action<string> thisEvent = null;
-        if (Instance._eventDictionary.TryGetValue (eventName, out thisEvent))
+        if (Instance._eventDictionary.TryGetValue (eventName, out var thisEvent))
         {
             thisEvent.Invoke(f);
         }
     }
-    /*Fremdcode ENDE*/
-    
-    //Variablen
-    /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
-    private static int _maxUnlockedLevel = 0;
-    private static int _maxLivePoints = 3;
-    private static int _collectedCoinsTotal = 0; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
-    private int _curWorld = 0;
-    private int _curLevel = 0;
-    /* Lokal */
-    private int _collectedCoinsInLevel = 0;
-    private int _livePoints = 0;
-    
+    /*Fremdcode zu Message-System ENDE*/
+    /*Fremdcode fürs Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
 
-    private void Awake()
-    {
-        StartListening("CoinCollected", CoinCollected);
-        StartListening("HeartCollected", HeartCollected);
-        StartListening("Death", Death);
-        StartListening("Victory", Victory);
-        StartListening("FetchDisplayData", UpdateHud);
-        StartListening("FetchMainMenuData", UpdateMainMenu);
-        StartListening("LoadScene", LoadScene);
-        StartListening("FetchCurrentWorld", GiveCurrentWorld);
-    }
-
-    private void Start()
-    {
-        // Sorgt dafür, dass es nicht mehrere GameManager im Objekt gibt
-        if (this == _gameManager)
-        {
-            DontDestroyOnLoad(gameObject);
-            LoadDataFromFile();
-            LoadScene("StartScene");
-        }
-        else Destroy(gameObject);
-        
-        
-    }
-    
-    private void Reset()
-    {
-        _livePoints = _maxLivePoints;
-        _collectedCoinsInLevel = 0;
-    }
-    /*Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
-    
     private void LoadDataFromFile()
     {
         string path = Application.persistentDataPath + "/gameData.binary";
@@ -163,6 +108,50 @@ public class GameManager : MonoBehaviour
         stream.Close();
     }
     /*Ende Fremdcode zum Savingsystem*/
+    //Variablen
+    /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
+    
+    private static int _maxLivePoints = 3;
+    private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
+
+    private int[] _levelList = {1001, 1002, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
+    private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
+    private int _curLevel; //Das momentane Level als Levelzahl (1001,1002,..)
+    /* Lokal */
+    private int _collectedCoinsInLevel;
+    private int _livePoints;
+    
+
+    private void Awake()
+    {
+        StartListening("CoinCollected", CoinCollected);
+        StartListening("HeartCollected", HeartCollected);
+        StartListening("Death", Death);
+        StartListening("Victory", Victory);
+        StartListening("FetchDisplayData", UpdateHud);
+        StartListening("FetchMainMenuData", UpdateMainMenu);
+        StartListening("LoadScene", LoadScene);
+        StartListening("FetchCurrentLevel", GiveCurrentLevel);
+        StartListening("LoadNextLevel", LoadNextLevel);
+    }
+
+    private void Start()
+    {
+        // Sorgt dafür, dass es nicht mehrere GameManager in der Scene gibt
+        if (this == _gameManager)
+        {
+            DontDestroyOnLoad(gameObject);
+            LoadDataFromFile();
+            LoadScene("StartScene");
+        }
+        else Destroy(gameObject);
+    }
+    
+    private void Reset()
+    {
+        _livePoints = _maxLivePoints;
+        _collectedCoinsInLevel = 0;
+    }
     /* Eventfunktionen */
     private void CoinCollected(string s)
     {
@@ -191,8 +180,22 @@ public class GameManager : MonoBehaviour
     private void Victory(string s)
     {
         TriggerEvent("OpenVictoryScreen",_collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
+        UnlockNextLevel();
     }
+    private void UnlockNextLevel()
+    {
+        //Erhöht das _maxUnlockedLevel, falls das Level _levelList[_maxUnlockedLevel] geschafft wurde
+        Debug.Log("Level: "+_curLevel+"; MaxLevel: "+_levelList[_maxUnlockedLevel]);
+        if (_curLevel == _levelList[_maxUnlockedLevel])//Falls das momentane Level das höchstfreigeschaltende ist
+        {
+            //Victory darf nicht im VictoryScene ausgelöst werden, da er sonst outOufBounds geht.
+            _maxUnlockedLevel++;
+            _curLevel = _levelList[_maxUnlockedLevel];
+            Debug.Log("Neues Level freigeschalten");
+        }
+        
 
+    }
     private void UpdateHud(string s)
     {
         TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
@@ -203,24 +206,42 @@ public class GameManager : MonoBehaviour
     {
         TriggerEvent("UpdateCollectedCoinsTotal",_collectedCoinsTotal.ToString());
     }
-    /** Lädt die Szene sceneName und setzt die die lokalen Variablen zurück**/
+    
     private void LoadScene(string sceneName)
     {
+        /* Lädt die Szene sceneName und setzt die die lokalen Variablen zurück*/
         SaveDataToFile();
-        try //sceneName muss im Format "[int].[int]_[Beliebig]" sein, damit World und Level rausgelesen werden können
+        if (sceneName == "99999_Level")
         {
-            _curWorld = int.Parse(sceneName.Split('.')[0]); //Zahlen bis .; 1.2_Level = 1
-            _curLevel = int.Parse(sceneName.Split('.')[1].Split('_')[0]); //Zahlen zwischen . und _; 1.2_Level = 2;
+            SceneManager.LoadScene("VictoryScene");
         }
-        catch{}
-        SceneManager.LoadScene(sceneName);
+        else
+        {
+            try
+            {
+                _curLevel = int.Parse(sceneName.Split('_')[0]); //Zahl vor _; 1002_Level = 1;;
+            }
+            catch
+            {
+                // ignored
+            }
+
+            SceneManager.LoadScene(sceneName);
+        }
         Reset();
     }
-
-    private void GiveCurrentWorld(string s)
+    private void GiveCurrentLevel(string s)
     {
-        TriggerEvent("StartCameraAnimation",_curWorld+";"+_curLevel);
+        TriggerEvent("StartCameraAnimation",_curLevel.ToString());
     }
+
+    private void LoadNextLevel(string s)
+    {
+        //Sucht das Level in _levelList und lädt das darauf folgende
+        Debug.Log(_curLevel);
+        LoadScene(_levelList[Array.IndexOf(_levelList, _curLevel)+1]+"_Level");
+    }
+
     
     // * Input System Methoden* //
     public void OnPause()

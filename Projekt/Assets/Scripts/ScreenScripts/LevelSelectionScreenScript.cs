@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace ScreenScripts
@@ -14,7 +13,7 @@ namespace ScreenScripts
 
         private void OnDestroy()
         {
-            GameManager.StartListening("ToggleLevelSelectionScreen", ToggleLevelSelectionScreen);
+            GameManager.StopListening("ToggleLevelSelectionScreen");
         }
 
         private void ToggleLevelSelectionScreen(string f ="")

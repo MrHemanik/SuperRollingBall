@@ -1,6 +1,6 @@
-using System;
+
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
 
 namespace ScreenScripts
 {
@@ -15,7 +15,7 @@ namespace ScreenScripts
         }
         public void OnNextLevelButtonPressed()
         {
-            GameManager.TriggerEvent("LoadScene", "1.1_Level");
+            GameManager.TriggerEvent("LoadNextLevel");
 
         }
         public void OnMainMenuButtonPressed()

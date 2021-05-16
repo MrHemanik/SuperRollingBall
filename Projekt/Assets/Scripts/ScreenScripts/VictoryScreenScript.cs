@@ -14,8 +14,8 @@ namespace ScreenScripts
 
         private void OnDestroy()
         {
-            GameManager.StopListening("OpenVictoryScreen", OpenVictoryScreen1);
-            GameManager.StopListening ("CloseVictoryScreen", CloseVictoryScreen);
+            GameManager.StopListening("OpenVictoryScreen");
+            GameManager.StopListening ("CloseVictoryScreen");
         }
 
         private void OpenVictoryScreen1(string coins)
