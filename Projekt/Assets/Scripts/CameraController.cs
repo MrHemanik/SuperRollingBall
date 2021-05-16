@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     public int currentZoom = 8; //Startwert 8;
     public int defaultFOV = 60;
     private bool _cutScene = true;
-    private float _cutSceneDuration = 4.0f;
+    private float _cutSceneDuration = 6.0f;
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
     private Animator _animator;

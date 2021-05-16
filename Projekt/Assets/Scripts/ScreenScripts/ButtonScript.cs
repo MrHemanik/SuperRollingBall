@@ -27,9 +27,13 @@ namespace ScreenScripts
             Application.Quit();
         }
 
-        public void OnLevelSelectionButtonPressed()
+        public void OnToggleLevelSelectionScreenButtonPressed()
         {
             GameManager.TriggerEvent("ToggleLevelSelectionScreen");
+        }
+        public void OnLoadLevelButtonPressed(string levelName)
+        {
+            GameManager.TriggerEvent("LoadScene",levelName);
         }
     }
 }
