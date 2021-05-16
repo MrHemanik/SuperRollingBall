@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
     public int currentZoom = 8; //Startwert 8;
     public int defaultFOV = 60;
     private bool _cutScene = true;
-    private float _cutSceneDuration = 100.0f;
+    private float _cutSceneDuration = 100.0f; // Wird in SetAnimation auf die richtige Zeit gesetzt
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
     private PlayerInput _playerInput;
@@ -18,12 +18,17 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         GameManager.StartListening("StartCameraAnimation", SetAnimation);
+        GameManager.StartListening("SkyboxColor", SetSkyboxColor);
+        _camera = GetComponent<Camera>();
         GameManager.TriggerEvent("FetchCurrentLevel");
+        
     }
     private void OnDestroy()
     {
         GameManager.StopListening("StartCameraAnimation");
+        GameManager.StopListening("SkyboxColor");
     }
+    
     private void Start()
     {
         _offset = new Vector3(0.0f, currentZoom, -currentZoom);
@@ -77,6 +82,16 @@ public class CameraController : MonoBehaviour
                 return;
             }
         }
+    }
+
+    private void SetSkyboxColor(string color)
+    {
+        Debug.Log(_camera);
+        _camera.backgroundColor = new Color32(
+            System.Convert.ToByte(color.Substring(0, 2),16),
+            System.Convert.ToByte(color.Substring(2, 2),16),
+            System.Convert.ToByte(color.Substring(4, 2),16),1
+            );
     }
 
     // Input Methoden

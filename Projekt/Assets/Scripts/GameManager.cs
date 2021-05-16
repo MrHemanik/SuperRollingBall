@@ -114,6 +114,7 @@ public class GameManager : MonoBehaviour
     private static int _maxLivePoints = 3;
     private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
 
+    private string[] _skyboxColor = {"BFFFFD", "A995A5", "FFFFFF"}; //Jedes level hat auch eine Skybox
     private int[] _levelList = {1001, 1002, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
     private int _curLevel; //Das momentane Level als Levelzahl (1001,1002,..)
@@ -233,6 +234,7 @@ public class GameManager : MonoBehaviour
     private void GiveCurrentLevel(string s)
     {
         TriggerEvent("StartCameraAnimation",_curLevel.ToString());
+        TriggerEvent("SkyboxColor",_skyboxColor[Array.IndexOf(_levelList,_curLevel)]);
     }
 
     private void LoadNextLevel(string s)
