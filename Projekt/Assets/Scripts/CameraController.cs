@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
@@ -7,13 +8,22 @@ public class CameraController : MonoBehaviour
     public int currentZoom = 8; //Startwert 8;
     public int defaultFOV = 60;
     private bool _cutScene = true;
-    private float _cutSceneDuration = 6.0f;
+    private float _cutSceneDuration = 100.0f;
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
     private PlayerInput _playerInput;
 
     private Camera _camera;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        GameManager.StartListening("StartCameraAnimation", SetAnimation);
+        GameManager.TriggerEvent("FetchCurrentLevel");
+    }
+    private void OnDestroy()
+    {
+        GameManager.StopListening("StartCameraAnimation");
+    }
     private void Start()
     {
         _offset = new Vector3(0.0f, currentZoom, -currentZoom);
@@ -22,32 +32,7 @@ public class CameraController : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
         _playerInput.enabled = false;
     }
-
-    // Update is called once per frame
-    void OnZoom(InputValue movementValue)
-    {
-        Vector2 zoomVector = movementValue.Get<Vector2>();
-        if (zoomVector.y < 0)
-        {
-            //Reinzoomen
-            if (currentZoom <= zoomRange.y)
-            {
-                currentZoom++;
-            }
-        }
-        else
-        {
-            //Rauszoomen
-            if (currentZoom >= zoomRange.x)
-            {
-                currentZoom--;
-            }
-        }
-        //Neuberechnung des Offsets
-        _offset = new Vector3(0.0f, currentZoom, -currentZoom);
-        //Debug.Log(player.transform.position);
-    }
-
+    
     private void LateUpdate() //LateUpdate für Updates die was anzeigen sollen, da die als letztes berechnet werden
     {
         if (_cutScene)
@@ -73,5 +58,49 @@ public class CameraController : MonoBehaviour
             _camera.fieldOfView =
                 defaultFOV + ballSpeed / 2;
         }
+    }
+    
+    //Event Methoden
+    private void SetAnimation(string input)
+    {
+        // Reminder: Die Animation muss im Animator hinzugefügt und die transition gesetzt sein!
+        gameObject.GetComponent<Animator>().SetInteger(Animator.StringToHash("Level"),int.Parse(input));
+        Debug.Log(input);
+        foreach (AnimationClip a in GetComponent<Animator>().runtimeAnimatorController.animationClips)
+        {
+            Debug.Log(a.name);
+            
+            if (a.name == input)
+            {
+                _cutSceneDuration = a.length;
+                Debug.Log(_cutSceneDuration);
+                return;
+            }
+        }
+    }
+
+    // Input Methoden
+    void OnZoom(InputValue movementValue)
+    {
+        Vector2 zoomVector = movementValue.Get<Vector2>();
+        if (zoomVector.y < 0)
+        {
+            //Reinzoomen
+            if (currentZoom <= zoomRange.y)
+            {
+                currentZoom++;
+            }
+        }
+        else
+        {
+            //Rauszoomen
+            if (currentZoom >= zoomRange.x)
+            {
+                currentZoom--;
+            }
+        }
+        //Neuberechnung des Offsets
+        _offset = new Vector3(0.0f, currentZoom, -currentZoom);
+        //Debug.Log(player.transform.position);
     }
 }
