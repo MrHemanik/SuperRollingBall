@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     */
     private Dictionary <string, Action<string>> _eventDictionary;
     private static GameManager _gameManager;
-
     private static GameManager Instance
     {
         get
@@ -114,7 +113,7 @@ public class GameManager : MonoBehaviour
     private static readonly int[] LevelList = {1001, 1002, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
     private readonly string[] _skyboxColor = {"BFFFFD", "A995A5", "FFFFFF"}; //Jedes level hat auch eine Skybox
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
-    private int _curLevel; //Das momentane Level als Levelzahl (1001,1002,..)
+    private int _curLevel; //Das momentane Level als Levelzahl (1001,1002,..) REWORK: Der index für das Level aus LevelList
     private static int _maxLivePoints = 3;
     private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
     private static float[] _timeHighscore = new float[LevelList.Length];//new Time[_levelList.Length];
@@ -122,7 +121,7 @@ public class GameManager : MonoBehaviour
     private int _collectedCoinsInLevel;
     private int _livePoints;
     private float _levelStartTime;
-    
+
 
     private void Awake()
     {
@@ -187,33 +186,56 @@ public class GameManager : MonoBehaviour
         UnlockNextLevel();
     }
 
+    //Getter und Setter für _timeHighscore, für den Fall, dass außerhalb der Arraygröße abgefragt wird (z.B durch alte Spieldaten)
+    public static float GetHighscoreFromIndex(int i) //Ich musste es public machen, da sonst die LevelSelectionHighscores keinen guten Weg hätten, das abzufragen
+    {
+        //Gibt den Highscore des Indexes aus
+        if (_timeHighscore == null) return 0;
+        if (_timeHighscore.Length <= i) return 0;
+        return _timeHighscore[i];
+    }
+    private static void SetHighscoreToIndex(int index, float highscore)
+    {
+        if (_timeHighscore == null || _timeHighscore.Length <= index)
+        {
+            float[] newTimeHighscore = new float[LevelList.Length];
+            if (_timeHighscore != null)
+            {
+                for (int i = 0; i < _timeHighscore.Length; i++)
+                {
+                    newTimeHighscore[i] = _timeHighscore[0];
+                }
+            }
+            _timeHighscore = newTimeHighscore;
+        }
+        _timeHighscore[index] = highscore;
+    }
     private void TestForLevelHighscore()
     {
-        int curLevelIndex = Array.IndexOf(LevelList, _curLevel);
-        float timeHighscore = _timeHighscore[curLevelIndex];
+        float timeHighscore = GetHighscoreFromIndex(_curLevel);
         float newTime = Time.time - _levelStartTime;
         Debug.Log("High:" + timeHighscore+"; Neu: "+newTime);
         if (timeHighscore.Equals(0) || timeHighscore > newTime)
         {
-            _timeHighscore[curLevelIndex] = newTime;
+            SetHighscoreToIndex(_curLevel,newTime);
+            TriggerEvent("NewHighscore", newTime.ToString("0.00"));
         }
-
-        Debug.Log(_timeHighscore[curLevelIndex]);
     }
     private void UnlockNextLevel()
     {
         //Erhöht das _maxUnlockedLevel, falls das Level _levelList[_maxUnlockedLevel] geschafft wurde
-        Debug.Log("Level: "+_curLevel+"; MaxLevel: "+LevelList[_maxUnlockedLevel]);
+        Debug.Log("Level: "+LevelList[_curLevel]+"; MaxLevel: "+LevelList[_maxUnlockedLevel]);
         if (_curLevel == LevelList[_maxUnlockedLevel])//Falls das momentane Level das höchstfreigeschaltende ist
         {
             //Victory darf nicht im VictoryScene ausgelöst werden, da er sonst outOufBounds geht.
             _maxUnlockedLevel++;
-            _curLevel = LevelList[_maxUnlockedLevel];
+            _curLevel = _maxUnlockedLevel;
             Debug.Log("Neues Level freigeschalten");
         }
     }
     private void StartLevelTimer(string s)
     {
+        //Wird ausgeführt nachdem die Startkamerafahrt des Levels fertig ist
         _levelStartTime = Time.time;
     }
     private void UpdateHud(string s)
@@ -233,13 +255,14 @@ public class GameManager : MonoBehaviour
         SaveDataToFile();
         if (sceneName == "99999_Level")
         {
+            //Falls das Level das "letzte" Level ist (99999), also der letzte eintrag in LevelList, dann soll VictoryScene geöffnet werden
             SceneManager.LoadScene("VictoryScene");
         }
         else
         {
             try
             {
-                _curLevel = int.Parse(sceneName.Split('_')[0]); //Zahl vor _; 1002_Level = 1;;
+                _curLevel = Array.IndexOf(LevelList,int.Parse(sceneName.Split('_')[0])); //Zahl vor _; 1002_Level = 1;;
             }
             catch
             {
@@ -252,15 +275,15 @@ public class GameManager : MonoBehaviour
     }
     private void GiveCurrentLevel(string s)
     {
-        TriggerEvent("StartCameraAnimation",_curLevel.ToString());
-        TriggerEvent("SkyboxColor",_skyboxColor[Array.IndexOf(LevelList,_curLevel)]);
+        //Zum Start des Levels wird die Skybox angepasst und die Startanimation angespielt
+        TriggerEvent("StartCameraAnimation",LevelList[_curLevel].ToString());
+        TriggerEvent("SkyboxColor",_skyboxColor[_curLevel]);
     }
 
     private void LoadNextLevel(string s)
     {
         //Sucht das Level in _levelList und lädt das darauf folgende
-        Debug.Log(_curLevel);
-        LoadScene(LevelList[Array.IndexOf(LevelList, _curLevel)+1]+"_Level");
+        LoadScene(LevelList[_curLevel+1]+"_Level");
     }
 
     
