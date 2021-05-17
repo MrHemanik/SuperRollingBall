@@ -17,10 +17,8 @@ namespace ScreenScripts
 
         private void Start()
         {
-            Debug.Log("Lol");
             _highscoreNumber = GameObject.Find("HighscoreNumber");
-            _highscoreText = GameObject.Find("HighscoreText");
-            _highscoreNumber.SetActive(false);
+            _highscoreText = GameObject.Find("NewHighscoreText");
             _highscoreText.SetActive(false);
             CloseVictoryScreen("");
         }
@@ -44,9 +42,8 @@ namespace ScreenScripts
         }
         private void NewHighscore(string highscore)
         {
-            _highscoreNumber.SetActive(true);
             _highscoreText.SetActive(true);
-            _highscoreNumber.GetComponent<TextMeshProUGUI>().text= highscore+" Sekunden";
+            _highscoreNumber.GetComponent<TextMeshProUGUI>().text= "Zeit: "+highscore+" Sekunden";
         }
     }
 }

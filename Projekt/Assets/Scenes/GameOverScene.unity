@@ -449,12 +449,12 @@ PrefabInstance:
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnNextLevelButtonPressed
+      value: OnPlayLevelAgainButtonPressed
       objectReference: {fileID: 0}
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ButtonScript, Assembly-CSharp
+      value: ScreenScripts.ButtonScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}

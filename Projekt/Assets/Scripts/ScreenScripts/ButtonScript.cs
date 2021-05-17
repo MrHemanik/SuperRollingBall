@@ -16,7 +16,10 @@ namespace ScreenScripts
         public void OnNextLevelButtonPressed()
         {
             GameManager.TriggerEvent("LoadNextLevel");
-
+        }
+        public void OnPlayLevelAgainButtonPressed()
+        {
+            GameManager.TriggerEvent("ReloadLevel");
         }
         public void OnMainMenuButtonPressed()
         {
@@ -34,6 +37,16 @@ namespace ScreenScripts
         public void OnLoadLevelButtonPressed(string levelName)
         {
             GameManager.TriggerEvent("LoadScene",levelName);
+        }
+
+        public void OnToggleDeleteSaveFileScreenButtonPressed()
+        {
+            GameManager.TriggerEvent("ToggleDeleteSaveFileScreen");
+        }
+
+        public void OnDeleteSaveFileButtonPressed()
+        {
+            GameManager.TriggerEvent("DeleteSaveFile");
         }
     }
 }

@@ -11,6 +11,7 @@ namespace ScreenScripts
             GameManager.StartListening("UpdateCollectedCoinsTotal", UpdateCoinCount);
             GameManager.TriggerEvent("FetchMainMenuData");
         }
+        
 
         private void OnDestroy()
         {

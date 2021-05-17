@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Die Daten zum speichern müssen 1 Objekt sein, weshalb ich dieses Objekt angelegt habe (Vorher nur int[])
 [System.Serializable]
 public class PlayerData
 {

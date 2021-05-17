@@ -11,5 +11,4 @@ public class GetHighscoreNumber : MonoBehaviour
         float highscore = GameManager.GetHighscoreFromIndex(gameIndex);
         if(highscore > 0) gameObject.GetComponent<TextMeshProUGUI>().text = highscore.ToString("0.00");
     }
-
 }

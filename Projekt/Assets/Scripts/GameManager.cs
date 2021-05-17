@@ -74,9 +74,9 @@ public class GameManager : MonoBehaviour
     /*Fremdcode zu Message-System ENDE*/
     /*Fremdcode fürs Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
 
+    private static string path;
     private static void LoadDataFromFile()
     {
-        string path = Application.persistentDataPath + "/gameData.binary";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -99,7 +99,6 @@ public class GameManager : MonoBehaviour
 
     private static void SaveDataToFile()
     {
-        string path = Application.persistentDataPath + "/gameData.binary";
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream stream = new FileStream(path, FileMode.Create);
         PlayerData data = new PlayerData(_maxUnlockedLevel,_maxLivePoints, _collectedCoinsTotal,_timeHighscore);
@@ -109,6 +108,13 @@ public class GameManager : MonoBehaviour
     /*Ende Fremdcode zum Savingsystem*/
     //Variablen
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
+    private void DeleteSaveFile(string s)
+    {
+        _maxUnlockedLevel = 0;_maxLivePoints=0;
+        _collectedCoinsTotal = 0;_timeHighscore=null;
+        File.Delete(path);
+        LoadScene("StartScene");
+    }
     
     private static readonly int[] LevelList = {1001, 1002, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
     private readonly string[] _skyboxColor = {"BFFFFD", "A995A5", "FFFFFF"}; //Jedes level hat auch eine Skybox
@@ -119,12 +125,14 @@ public class GameManager : MonoBehaviour
     private static float[] _timeHighscore = new float[LevelList.Length];//new Time[_levelList.Length];
     /* Lokal */
     private int _collectedCoinsInLevel;
+    private int _coinCountInLevel;
     private int _livePoints;
     private float _levelStartTime;
 
 
     private void Awake()
     {
+        path = Application.persistentDataPath + "/gameData.binary";
         StartListening("CoinCollected", CoinCollected);
         StartListening("HeartCollected", HeartCollected);
         StartListening("Death", Death);
@@ -135,6 +143,8 @@ public class GameManager : MonoBehaviour
         StartListening("LoadScene", LoadScene);
         StartListening("FetchCurrentLevel", GiveCurrentLevel);
         StartListening("LoadNextLevel", LoadNextLevel);
+        StartListening("ReloadLevel", ReloadLevel);
+        StartListening("DeleteSaveFile", DeleteSaveFile);
     }
 
     private void Start()
@@ -153,13 +163,14 @@ public class GameManager : MonoBehaviour
     {
         _livePoints = _maxLivePoints;
         _collectedCoinsInLevel = 0;
+        _coinCountInLevel = 0;
     }
     /* Eventfunktionen */
     private void CoinCollected(string s)
     {
         _collectedCoinsTotal++;
         _collectedCoinsInLevel++;
-        TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel.ToString());
+        TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel+" / "+_coinCountInLevel);
     }private void HeartCollected(string s)
     {
         _livePoints++;
@@ -181,7 +192,7 @@ public class GameManager : MonoBehaviour
     }
     private void Victory(string s)
     {
-        TriggerEvent("OpenVictoryScreen",_collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
+        TriggerEvent("OpenVictoryScreen",_collectedCoinsInLevel+" / "+_coinCountInLevel);
         TestForLevelHighscore();
         UnlockNextLevel();
     }
@@ -225,11 +236,10 @@ public class GameManager : MonoBehaviour
     {
         //Erhöht das _maxUnlockedLevel, falls das Level _levelList[_maxUnlockedLevel] geschafft wurde
         Debug.Log("Level: "+LevelList[_curLevel]+"; MaxLevel: "+LevelList[_maxUnlockedLevel]);
-        if (_curLevel == LevelList[_maxUnlockedLevel])//Falls das momentane Level das höchstfreigeschaltende ist
+        if (_curLevel == _maxUnlockedLevel)//Falls das momentane Level das höchstfreigeschaltende ist
         {
             //Victory darf nicht im VictoryScene ausgelöst werden, da er sonst outOufBounds geht.
             _maxUnlockedLevel++;
-            _curLevel = _maxUnlockedLevel;
             Debug.Log("Neues Level freigeschalten");
         }
     }
@@ -240,8 +250,10 @@ public class GameManager : MonoBehaviour
     }
     private void UpdateHud(string s)
     {
+        //Beim Laden des Huds werden die Daten geholt
+        _coinCountInLevel=GameObject.Find("AllCoins").gameObject.transform.childCount; //Muss nur beim Start eines neuen Levels geupdated werden
         TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
-        TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel.ToString());
+        TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel+" / "+_coinCountInLevel);
     }
 
     private void UpdateMainMenu(string s)
@@ -260,7 +272,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            try
+            try//Falls es ein Level ist, soll _curLevel angepasst werden
             {
                 _curLevel = Array.IndexOf(LevelList,int.Parse(sceneName.Split('_')[0])); //Zahl vor _; 1002_Level = 1;;
             }
@@ -284,6 +296,11 @@ public class GameManager : MonoBehaviour
     {
         //Sucht das Level in _levelList und lädt das darauf folgende
         LoadScene(LevelList[_curLevel+1]+"_Level");
+    }
+
+    private void ReloadLevel(string s)
+    {
+        LoadScene(LevelList[_curLevel]+"_Level");
     }
 
     
