@@ -49,6 +49,7 @@ public class CameraController : MonoBehaviour
                 _cutScene = false;
                 _playerRigidbody.isKinematic = false;
                 _playerInput.enabled = true;
+                GameManager.TriggerEvent("LevelTimerStart");
             }
         }
         else
@@ -86,7 +87,7 @@ public class CameraController : MonoBehaviour
 
     private void SetSkyboxColor(string color)
     {
-        Debug.Log(_camera);
+        //Rechnet den Hexadeximal-Farbenwert zum Objekt Color um
         _camera.backgroundColor = new Color32(
             System.Convert.ToByte(color.Substring(0, 2),16),
             System.Convert.ToByte(color.Substring(2, 2),16),

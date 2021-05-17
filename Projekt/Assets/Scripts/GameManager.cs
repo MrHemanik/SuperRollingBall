@@ -75,20 +75,21 @@ public class GameManager : MonoBehaviour
     /*Fremdcode zu Message-System ENDE*/
     /*Fremdcode fürs Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
 
-    private void LoadDataFromFile()
+    private static void LoadDataFromFile()
     {
         string path = Application.persistentDataPath + "/gameData.binary";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(path, FileMode.Open);
-            int[] data = formatter.Deserialize(stream) as int[];
+            PlayerData data = formatter.Deserialize(stream) as PlayerData;
             stream.Close();
             if (data != null)
             {
-                _maxUnlockedLevel = data[0];
-                _maxLivePoints = data[1];
-                _collectedCoinsTotal = data[2];
+                _maxUnlockedLevel = data.maxUnlockedLevel;
+                _maxLivePoints = data.maxLivePoints;
+                _collectedCoinsTotal = data.collectedCoinsTotal;
+                _timeHighscore = data.timeHighscore;
             }
         }
         else
@@ -97,13 +98,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void SaveDataToFile()
+    private static void SaveDataToFile()
     {
         string path = Application.persistentDataPath + "/gameData.binary";
         BinaryFormatter formatter = new BinaryFormatter();
-        
         FileStream stream = new FileStream(path, FileMode.Create);
-        int[] data = new[] {_maxUnlockedLevel, _maxLivePoints, _collectedCoinsTotal};
+        PlayerData data = new PlayerData(_maxUnlockedLevel,_maxLivePoints, _collectedCoinsTotal,_timeHighscore);
         formatter.Serialize(stream, data);
         stream.Close();
     }
@@ -111,16 +111,17 @@ public class GameManager : MonoBehaviour
     //Variablen
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
     
-    private static int _maxLivePoints = 3;
-    private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
-
-    private string[] _skyboxColor = {"BFFFFD", "A995A5", "FFFFFF"}; //Jedes level hat auch eine Skybox
-    private int[] _levelList = {1001, 1002, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
+    private static readonly int[] LevelList = {1001, 1002, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
+    private readonly string[] _skyboxColor = {"BFFFFD", "A995A5", "FFFFFF"}; //Jedes level hat auch eine Skybox
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
     private int _curLevel; //Das momentane Level als Levelzahl (1001,1002,..)
+    private static int _maxLivePoints = 3;
+    private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
+    private static float[] _timeHighscore = new float[LevelList.Length];//new Time[_levelList.Length];
     /* Lokal */
     private int _collectedCoinsInLevel;
     private int _livePoints;
+    private float _levelStartTime;
     
 
     private void Awake()
@@ -129,6 +130,7 @@ public class GameManager : MonoBehaviour
         StartListening("HeartCollected", HeartCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
+        StartListening("LevelTimerStart", StartLevelTimer);
         StartListening("FetchDisplayData", UpdateHud);
         StartListening("FetchMainMenuData", UpdateMainMenu);
         StartListening("LoadScene", LoadScene);
@@ -181,21 +183,38 @@ public class GameManager : MonoBehaviour
     private void Victory(string s)
     {
         TriggerEvent("OpenVictoryScreen",_collectedCoinsInLevel+" / "+GameObject.Find("AllCoins").gameObject.transform.childCount);
+        TestForLevelHighscore();
         UnlockNextLevel();
+    }
+
+    private void TestForLevelHighscore()
+    {
+        int curLevelIndex = Array.IndexOf(LevelList, _curLevel);
+        float timeHighscore = _timeHighscore[curLevelIndex];
+        float newTime = Time.time - _levelStartTime;
+        Debug.Log("High:" + timeHighscore+"; Neu: "+newTime);
+        if (timeHighscore.Equals(0) || timeHighscore > newTime)
+        {
+            _timeHighscore[curLevelIndex] = newTime;
+        }
+
+        Debug.Log(_timeHighscore[curLevelIndex]);
     }
     private void UnlockNextLevel()
     {
         //Erhöht das _maxUnlockedLevel, falls das Level _levelList[_maxUnlockedLevel] geschafft wurde
-        Debug.Log("Level: "+_curLevel+"; MaxLevel: "+_levelList[_maxUnlockedLevel]);
-        if (_curLevel == _levelList[_maxUnlockedLevel])//Falls das momentane Level das höchstfreigeschaltende ist
+        Debug.Log("Level: "+_curLevel+"; MaxLevel: "+LevelList[_maxUnlockedLevel]);
+        if (_curLevel == LevelList[_maxUnlockedLevel])//Falls das momentane Level das höchstfreigeschaltende ist
         {
             //Victory darf nicht im VictoryScene ausgelöst werden, da er sonst outOufBounds geht.
             _maxUnlockedLevel++;
-            _curLevel = _levelList[_maxUnlockedLevel];
+            _curLevel = LevelList[_maxUnlockedLevel];
             Debug.Log("Neues Level freigeschalten");
         }
-        
-
+    }
+    private void StartLevelTimer(string s)
+    {
+        _levelStartTime = Time.time;
     }
     private void UpdateHud(string s)
     {
@@ -234,14 +253,14 @@ public class GameManager : MonoBehaviour
     private void GiveCurrentLevel(string s)
     {
         TriggerEvent("StartCameraAnimation",_curLevel.ToString());
-        TriggerEvent("SkyboxColor",_skyboxColor[Array.IndexOf(_levelList,_curLevel)]);
+        TriggerEvent("SkyboxColor",_skyboxColor[Array.IndexOf(LevelList,_curLevel)]);
     }
 
     private void LoadNextLevel(string s)
     {
         //Sucht das Level in _levelList und lädt das darauf folgende
         Debug.Log(_curLevel);
-        LoadScene(_levelList[Array.IndexOf(_levelList, _curLevel)+1]+"_Level");
+        LoadScene(LevelList[Array.IndexOf(LevelList, _curLevel)+1]+"_Level");
     }
 
     
