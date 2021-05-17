@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
     /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
     private void DeleteSaveFile(string s)
     {
-        _maxUnlockedLevel = 0;_maxLivePoints=0;
+        _maxUnlockedLevel = 0;_maxLivePoints=3;
         _collectedCoinsTotal = 0;_timeHighscore=null;
         File.Delete(path);
         LoadScene("StartScene");
@@ -229,8 +229,9 @@ public class GameManager : MonoBehaviour
         if (timeHighscore.Equals(0) || timeHighscore > newTime)
         {
             SetHighscoreToIndex(_curLevel,newTime);
-            TriggerEvent("NewHighscore", newTime.ToString("0.00"));
+            TriggerEvent("NewHighscore");
         }
+        TriggerEvent("SetLevelTime", newTime.ToString("0.00"));
     }
     private void UnlockNextLevel()
     {
@@ -263,6 +264,7 @@ public class GameManager : MonoBehaviour
     
     private void LoadScene(string sceneName)
     {
+        Debug.Log("Scene wird geladen: "+sceneName);
         /* Lädt die Szene sceneName und setzt die die lokalen Variablen zurück*/
         SaveDataToFile();
         if (sceneName == "99999_Level")
@@ -294,8 +296,10 @@ public class GameManager : MonoBehaviour
 
     private void LoadNextLevel(string s)
     {
+        Debug.Log("Nächstes Level wird geladen");
         //Sucht das Level in _levelList und lädt das darauf folgende
         LoadScene(LevelList[_curLevel+1]+"_Level");
+        
     }
 
     private void ReloadLevel(string s)

@@ -46,6 +46,7 @@ public class CameraController : MonoBehaviour
             _cutSceneDuration -= Time.deltaTime;
             if (_cutSceneDuration < 0)
             {
+                //Wird alles nur 1-Mal ausgeführt
                 _cutScene = false;
                 _playerRigidbody.isKinematic = false;
                 _playerInput.enabled = true;
@@ -74,8 +75,6 @@ public class CameraController : MonoBehaviour
         Debug.Log(input);
         foreach (AnimationClip a in GetComponent<Animator>().runtimeAnimatorController.animationClips)
         {
-            Debug.Log(a.name);
-            
             if (a.name == input)
             {
                 _cutSceneDuration = a.length;

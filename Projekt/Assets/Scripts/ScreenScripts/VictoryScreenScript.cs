@@ -13,6 +13,7 @@ namespace ScreenScripts
             GameManager.StartListening("OpenVictoryScreen", OpenVictoryScreen);
             GameManager.StartListening ("CloseVictoryScreen", CloseVictoryScreen);
             GameManager.StartListening ("NewHighscore", NewHighscore);
+            GameManager.StartListening ("SetLevelTime",SetLevelTime);
         }
 
         private void Start()
@@ -28,6 +29,7 @@ namespace ScreenScripts
             GameManager.StopListening("OpenVictoryScreen");
             GameManager.StopListening ("CloseVictoryScreen");
             GameManager.StopListening ("NewHighscore");
+            GameManager.StopListening ("SetLevelTime");
         }
 
         private void OpenVictoryScreen(string coins)
@@ -40,10 +42,15 @@ namespace ScreenScripts
         {
             gameObject.SetActive(false);
         }
+
+        private void SetLevelTime(string time)
+        {
+            _highscoreNumber.GetComponent<TextMeshProUGUI>().text= "Zeit: "+time+" Sekunden";
+        }
         private void NewHighscore(string highscore)
         {
             _highscoreText.SetActive(true);
-            _highscoreNumber.GetComponent<TextMeshProUGUI>().text= "Zeit: "+highscore+" Sekunden";
+            
         }
     }
 }
