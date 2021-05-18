@@ -50,12 +50,44 @@ PrefabInstance:
     - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_fontSize
-      value: 35
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: edd77e94262b31e4999f9214260b29de,
+        type: 2}
+    - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_fontColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_fontColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_fontColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_fontSizeBase
-      value: 35
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -4019629460246925556, guid: edd77e94262b31e4999f9214260b29de,
+        type: 2}
+    - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 3505384422170371417, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
@@ -110,12 +142,12 @@ PrefabInstance:
     - target: {fileID: 3632797338363186487, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 400
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 3632797338363186487, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 60
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3632797338363186487, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}

@@ -7,21 +7,25 @@ public class PlayerController : MonoBehaviour
 {
 	/* Movement */
 	
-    public float speed = 20;
-    public Vector2 movementVector;
-    public float minJumpSpeed = 10;
-    public float maxJumpSpeed = 20;
-    public float timeTilMaxJump = 3.0f; //Sekunden, bis der volle Sprung ausgeführt wird
+    public float speedModifier = 1;
+    public float jumpModifier = 1;
+    private Vector2 _movementVector;
+    private const float Speed = 20; //Geschwindigkeit, die jede DeltaTime hinzugefügt wird
+    private const float MINJumpSpeed = 400; //Geschwindigkeit, die nur 1-Mal hinzugefügt wird
+    private const float MAXJumpSpeed = 800;
+    private const float TimeTilMaxJump = 2.0f; //Sekunden, bis der volle Sprung ausgeführt wird
     private float _currentJumpCharge;
     private bool _jumpAllowed; // Gibt an, ob ein Sprung erlaubt ist (Bodenberührung)
     private bool _chargeJump;
     private bool _wallJumpAllowed;
     private Vector3 _wallJumpDirection; //Richtung, in der die Wand liegt - von der man weggeschleudert wird
-    
+
     /* General */
     
     private Rigidbody _rb;
     public Vector3 lastCheckPoint; //Respawn Position für den Respawn
+    
+    /*Prefabs*/
     public GameObject dustCloud;
     public GameObject confetti;
 
@@ -40,28 +44,37 @@ public class PlayerController : MonoBehaviour
 	    _rb = GetComponent<Rigidbody>();
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
         lastCheckPoint = transform.position;
-		_currentJumpCharge = minJumpSpeed;
+		_currentJumpCharge = MINJumpSpeed;
     }
     private void FixedUpdate() //Updated 1-Mal pro Frame
     {
 	    //Jump
 	    if (_chargeJump)
 	    {
-		    if (_currentJumpCharge < maxJumpSpeed) 
-			    _currentJumpCharge += ((maxJumpSpeed - minJumpSpeed) / timeTilMaxJump) * Time.fixedDeltaTime;
-		    else _currentJumpCharge = maxJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
+		    if (_currentJumpCharge < MAXJumpSpeed) 
+			    _currentJumpCharge += ((MAXJumpSpeed - MINJumpSpeed) / TimeTilMaxJump) * Time.fixedDeltaTime;
+		    else _currentJumpCharge = MAXJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
 	    }
 
 		//Movement 
-		if (movementVector.sqrMagnitude < 0.01) 
+		if (_movementVector.sqrMagnitude < 0.01) 
 			return;
-		Vector3 movement = new Vector3(movementVector.x, 0.0f,movementVector.y);
-        _rb.AddForce(movement * speed);
+		Vector3 movement = new Vector3(_movementVector.x, 0.0f,_movementVector.y);
+        _rb.AddForce(movement * (Speed * speedModifier));
         //Entfernt die Physikelemente des RigidBodys
         //rb.velocity = new Vector3(0, 0, 0);
         //rb.angularVelocity = new Vector3(0, 0, 0);
     }
 
+    /* Getter und Setter ---------------------------------------------------------------------------------------------*/
+    public void MultiplyJumpModifier(float modifier)
+    {
+	    jumpModifier *= modifier;
+    }
+    public void MultiplySpeedModifier(float modifier)
+    {
+	    speedModifier *= modifier;
+    }
     /* Collider und Trigger ------------------------------------------------------------------------------------------*/
     private void OnCollisionEnter(Collision other) //Bei Berührung eines Objektes (Kollision)
     {
@@ -144,7 +157,7 @@ public class PlayerController : MonoBehaviour
     [UsedImplicitly]
     public void OnMovement(InputAction.CallbackContext context) //Beim Drücken der Move Tasten
     {
-	    movementVector = context.ReadValue<Vector2>(); //Holt Vector2 Daten aus Movement
+	    _movementVector = context.ReadValue<Vector2>(); //Holt Vector2 Daten aus Movement
     }
 
     [UsedImplicitly]
@@ -169,15 +182,15 @@ public class PlayerController : MonoBehaviour
 				    _chargeJump = true;
 				    break;
 			    case InputActionPhase.Canceled:
-				    //Debug.Log("Jump losgelassen, speed:"+_currentJumpCharge*20);
+				    //Debug.Log("Jump losgelassen, speedModifier:"+_currentJumpCharge*20);
 				    _jumpAllowed = false;
 				    _chargeJump = false;
 				    Instantiate(dustCloud, transform.position, dustCloud.transform.rotation);
 				    //Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, selbst, wenn man fällt.
 				    var velocity = _rb.velocity;
 				    _rb.velocity = new Vector3(velocity.x, 0, velocity.z);
-				    _rb.AddForce(new Vector3(0.0f, _currentJumpCharge*20, 0.0f));
-				    _currentJumpCharge = minJumpSpeed;
+				    _rb.AddForce(new Vector3(0.0f, jumpModifier*_currentJumpCharge, 0.0f));
+				    _currentJumpCharge = MINJumpSpeed;
 				    break;
 		    }
 	    }

@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour
             transform.position = player.transform.position + _offset;
             //Field of View
             Vector3 ballVelocity = _playerRigidbody.velocity;
-            //Da ich speed aus der RigidBody info nicht auslesen konnte, habe ich aus der Velocity die Speed berechnet (Vektorbetrag = Länge = Speed)
+            //Da ich speedModifier aus der RigidBody info nicht auslesen konnte, habe ich aus der Velocity die Speed berechnet (Vektorbetrag = Länge = Speed)
             float ballSpeed = Mathf.Sqrt(Mathf.Pow(ballVelocity.x, 2.0f) + Mathf.Pow(ballVelocity.y, 2.0f) +
                                          Mathf.Pow(ballVelocity.z, 2.0f));
             _camera.fieldOfView =

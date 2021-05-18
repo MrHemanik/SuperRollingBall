@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6984015658734831999}
   - component: {fileID: 6984015658734831998}
   m_Layer: 5
-  m_Name: CheckpointScreen
+  m_Name: Popup_CheckpointScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -181,8 +181,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Du hast einen Checkpoint aktiviert!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: edd77e94262b31e4999f9214260b29de, type: 2}
+  m_sharedMaterial: {fileID: -4019629460246925556, guid: edd77e94262b31e4999f9214260b29de,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
