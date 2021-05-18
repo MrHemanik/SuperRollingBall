@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 
 namespace ObjectScripts
@@ -23,16 +21,8 @@ namespace ObjectScripts
                 other.gameObject.GetComponent<PlayerController>().lastCheckPoint = gameObject.transform.position;
                 _particleRing.enabled = false;
                 Instantiate(checkpointPopup, new Vector3(), new Quaternion());
-                Destroy(gameObject.transform.parent.gameObject,1);
+                Destroy(gameObject.transform.parent.gameObject,3);
             }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            /*if (other.gameObject.CompareTag("Player"))
-            {
-                _particleRing.enabled = true;
-            }*/
         }
     }
 }

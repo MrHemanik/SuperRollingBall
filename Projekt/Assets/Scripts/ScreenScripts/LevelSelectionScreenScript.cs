@@ -8,7 +8,11 @@ namespace ScreenScripts
         void Awake()
         {
             GameManager.StartListening("ToggleLevelSelectionScreen", ToggleLevelSelectionScreen);
-            ToggleLevelSelectionScreen();
+            ToggleLevelSelectionScreen("");
+            if (GameManager.GetMaxUnlockedLevel().Equals(99999))
+            {
+                gameObject.transform.Find("NewestLevelButton").gameObject.SetActive(false);
+            }
         }
 
         private void OnDestroy()
@@ -16,7 +20,7 @@ namespace ScreenScripts
             GameManager.StopListening("ToggleLevelSelectionScreen");
         }
 
-        private void ToggleLevelSelectionScreen(string f ="")
+        private void ToggleLevelSelectionScreen(string maxUnlockedLevel)
         {
             gameObject.SetActive(!gameObject.activeSelf);
         }

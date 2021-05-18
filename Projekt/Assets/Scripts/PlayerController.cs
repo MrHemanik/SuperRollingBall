@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using ObjectScripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,47 +42,6 @@ public class PlayerController : MonoBehaviour
         lastCheckPoint = transform.position;
 		_currentJumpCharge = minJumpSpeed;
     }
-
-    public void OnMovement(InputAction.CallbackContext context) //Beim Drücken der Move Tasten
-    {
-	    movementVector = context.ReadValue<Vector2>(); //Holt Vector2 Daten aus Movement
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-	    if (_wallJumpAllowed)
-        {
-	        _jumpAllowed = false; //Damit man sich nicht gegen eine Wand stellen kann, springt und dann noch einmal in der Luft springen kann
-	        Instantiate (dustCloud, transform.position, dustCloud.transform.rotation); //Partikelwolke
-			//Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, egal, wie lange man fällt.
-			var velocity = _rb.velocity;
-			_rb.velocity = new Vector3(velocity.x, 0, velocity.z);
-			//Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
-            _rb.AddForce(new Vector3(-500.0f*_wallJumpDirection.x, 400.0f, -500.0f*_wallJumpDirection.z));
-             
-        }
-        else if (_jumpAllowed)
-	    {
-		    switch (context.phase)
-		    {
-			    case InputActionPhase.Started:
-				    _chargeJump = true;
-				    break;
-			    case InputActionPhase.Canceled:
-				    //Debug.Log("Jump losgelassen, speed:"+_currentJumpCharge*20);
-				    _jumpAllowed = false;
-				    _chargeJump = false;
-				    Instantiate(dustCloud, transform.position, dustCloud.transform.rotation);
-				    //Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, selbst, wenn man fällt.
-				    var velocity = _rb.velocity;
-				    _rb.velocity = new Vector3(velocity.x, 0, velocity.z);
-				    _rb.AddForce(new Vector3(0.0f, _currentJumpCharge*20, 0.0f));
-				    _currentJumpCharge = minJumpSpeed;
-				    break;
-		    }
-	    }
-    }
-
     private void FixedUpdate() //Updated 1-Mal pro Frame
     {
 	    //Jump
@@ -92,7 +52,7 @@ public class PlayerController : MonoBehaviour
 		    else _currentJumpCharge = maxJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
 	    }
 
-		//Movement
+		//Movement 
 		if (movementVector.sqrMagnitude < 0.01) 
 			return;
 		Vector3 movement = new Vector3(movementVector.x, 0.0f,movementVector.y);
@@ -102,6 +62,7 @@ public class PlayerController : MonoBehaviour
         //rb.angularVelocity = new Vector3(0, 0, 0);
     }
 
+    /* Collider und Trigger ------------------------------------------------------------------------------------------*/
     private void OnCollisionEnter(Collision other) //Bei Berührung eines Objektes (Kollision)
     {
         if(other.gameObject.CompareTag("Ground")) //Berührung mit Boden
@@ -159,8 +120,6 @@ public class PlayerController : MonoBehaviour
 			GameManager.TriggerEvent("Victory");
 			Instantiate(confetti, transform.position, dustCloud.transform.rotation);
 		}
-		
-
     }
 
     private void OnTriggerExit(Collider other)
@@ -173,6 +132,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /* Methoden ------------------------------------------------------------------------------------------------------*/
     private void Respawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 	    _rb.GetComponent<SphereCollider>().enabled = true;
 	    transform.position = lastCheckPoint;
@@ -180,4 +140,47 @@ public class PlayerController : MonoBehaviour
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
     }
+    /* Input System Methoden -----------------------------------------------------------------------------------------*/
+    [UsedImplicitly]
+    public void OnMovement(InputAction.CallbackContext context) //Beim Drücken der Move Tasten
+    {
+	    movementVector = context.ReadValue<Vector2>(); //Holt Vector2 Daten aus Movement
+    }
+
+    [UsedImplicitly]
+    public void OnJump(InputAction.CallbackContext context)
+    {
+	    if (_wallJumpAllowed)
+	    {
+		    _jumpAllowed = false; //Damit man sich nicht gegen eine Wand stellen kann, springt und dann noch einmal in der Luft springen kann
+		    Instantiate (dustCloud, transform.position, dustCloud.transform.rotation); //Partikelwolke
+		    //Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, egal, wie lange man fällt.
+		    var velocity = _rb.velocity;
+		    _rb.velocity = new Vector3(velocity.x, 0, velocity.z);
+		    //Fügt in die umgedrehte Wandrichtigung Force hinzu (+ Force nach oben);
+		    _rb.AddForce(new Vector3(-500.0f*_wallJumpDirection.x, 400.0f, -500.0f*_wallJumpDirection.z));
+             
+	    }
+	    else if (_jumpAllowed)
+	    {
+		    switch (context.phase)
+		    {
+			    case InputActionPhase.Started:
+				    _chargeJump = true;
+				    break;
+			    case InputActionPhase.Canceled:
+				    //Debug.Log("Jump losgelassen, speed:"+_currentJumpCharge*20);
+				    _jumpAllowed = false;
+				    _chargeJump = false;
+				    Instantiate(dustCloud, transform.position, dustCloud.transform.rotation);
+				    //Entfernt die Fallkraft, damit jeder Sprung gleichhoch ist, selbst, wenn man fällt.
+				    var velocity = _rb.velocity;
+				    _rb.velocity = new Vector3(velocity.x, 0, velocity.z);
+				    _rb.AddForce(new Vector3(0.0f, _currentJumpCharge*20, 0.0f));
+				    _currentJumpCharge = minJumpSpeed;
+				    break;
+		    }
+	    }
+    }
+
 }

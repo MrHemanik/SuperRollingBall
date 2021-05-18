@@ -17,10 +17,16 @@ namespace ScreenScripts
         {
             GameManager.TriggerEvent("LoadNextLevel");
         }
+
+        public void OnHighestLevelButtonPressed()
+        {
+            GameManager.TriggerEvent("LoadHighestLevel");
+        }
         public void OnPlayLevelAgainButtonPressed()
         {
             GameManager.TriggerEvent("ReloadLevel");
         }
+        
         public void OnMainMenuButtonPressed()
         {
             GameManager.TriggerEvent("LoadScene", "StartScene");

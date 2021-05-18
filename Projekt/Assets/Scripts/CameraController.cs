@@ -1,4 +1,4 @@
-using System;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
@@ -72,13 +72,11 @@ public class CameraController : MonoBehaviour
     {
         // Reminder: Die Animation muss im Animator hinzugefügt und die transition gesetzt sein!
         gameObject.GetComponent<Animator>().SetInteger(Animator.StringToHash("Level"),int.Parse(input));
-        Debug.Log(input);
         foreach (AnimationClip a in GetComponent<Animator>().runtimeAnimatorController.animationClips)
         {
             if (a.name == input)
             {
                 _cutSceneDuration = a.length;
-                Debug.Log(_cutSceneDuration);
                 return;
             }
         }
@@ -95,7 +93,8 @@ public class CameraController : MonoBehaviour
     }
 
     // Input Methoden
-    void OnZoom(InputValue movementValue)
+    [UsedImplicitly]
+    private void OnZoom(InputValue movementValue)
     {
         Vector2 zoomVector = movementValue.Get<Vector2>();
         if (zoomVector.y < 0)

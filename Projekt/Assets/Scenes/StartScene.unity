@@ -319,7 +319,7 @@ PrefabInstance:
     - target: {fileID: 4913134223586091346, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_Name
-      value: Start
+      value: NewestLevelButton
       objectReference: {fileID: 0}
     - target: {fileID: 4913134223586091346, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
