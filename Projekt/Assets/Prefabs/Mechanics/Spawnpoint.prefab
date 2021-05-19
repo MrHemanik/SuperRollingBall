@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 8268626486317912679}
   - component: {fileID: 7702253325226425254}
   - component: {fileID: 7842361303612871803}
-  - component: {fileID: 3535346793555226129}
+  - component: {fileID: 7748409724380227334}
   m_Layer: 0
   m_Name: SpawnpointTrigger
   m_TagString: Untagged
@@ -345,7 +345,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &3535346793555226129
+--- !u!114 &7748409724380227334
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -354,8 +354,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 7447631038307369635}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e02f4af5944cd74c9aff58493f60df7, type: 3}
+  m_Script: {fileID: 11500000, guid: 5543acc7468743d4b849c41829aff188, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  checkpointPopup: {fileID: 6984015658734831992, guid: 8a7aba6f979da304093da99982d3e10f,
+  missionPopup: {fileID: 4489846743062864800, guid: bd17ad27a89995a4298c3fb9432c99cf,
     type: 3}
