@@ -10,8 +10,8 @@ namespace ScreenScripts
         {
             Time.timeScale = 1;
             GameManager.TriggerEvent("CloseDeathScreen");
-            GameManager.TriggerEvent("CloseVictoryScreen");
-            GameManager.TriggerEvent("Respawn");
+            //GameManager.TriggerEvent("CloseVictoryScreen");
+            GameManager.TriggerEvent("BallRespawn");
         }
         public void OnNextLevelButtonPressed()
         {

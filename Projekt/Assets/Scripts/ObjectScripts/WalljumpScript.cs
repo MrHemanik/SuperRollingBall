@@ -12,7 +12,7 @@ namespace ObjectScripts
             if (other.gameObject.CompareTag("Player"))
             {
                 Instantiate(walljumpPopup, new Vector3(), new Quaternion());
-                Destroy(gameObject,1);
+                Destroy(gameObject);
             }
         }
     }

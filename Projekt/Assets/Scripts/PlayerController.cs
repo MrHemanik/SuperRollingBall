@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
     private bool _chargeJump;
     private bool _wallJumpAllowed;
     private Vector3 _wallJumpDirection; //Richtung, in der die Wand liegt - von der man weggeschleudert wird
-    private float standard_mass;
-    private float standard_drag;
+    private float _standardMass;
+    private float _standardDrag;
     
     
 
@@ -34,15 +34,20 @@ public class PlayerController : MonoBehaviour
     /*Prefabs*/
     public GameObject dustCloud;
     public GameObject confetti;
+    public GameObject damageTakenScreenPrefab;
 
     private void Awake()
     {
 	    transform.position = GameObject.Find("SpawnpointTrigger").GetComponent<SpawnpointScript>().transform.position;
-	    GameManager.StartListening("Respawn", Respawn);
+	    GameManager.StartListening("BallRespawn", BallRespawn);
+	    GameManager.StartListening("ResizeCore", ResizeCore);
+	    GameManager.StartListening("BallDeath", BallDeath);
     }
     private void OnDestroy()
     {
-	    GameManager.StopListening("Respawn");
+	    GameManager.StopListening("BallRespawn");
+	    GameManager.StopListening("ResizeCore");
+	    GameManager.StopListening("BallDeath");
     }
 
     private void Start()
@@ -51,8 +56,8 @@ public class PlayerController : MonoBehaviour
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
         lastCheckPoint = transform.position;
 		_currentJumpCharge = MINJumpSpeed;
-		standard_drag = _rb.drag;
-		standard_mass = _rb.mass;
+		_standardDrag = _rb.drag;
+		_standardMass = _rb.mass;
     }
     private void FixedUpdate() //Updated 1-Mal pro Frame
     {
@@ -121,7 +126,11 @@ public class PlayerController : MonoBehaviour
 	        //Im wasser ist man langsam, aber springt höher
 	        _rb.drag = 4;
 	        _rb.mass = 1;
-        }else if(other.gameObject.CompareTag("Coin"))
+        }else if(other.gameObject.CompareTag("Spike"))
+        {
+	        Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion());
+	        GameManager.TriggerEvent("DamageTaken");
+		}else if(other.gameObject.CompareTag("Coin"))
         {
 	        other.gameObject.SetActive(false);
 			GameManager.TriggerEvent("CoinCollected");
@@ -132,12 +141,7 @@ public class PlayerController : MonoBehaviour
 
         }else if(other.gameObject.CompareTag("Death"))
         {
-	        if (!_rb.isKinematic) //Beugt doppelten "death" trigger vor
-	        {
-		        _rb.GetComponent<SphereCollider>().enabled = false;
-		        _rb.isKinematic = true;
-		        GameManager.TriggerEvent("Death");
-	        }
+	        BallDeath();
         }
 		if(other.gameObject.CompareTag("Goal"))
 		{
@@ -157,18 +161,35 @@ public class PlayerController : MonoBehaviour
             transform.parent.SetParent(null);
         }else if(other.gameObject.CompareTag("Water"))
         {
-	        _rb.drag = standard_drag;
-	        _rb.mass = standard_mass;
+	        _rb.drag = _standardDrag;
+	        _rb.mass = _standardMass;
         }
     }
 
-    /* Methoden ------------------------------------------------------------------------------------------------------*/
-    private void Respawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
+    /* Event Methoden ------------------------------------------------------------------------------------------------*/
+    private void BallRespawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 	    _rb.GetComponent<SphereCollider>().enabled = true;
 	    transform.position = lastCheckPoint;
 	    _rb.isKinematic = false;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
+		ResizeCore("1");
+    }
+
+    private void ResizeCore(string size)
+    {
+	    float newSize = float.Parse(size);
+	    Debug.Log(newSize);
+	    transform.GetChild(0).localScale = new Vector3(newSize, newSize, newSize);
+    }
+    private void BallDeath(string s ="")
+    {
+	    if (!_rb.isKinematic) //Beugt doppelten "death" trigger vor
+	    {
+		    _rb.GetComponent<SphereCollider>().enabled = false;
+		    _rb.isKinematic = true;
+		    GameManager.TriggerEvent("Death");
+	    }
     }
     /* Input System Methoden -----------------------------------------------------------------------------------------*/
     [UsedImplicitly]

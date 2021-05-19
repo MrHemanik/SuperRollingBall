@@ -123,14 +123,19 @@ public class GameManager : MonoBehaviour
     private static readonly string[] SkyboxColor = {"BFFFFD", "A995A5", "FFFFFF"}; //Jedes level hat auch eine Skybox
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
     private static int _maxLivePoints = 3;
+    private static int _maxHitPoints = 3;
     private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
     private static float[] _timeHighscore = new float[LevelList.Length];//new Time[_levelList.Length];
     /* Lokal */
     private int _curLevel; //Der index für das Level aus LevelList
     private int _collectedCoinsInLevel;
     private int _coinCountInLevel;
-    private int _livePoints;
     private float _levelStartTime;
+    private int _livePoints;
+    public int _hitPoints;
+    public bool _isInvincible = false;
+    
+    
 
 
     private void Awake()
@@ -140,6 +145,8 @@ public class GameManager : MonoBehaviour
         StartListening("HeartCollected", HeartCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
+        StartListening("DamageTaken", DamageTaken);
+        StartListening("MakeVincible", MakeVincible);
         StartListening("LevelTimerStart", StartLevelTimer);
         StartListening("FetchDisplayData", UpdateHud);
         StartListening("FetchMainMenuData", UpdateMainMenu);
@@ -209,6 +216,7 @@ public class GameManager : MonoBehaviour
     private void Death(string s) // Wird beim Tod ausgelöst (Runterfallen oder keine Hitpoints mehr
     {
         _livePoints--;
+        _hitPoints = _maxHitPoints; //Wird visuell beim Respawnknopf aktualisiert
         if (_livePoints <= 0)
         {
             LoadScene("GameOverScene");
@@ -226,10 +234,28 @@ public class GameManager : MonoBehaviour
         UnlockNextLevel();
     }
     
+
+    private void DamageTaken(string s) //Beim Trigger mit Damage Objekt
+    {
+        if (!_isInvincible)
+        {
+            _isInvincible = true;
+            TimerManagerScript.StartTimer("MakeVincible", 2f); //Wird so gelöst anstelle des EffectSystems, da das nicht als Effect aufgelistet werden soll
+            ChangeHitPoints(_hitPoints-1);
+
+        }
+    }
+    //Callback Methoden
     private void StartLevelTimer(string s) //Wird ausgeführt nachdem die Startkamerafahrt des Levels fertig ist
     {
         _levelStartTime = Time.time;
     }
+
+    private void MakeVincible(string s)
+    {
+        _isInvincible = false;
+    }
+    //Start of Scene Methoden
     private void UpdateHud(string s) //Beim ersten Laden des Huds werden die Daten geholt
     {
         _coinCountInLevel=GameObject.Find("AllCoins").gameObject.transform.childCount; //Muss nur beim Start eines neuen Levels geupdated werden
@@ -242,7 +268,14 @@ public class GameManager : MonoBehaviour
         //Gibt dem Hauptmenü die Informationen über die gesammelten Münzen insgesamt
         TriggerEvent("UpdateCollectedCoinsTotal",_collectedCoinsTotal.ToString());
     }
-    
+    private void GiveCurrentLevelInfo(string s)
+    {
+        //Zum Start des Levels wird die Skybox angepasst und die Startanimation angespielt
+        //TODO: zu Gettern umwandeln, da das verkomplizierte Events sind, also GameManager.GetCurLevel und GetSkybox in Camera
+        TriggerEvent("StartCameraAnimation",LevelList[_curLevel].ToString());
+        TriggerEvent("SkyboxColor",SkyboxColor[_curLevel]);
+    }
+    //SceneManagement
     private void LoadScene(string sceneName) //Lädt eine Scene
     {
         Debug.Log("Scene wird geladen: "+sceneName);
@@ -268,13 +301,6 @@ public class GameManager : MonoBehaviour
         }
         Reset(); //setzt die lokalen Variablen zurück
     }
-    private void GiveCurrentLevelInfo(string s)
-    {
-        //Zum Start des Levels wird die Skybox angepasst und die Startanimation angespielt
-        //TODO: zu Gettern umwandeln, da das verkomplizierte Events sind, also GameManager.GetCurLevel und GetSkybox in Camera
-        TriggerEvent("StartCameraAnimation",LevelList[_curLevel].ToString());
-        TriggerEvent("SkyboxColor",SkyboxColor[_curLevel]);
-    }
 
     private void LoadNextLevel(string s)
     {
@@ -298,6 +324,7 @@ public class GameManager : MonoBehaviour
     {
         
         _livePoints = _maxLivePoints;
+        _hitPoints = _maxHitPoints;
         _collectedCoinsInLevel = 0;
         _coinCountInLevel = 0;
     }
@@ -324,6 +351,13 @@ public class GameManager : MonoBehaviour
             _maxUnlockedLevel = _curLevel + 1;
             Debug.Log("Neues Level freigeschalten");
         }
+    }
+
+    private void ChangeHitPoints(int newHitpoints)
+    {
+        _hitPoints = newHitpoints;
+        TriggerEvent("ResizeCore", Math.Sqrt(1.0*_hitPoints / _maxHitPoints).ToString("0.00")); //Neue Coregröße
+        if(_hitPoints <= 0) TriggerEvent("BallDeath"); //Ruft BallDeath in PlayerCon auf, welcher Death hier auslöst
     }
     /* Input System Methoden -----------------------------------------------------------------------------------------*/
     [UsedImplicitly]
