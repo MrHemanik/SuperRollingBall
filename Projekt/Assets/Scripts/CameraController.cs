@@ -1,4 +1,3 @@
-using System.Timers;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,9 +20,6 @@ public class CameraController : MonoBehaviour
         GameManager.StartListening("StartCameraAnimation", SetAnimation);
         GameManager.StartListening("EndCameraAnimation", CutSceneEnd);
         GameManager.StartListening("SkyboxColor", SetSkyboxColor);
-        _camera = GetComponent<Camera>();
-        GameManager.TriggerEvent("FetchCurrentLevel"); //Aktiviert SetAnimation mit CurLevel & SetSkyboxColor mit Skybox[CurLevel]
-        
     }
     private void OnDestroy()
     {
@@ -34,10 +30,12 @@ public class CameraController : MonoBehaviour
     
     private void Start()
     {
+        _camera = GetComponent<Camera>();
         _offset = new Vector3(0.0f, currentZoom, -currentZoom);
         _playerRigidbody = player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
         _playerInput = GetComponent<PlayerInput>();
+        GameManager.TriggerEvent("FetchCurrentLevel"); //Aktiviert SetAnimation mit CurLevel & SetSkyboxColor mit Skybox[CurLevel]
     }
     
     private void LateUpdate() //LateUpdate für Updates die was anzeigen sollen, da die als letztes berechnet werden
@@ -56,7 +54,8 @@ public class CameraController : MonoBehaviour
     }
     
     
-    //Event Methoden
+    
+    /* Event Methoden ------------------------------------------------------------------------------------------------*/
     private void SetAnimation(string input)
     {
         // Reminder: Die Animation muss im Animator hinzugefügt und die transition gesetzt sein!
@@ -77,14 +76,7 @@ public class CameraController : MonoBehaviour
         Animation(false);
         GameManager.TriggerEvent("LevelTimerStart");
     }
-
-    private void Animation(bool active)
-    {
-        //Werte, die beim Start/Ende der Animation geändert werden müssen
-        _cutScene = active;
-        _playerRigidbody.isKinematic = active;
-        _playerInput.enabled = !active;
-    }
+    
     private void SetSkyboxColor(string color)
     {
         //Rechnet den Hexadeximal-Farbenwert zum Objekt Color um
@@ -95,7 +87,15 @@ public class CameraController : MonoBehaviour
             );
     }
 
-    // Input Methoden
+    /* Methoden ------------------------------------------------------------------------------------------------------*/
+    private void Animation(bool active)
+    {
+        //Werte, die beim Start/Ende der Animation geändert werden müssen
+        _cutScene = active;
+        _playerRigidbody.isKinematic = active;
+        _playerInput.enabled = !active;
+    }
+    /* Input Methoden -------------------------------------------------------------------------------------------------*/
     [UsedImplicitly]
     private void OnZoom(InputValue movementValue)
     {
