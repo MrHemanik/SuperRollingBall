@@ -271,6 +271,7 @@ public class GameManager : MonoBehaviour
     private void GiveCurrentLevelInfo(string s)
     {
         //Zum Start des Levels wird die Skybox angepasst und die Startanimation angespielt
+        //TODO: zu Gettern umwandeln, da das verkomplizierte Events sind, also GameManager.GetCurLevel und GetSkybox in Camera
         TriggerEvent("StartCameraAnimation",LevelList[_curLevel].ToString());
         TriggerEvent("SkyboxColor",SkyboxColor[_curLevel]);
     }

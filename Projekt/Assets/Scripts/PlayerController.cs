@@ -11,8 +11,8 @@ public class PlayerController : MonoBehaviour
     public float jumpModifier = 1;
     private Vector2 _movementVector;
     private const float Speed = 20; //Geschwindigkeit, die jede DeltaTime hinzugefügt wird
-    private const float MINJumpSpeed = 400; //Geschwindigkeit, die nur 1-Mal hinzugefügt wird
-    private const float MAXJumpSpeed = 800;
+    private const float MINJumpSpeed = 300; //Geschwindigkeit, die nur 1-Mal hinzugefügt wird
+    private const float MAXJumpSpeed = 600;
     private const float TimeTilMaxJump = 2.0f; //Sekunden, bis der volle Sprung ausgeführt wird
     private float _currentJumpCharge;
     private bool _jumpAllowed; // Gibt an, ob ein Sprung erlaubt ist (Bodenberührung)

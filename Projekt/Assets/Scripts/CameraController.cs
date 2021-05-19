@@ -1,3 +1,4 @@
+using System.Timers;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,14 +19,16 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         GameManager.StartListening("StartCameraAnimation", SetAnimation);
+        GameManager.StartListening("EndCameraAnimation", CutSceneEnd);
         GameManager.StartListening("SkyboxColor", SetSkyboxColor);
         _camera = GetComponent<Camera>();
-        GameManager.TriggerEvent("FetchCurrentLevel");
+        GameManager.TriggerEvent("FetchCurrentLevel"); //Aktiviert SetAnimation mit CurLevel & SetSkyboxColor mit Skybox[CurLevel]
         
     }
     private void OnDestroy()
     {
         GameManager.StopListening("StartCameraAnimation");
+        GameManager.StopListening("EndCameraAnimation");
         GameManager.StopListening("SkyboxColor");
     }
     
@@ -35,37 +38,23 @@ public class CameraController : MonoBehaviour
         _playerRigidbody = player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
         _playerInput = GetComponent<PlayerInput>();
-        _playerInput.enabled = false;
     }
     
     private void LateUpdate() //LateUpdate für Updates die was anzeigen sollen, da die als letztes berechnet werden
     {
-        if (_cutScene)
-        {
-            //Kameramovement - wird von Animation geregelt
-            _cutSceneDuration -= Time.deltaTime;
-            if (_cutSceneDuration < 0)
-            {
-                //Wird alles nur 1-Mal ausgeführt
-                _cutScene = false;
-                _playerRigidbody.isKinematic = false;
-                _playerInput.enabled = true;
-                GameManager.TriggerEvent("LevelTimerStart");
-            }
-        }
-        else
+        if (!_cutScene)
         {
             //Position der Kamera
             transform.position = player.transform.position + _offset;
             //Field of View
             Vector3 ballVelocity = _playerRigidbody.velocity;
-            //Da ich speedModifier aus der RigidBody info nicht auslesen konnte, habe ich aus der Velocity die Speed berechnet (Vektorbetrag = Länge = Speed)
+            //Da ich speed aus der RigidBody info nicht auslesen konnte, habe ich aus der Velocity die Speed berechnet (Vektorbetrag = Länge = Speed)
             float ballSpeed = Mathf.Sqrt(Mathf.Pow(ballVelocity.x, 2.0f) + Mathf.Pow(ballVelocity.y, 2.0f) +
                                          Mathf.Pow(ballVelocity.z, 2.0f));
-            _camera.fieldOfView =
-                defaultFOV + ballSpeed / 2;
+            _camera.fieldOfView = defaultFOV + ballSpeed / 2;
         }
     }
+    
     
     //Event Methoden
     private void SetAnimation(string input)
@@ -76,12 +65,26 @@ public class CameraController : MonoBehaviour
         {
             if (a.name == input)
             {
+                Animation(true);
                 _cutSceneDuration = a.length;
+                TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
                 return;
             }
         }
     }
+    private void CutSceneEnd(string s)
+    {
+        Animation(false);
+        GameManager.TriggerEvent("LevelTimerStart");
+    }
 
+    private void Animation(bool active)
+    {
+        //Werte, die beim Start/Ende der Animation geändert werden müssen
+        _cutScene = active;
+        _playerRigidbody.isKinematic = active;
+        _playerInput.enabled = !active;
+    }
     private void SetSkyboxColor(string color)
     {
         //Rechnet den Hexadeximal-Farbenwert zum Objekt Color um
