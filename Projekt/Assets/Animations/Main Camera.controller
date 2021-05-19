@@ -90,7 +90,7 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -163,9 +163,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40c2b70ca3c6cd34c9611f678682c540, type: 3}
+  m_Script: {fileID: 11500000, guid: 8e02f4af5944cd74c9aff58493f60df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  checkpointPopup: {fileID: 0}
 --- !u!1107 &7788799812846990105
 AnimatorStateMachine:
   serializedVersion: 6
