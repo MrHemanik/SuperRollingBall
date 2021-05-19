@@ -14,11 +14,17 @@ public class PlayerController : MonoBehaviour
     private const float MINJumpSpeed = 300; //Geschwindigkeit, die nur 1-Mal hinzugefügt wird
     private const float MAXJumpSpeed = 600;
     private const float TimeTilMaxJump = 2.0f; //Sekunden, bis der volle Sprung ausgeführt wird
+    
+    
     private float _currentJumpCharge;
     private bool _jumpAllowed; // Gibt an, ob ein Sprung erlaubt ist (Bodenberührung)
     private bool _chargeJump;
     private bool _wallJumpAllowed;
     private Vector3 _wallJumpDirection; //Richtung, in der die Wand liegt - von der man weggeschleudert wird
+    private float standard_mass;
+    private float standard_drag;
+    
+    
 
     /* General */
     
@@ -45,6 +51,8 @@ public class PlayerController : MonoBehaviour
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
         lastCheckPoint = transform.position;
 		_currentJumpCharge = MINJumpSpeed;
+		standard_drag = _rb.drag;
+		standard_mass = _rb.mass;
     }
     private void FixedUpdate() //Updated 1-Mal pro Frame
     {
@@ -108,6 +116,11 @@ public class PlayerController : MonoBehaviour
             //Wird mit der Moving Plattform mitbewegt (Moving Plattform muss Scale (1,1,1) haben!
             //Debug.Log("Trigger");
             transform.parent.parent = other.transform;
+        }else if(other.gameObject.CompareTag("Water"))
+        {
+	        //Im wasser ist man langsam, aber springt höher
+	        _rb.drag = 4;
+	        _rb.mass = 1;
         }else if(other.gameObject.CompareTag("Coin"))
         {
 	        other.gameObject.SetActive(false);
@@ -142,6 +155,10 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("Release");
             //Player wird von der Plattform gelöst
             transform.parent.SetParent(null);
+        }else if(other.gameObject.CompareTag("Water"))
+        {
+	        _rb.drag = standard_drag;
+	        _rb.mass = standard_mass;
         }
     }
 

@@ -12,6 +12,7 @@ TagManager:
   - Coin
   - Bounce
   - Heart
+  - Water
   layers:
   - Default
   - TransparentFX
