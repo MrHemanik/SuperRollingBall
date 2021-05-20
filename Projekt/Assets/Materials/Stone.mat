@@ -7,11 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GlowingBullet
-  m_Shader: {fileID: -6465566751694194690, guid: 5de054d9ab7b55e4aa3aef3d51ab47de,
+  m_Name: Stone
+  m_Shader: {fileID: -6465566751694194690, guid: 29a05cd613a812e4f93107e48487bfc9,
     type: 3}
   m_ShaderKeywords: 
-  m_LightmapFlags: 2
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -32,8 +32,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Floats: []
+    m_Floats:
+    - Vector1_4144d00fb1a44aadbd56986b939035d6: 5
+    - Vector1_da0594df962c42c18634ca3538cf1ee2: 2
     m_Colors:
-    - Color_00f3e7f600d74d10a2c63bb2ed426e30: {r: 47.937256, g: 0, b: 0, a: 1}
-    - Color_bc76e99e9d5b4bb5a8b02270e62d9e32: {r: 0.5019608, g: 0, b: 0, a: 0}
+    - Color_3164437525314523b88261384b3c91d8: {r: 0.0872549, g: 0.0872549, b: 0.0872549,
+        a: 1}
+    - Color_cb8e9980f8ac4fbd8aaaa1c0e72d9e9e: {r: 0.03921569, g: 0.03921569, b: 0.03921569,
+        a: 1}
   m_BuildTextureStacks: []

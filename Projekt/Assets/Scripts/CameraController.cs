@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder;
+
 public class CameraController : MonoBehaviour
 {
     public GameObject player;
@@ -12,6 +14,9 @@ public class CameraController : MonoBehaviour
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
     private PlayerInput _playerInput;
+    private Animator _animator;
+    //private string[] _cameraModeList ={"Normal","TopDown"};
+    private int _cameraMode;
 
     private Camera _camera;
     // Start is called before the first frame update
@@ -20,12 +25,16 @@ public class CameraController : MonoBehaviour
         GameManager.StartListening("StartCameraAnimation", SetAnimation);
         GameManager.StartListening("EndCameraAnimation", CutSceneEnd);
         GameManager.StartListening("SkyboxColor", SetSkyboxColor);
+        GameManager.StartListening("CameraModeNormal", NormalCameraMode);
+        GameManager.StartListening("CameraModeTopDown", TopDownCameraMode);
     }
     private void OnDestroy()
     {
         GameManager.StopListening("StartCameraAnimation");
         GameManager.StopListening("EndCameraAnimation");
         GameManager.StopListening("SkyboxColor");
+        GameManager.StopListening("CameraModeNormal");
+        GameManager.StopListening("CameraModeTopDown");
     }
     
     private void Start()
@@ -35,6 +44,7 @@ public class CameraController : MonoBehaviour
         _playerRigidbody = player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
         _playerInput = GetComponent<PlayerInput>();
+        _animator = gameObject.transform.parent.GetComponent<Animator>();
         GameManager.TriggerEvent("FetchCurrentLevel"); //Aktiviert SetAnimation mit CurLevel & SetSkyboxColor mit Skybox[CurLevel]
     }
     
@@ -52,20 +62,39 @@ public class CameraController : MonoBehaviour
             _camera.fieldOfView = defaultFOV + ballSpeed / 2;
         }
     }
-    
+
+    private void NormalCameraMode(string f)
+    {
+        _cameraMode = 0;
+        _offset = new Vector3(0.0f, currentZoom, -currentZoom);
+        gameObject.transform.rotation = Quaternion.Euler(45,0,0);
+        Debug.Log("CameraMode:Normal");
+        
+    }
+
+    private void TopDownCameraMode(string f)
+    {
+
+        _cameraMode = 1;
+        _offset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
+        gameObject.transform.rotation = Quaternion.Euler(90,0,0);
+        Debug.Log("CameraMode:TopDown");
+        
+    }
     
     
     /* Event Methoden ------------------------------------------------------------------------------------------------*/
     private void SetAnimation(string input)
     {
         // Reminder: Die Animation muss im Animator hinzugefügt und die transition gesetzt sein!
-        gameObject.GetComponent<Animator>().SetInteger(Animator.StringToHash("Level"),int.Parse(input));
-        foreach (AnimationClip a in GetComponent<Animator>().runtimeAnimatorController.animationClips)
+        _animator.SetInteger(Animator.StringToHash("Level"),int.Parse(input));
+        foreach (AnimationClip a in _animator.runtimeAnimatorController.animationClips)
         {
             if (a.name == input)
             {
                 Animation(true);
                 _cutSceneDuration = a.length;
+                Debug.Log("Cutscene Duration:"+_cutSceneDuration);
                 TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
                 return;
             }
@@ -79,6 +108,7 @@ public class CameraController : MonoBehaviour
     
     private void SetSkyboxColor(string color)
     {
+        Debug.Log("Skybox-Farbe wird geladen: "+color);
         //Rechnet den Hexadeximal-Farbenwert zum Objekt Color um
         _camera.backgroundColor = new Color32(
             System.Convert.ToByte(color.Substring(0, 2),16),
@@ -117,7 +147,8 @@ public class CameraController : MonoBehaviour
             }
         }
         //Neuberechnung des Offsets
-        _offset = new Vector3(0.0f, currentZoom, -currentZoom);
+        if(_cameraMode == 0) _offset = new Vector3(0.0f, currentZoom, -currentZoom);
+        else if (_cameraMode == 1) _offset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
         //Debug.Log(player.transform.position);
     }
 }

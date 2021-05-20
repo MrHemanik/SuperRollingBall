@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviour
     }
     
     private static readonly int[] LevelList = {1001, 1002, 1003, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
-    private static readonly string[] SkyboxColor = {"BFFFFD", "A995A5","BFFFFD", "FFFFFF"}; //Jedes level hat auch eine Skybox
+    private static readonly string[] SkyboxColor = {"BFFFFD", "A995A5","000000", "FFFFFF"}; //Jedes level hat auch eine Skybox
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
     private static int _maxLivePoints = 3;
     private static int _maxHitPoints = 3;
