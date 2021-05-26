@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+	#region Variables
 	/* Movement */
 	
     public float speedModifier = 1;
@@ -35,7 +36,9 @@ public class PlayerController : MonoBehaviour
     public GameObject dustCloud;
     public GameObject confetti;
     public GameObject damageTakenScreenPrefab;
-
+	#endregion
+	/* Standard Methoden ---------------------------------------------------------------------------------------------*/
+	#region StandardMethods
     private void Awake()
     {
 	    transform.position = GameObject.Find("SpawnpointTrigger").GetComponent<SpawnpointScript>().transform.position;
@@ -78,8 +81,9 @@ public class PlayerController : MonoBehaviour
         //rb.velocity = new Vector3(0, 0, 0);
         //rb.angularVelocity = new Vector3(0, 0, 0);
     }
-
+	#endregion
     /* Getter und Setter ---------------------------------------------------------------------------------------------*/
+    #region GetterSetter
     public void MultiplyJumpModifier(float modifier)
     {
 	    jumpModifier *= modifier;
@@ -88,7 +92,9 @@ public class PlayerController : MonoBehaviour
     {
 	    speedModifier *= modifier;
     }
+    #endregion
     /* Collider und Trigger ------------------------------------------------------------------------------------------*/
+    #region Collider&Trigger
     private void OnCollisionEnter(Collision other) //Bei Berührung eines Objektes (Kollision)
     {
         if(other.gameObject.CompareTag("Ground")) //Berührung mit Boden
@@ -165,14 +171,18 @@ public class PlayerController : MonoBehaviour
 	        _rb.mass = _standardMass;
         }
     }
-
+	#endregion
     /* Event Methoden ------------------------------------------------------------------------------------------------*/
+    #region EventMethods
     private void BallRespawn(string s){ //Trigger der durch den Wiederbeleben Knopf getriggered wird.
 	    _rb.GetComponent<SphereCollider>().enabled = true;
 	    transform.position = lastCheckPoint;
 	    _rb.isKinematic = false;
 		_rb.velocity = new Vector3(0, 0, 0);
 		_rb.angularVelocity = new Vector3(0, 0, 0);
+		_rb.drag = _standardDrag;
+		_rb.mass = _standardMass;
+		transform.parent.SetParent(null);
 		ResizeCore("1");
     }
 
@@ -191,7 +201,9 @@ public class PlayerController : MonoBehaviour
 		    GameManager.TriggerEvent("Death");
 	    }
     }
+    #endregion
     /* Input System Methoden -----------------------------------------------------------------------------------------*/
+    #region InputSystem
     [UsedImplicitly]
     public void OnMovement(InputAction.CallbackContext context) //Beim Drücken der Move Tasten
     {
@@ -233,5 +245,6 @@ public class PlayerController : MonoBehaviour
 		    }
 	    }
     }
+    #endregion
 
 }
