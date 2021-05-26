@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour
     public int currentZoom = 8; //Startwert 8;
     public int defaultFOV = 60;
     private bool _cutScene = true;
+    private bool _levelStartCutScene = true;
     private float _cutSceneDuration = 100.0f; // Wird in SetAnimation auf die richtige Zeit gesetzt
     private Vector3 _offset;
     private Rigidbody _playerRigidbody;
@@ -17,8 +18,10 @@ public class CameraController : MonoBehaviour
     private Animator _animator;
     //private string[] _cameraModeList ={"Normal","TopDown"};
     private int _cameraMode;
-
     private Camera _camera;
+
+    
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -27,6 +30,7 @@ public class CameraController : MonoBehaviour
         GameManager.StartListening("SkyboxColor", SetSkyboxColor);
         GameManager.StartListening("CameraModeNormal", NormalCameraMode);
         GameManager.StartListening("CameraModeTopDown", TopDownCameraMode);
+        GameManager.StartListening("Puzzle1Solved", StartPuzzle1SolvedCameraAnimation);
     }
     private void OnDestroy()
     {
@@ -35,6 +39,7 @@ public class CameraController : MonoBehaviour
         GameManager.StopListening("SkyboxColor");
         GameManager.StopListening("CameraModeNormal");
         GameManager.StopListening("CameraModeTopDown");
+        GameManager.StopListening("Puzzle1Solved");
     }
     
     private void Start()
@@ -103,7 +108,11 @@ public class CameraController : MonoBehaviour
     private void CutSceneEnd(string s)
     {
         Animation(false);
-        GameManager.TriggerEvent("LevelTimerStart");
+        if (_levelStartCutScene)
+        {
+            GameManager.TriggerEvent("LevelTimerStart");
+            _levelStartCutScene = false;
+        }
     }
     
     private void SetSkyboxColor(string color)
@@ -115,6 +124,17 @@ public class CameraController : MonoBehaviour
             System.Convert.ToByte(color.Substring(2, 2),16),
             System.Convert.ToByte(color.Substring(4, 2),16),1
             );
+    }
+
+    private void StartPuzzle1SolvedCameraAnimation(string s)
+    {
+        Animation(true);
+        var tf = transform;
+        _animator.SetTrigger(Animator.StringToHash("Puzzle1Solved"));
+        tf.position = tf.parent.position;
+        tf.rotation = tf.parent.rotation;
+        _cutSceneDuration = 1.35f;
+        TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
     }
 
     /* Methoden ------------------------------------------------------------------------------------------------------*/
