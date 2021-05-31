@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour
     
     private static readonly int[] LevelList = {1001, 1002, 1003, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
     private static readonly string[] SkyboxColor = {"BFFFFD", "A995A5","000000", "FFFFFF"}; //Jedes level hat auch eine Skybox
-    private static readonly string[] PermaUpgradeList = {"Live","Live"};
+    private static readonly string[] PermaUpgradeList = {"Live","Live","Hit"};
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
     private static int _maxLivePoints = 3;
     private static int _maxHitPoints = 3;
@@ -373,7 +373,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void ChangeHitPoints(int newHitpoints)
+    private static void ChangeHitPoints(int newHitpoints)
     {
         _hitPoints = newHitpoints;
         TriggerEvent("ResizeCore", Math.Sqrt(1.0*_hitPoints / _maxHitPoints).ToString("0.00")); //Neue Coregröße
@@ -406,7 +406,7 @@ public class GameManager : MonoBehaviour
                     break;
                 case "Hit":
                     _maxHitPoints++;
-                    _hitPoints = _maxHitPoints; //Wird vollgeheilt
+                    ChangeHitPoints(_maxHitPoints); //Wird vollgeheilt
                     break; 
             }
     }
