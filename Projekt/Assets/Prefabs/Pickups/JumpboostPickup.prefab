@@ -1450,6 +1450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86736d777c240af45ad20935c912c2d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statusEffect: JumpBoost
   duration: 10
   multiplier: 1.25
+  statusPrefab: {fileID: 5692974636813851940, guid: 6b61e5db44714dc4b8d589782ec08620,
+    type: 3}

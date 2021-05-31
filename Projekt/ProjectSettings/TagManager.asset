@@ -18,6 +18,8 @@ TagManager:
   - BoxType1
   - BoxType2
   - PermaHeart
+  - HitPoints
+  - PermaHitpoints
   layers:
   - Default
   - TransparentFX

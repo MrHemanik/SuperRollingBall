@@ -9712,6 +9712,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2700833400266204903}
     m_Modifications:
+    - target: {fileID: 254449950400931590, guid: 402f6c828d7c6fb45bf2d5c009e5b9b4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 254449950400931641, guid: 402f6c828d7c6fb45bf2d5c009e5b9b4,
+        type: 3}
+      propertyPath: ShapeModule.radius.value
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 2506146153509996355, guid: 402f6c828d7c6fb45bf2d5c009e5b9b4,
         type: 3}
       propertyPath: m_RootOrder

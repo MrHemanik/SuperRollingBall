@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour
         {
             //Wird mit der Moving Plattform mitbewegt (Moving Plattform muss Scale (1,1,1) haben!
             //Debug.Log("Trigger");
-            transform.parent.parent = other.transform;
+            //TODO: RICHTIG EINBAUEN, TEST IN PLATTFORM, TRANSFORMT DAS OBJEKT IMMER MIT transform.SetParent(other.transform);
         }else if(other.gameObject.CompareTag("Water"))
         {
 	        //Im wasser ist man langsam, aber springt höher
@@ -144,6 +144,11 @@ public class PlayerController : MonoBehaviour
         {
 	        other.gameObject.SetActive(false);
 			GameManager.TriggerEvent("HeartCollected");
+
+        }else if(other.gameObject.CompareTag("HitPoints"))
+        {
+	        other.gameObject.SetActive(false);
+			GameManager.TriggerEvent("HitPointsCollected");
 
         }else if(other.gameObject.CompareTag("Death"))
         {
@@ -164,7 +169,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("Release");
             //Player wird von der Plattform gelöst
-            transform.parent.SetParent(null);
+            transform.SetParent(null);
         }else if(other.gameObject.CompareTag("Water"))
         {
 	        _rb.drag = _standardDrag;

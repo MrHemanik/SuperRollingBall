@@ -146,6 +146,7 @@ public class GameManager : MonoBehaviour
         _path = Application.persistentDataPath + "/gameData.binary";
         StartListening("CoinCollected", CoinCollected);
         StartListening("HeartCollected", HeartCollected);
+        StartListening("HitPointsCollected", HitPointsCollected);
         StartListening("Death", Death);
         StartListening("Victory", Victory);
         StartListening("DamageTaken", DamageTaken);
@@ -215,10 +216,15 @@ public class GameManager : MonoBehaviour
         _collectedCoinsTotal++;
         _collectedCoinsInLevel++;
         TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel+" / "+_coinCountInLevel);
-    }private void HeartCollected(string s) // Wird beim Herzaufsammeln ausgelöst
+    }
+    private void HeartCollected(string s) // Wird beim Herzaufsammeln ausgelöst
     {
         _livePoints++;
         TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
+    }
+    private void HitPointsCollected(string s) // Wird beim Herzaufsammeln ausgelöst
+    {
+        ChangeHitPoints(_maxHitPoints); // Regeneriert voll
     }
     
     private void Death(string s) // Wird beim Tod ausgelöst (Runterfallen oder keine Hitpoints mehr

@@ -6,22 +6,36 @@ using UnityEngine;
 public class StatusEffectScript : MonoBehaviour
 {
     public string statusEffect;
-    public float duration = 10;
-    public float multiplier = 1.25f;
-    public PlayerController player;
-    public GameObject pickUp;
+    private float _duration = 10;
+    private float _multiplier = 1.25f;
+    private PlayerController _player;
+    private GameObject _pickUp;
+
+    public void Initialize(float d, float m,PlayerController p, GameObject pu)
+    {
+        _duration = d;
+        _multiplier = m;
+        _player = p;
+        _pickUp = pu;
+    }
+
     private void Start()
     {
-        Destroy(gameObject, duration);
-        ActivateStatusEffect(multiplier);
-        Debug.Log("StatusEffect: "+statusEffect+" für "+duration+ " sekunden um "+multiplier+" multipliziert");
+        Destroy(gameObject, _duration);
+        ActivateStatusEffect(_multiplier);
+        Debug.Log("StatusEffect: "+statusEffect+" für "+_duration+ " sekunden um "+_multiplier+" multipliziert");
+    }
+
+    private void FixedUpdate()
+    {
+        transform.rotation = Quaternion.Euler(-90,0,0);
     }
 
     private void OnDestroy()
     {
-        ActivateStatusEffect(1/multiplier);
+        ActivateStatusEffect(1/_multiplier);
         Debug.Log("StatusEffect: "+statusEffect+" ausgelaufen");
-        pickUp.SetActive(true); //Sobald der Effekt vorbei ist erscheint das Pickup wieder
+        _pickUp.SetActive(true); //Sobald der Effekt vorbei ist erscheint das Pickup wieder
     }
 
     private void ActivateStatusEffect(float multiplierInput)
@@ -29,10 +43,10 @@ public class StatusEffectScript : MonoBehaviour
         switch (statusEffect)
         {
             case "JumpBoost":
-                player.MultiplyJumpModifier(multiplierInput);
+                _player.MultiplyJumpModifier(multiplierInput);
                 break;
             case "SpeedBoost":
-                player.MultiplySpeedModifier(multiplierInput);
+                _player.MultiplySpeedModifier(multiplierInput);
                 break;
         }
     }
