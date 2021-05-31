@@ -86,9 +86,10 @@ public class GameManager : MonoBehaviour
             if (data != null)
             {
                 _maxUnlockedLevel = data.maxUnlockedLevel;
-                _maxLivePoints = data.maxLivePoints;
                 _collectedCoinsTotal = data.collectedCoinsTotal;
                 _timeHighscore = data.timeHighscore;
+                _collectedPermaUpgrades = data.permaUpgrades;
+                LoadUpgrades();
             }
         }
         else
@@ -101,7 +102,7 @@ public class GameManager : MonoBehaviour
     {
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream stream = new FileStream(_path, FileMode.Create);
-        PlayerData data = new PlayerData(_maxUnlockedLevel,_maxLivePoints, _collectedCoinsTotal,_timeHighscore);
+        PlayerData data = new PlayerData(_maxUnlockedLevel,_maxLivePoints, _collectedCoinsTotal,_timeHighscore, _collectedPermaUpgrades);
         formatter.Serialize(stream, data);
         stream.Close();
     }
@@ -111,19 +112,21 @@ public class GameManager : MonoBehaviour
     private void DeleteSaveFile(string s)
     {
         _maxUnlockedLevel = 0;
-        _maxLivePoints=3;
         _collectedCoinsTotal = 0;
         _timeHighscore=null;
         _curLevel = 0;
+        _collectedPermaUpgrades = new bool[100];
         File.Delete(_path);
         LoadScene("StartScene");
     }
     
     private static readonly int[] LevelList = {1001, 1002, 1003, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
     private static readonly string[] SkyboxColor = {"BFFFFD", "A995A5","000000", "FFFFFF"}; //Jedes level hat auch eine Skybox
+    private static readonly string[] PermaUpgradeList = {"Live","Live"};
     private static int _maxUnlockedLevel; //Speichert die Arraystelle aus _levelList für das höchstfreigeschaltende Level 
     private static int _maxLivePoints = 3;
     private static int _maxHitPoints = 3;
+    private static bool[] _collectedPermaUpgrades = new bool[100]; //Index von permaUpgradeList, was für ein Upgrade es ist
     private static int _collectedCoinsTotal; // Generell aufgesammelte Münzen, auch nach Neustart des Spiels.
     private static float[] _timeHighscore = new float[LevelList.Length];//new Time[_levelList.Length];
     /* Lokal */
@@ -131,9 +134,9 @@ public class GameManager : MonoBehaviour
     private int _collectedCoinsInLevel;
     private int _coinCountInLevel;
     private float _levelStartTime;
-    private int _livePoints;
-    public int _hitPoints;
-    public bool _isInvincible = false;
+    private static int _livePoints;
+    private static int _hitPoints;
+    private bool _isInvincible;
     
     
 
@@ -156,6 +159,7 @@ public class GameManager : MonoBehaviour
         StartListening("LoadHighestLevel", LoadHighestLevel);
         StartListening("ReloadLevel", ReloadLevel);
         StartListening("DeleteSaveFile", DeleteSaveFile);
+        StartListening("PermaUpgradeCollected", PermaUpgradeCollected);
     }
 
     private void Start()
@@ -201,6 +205,10 @@ public class GameManager : MonoBehaviour
         return LevelList[_maxUnlockedLevel];
     }
 
+    public static bool GetIsPermaUpgradeCollected(int id)
+    {
+        return _collectedPermaUpgrades[id];
+    }
     /* Eventmethoden -------------------------------------------------------------------------------------------------*/
     private void CoinCollected(string s) // Wird beim Münzaufsammeln ausgelöst
     {
@@ -319,6 +327,12 @@ public class GameManager : MonoBehaviour
         LoadScene(LevelList[_curLevel]+"_Level");
     }
 
+    private void PermaUpgradeCollected(string id)
+    {
+        _collectedPermaUpgrades[int.Parse(id)] = true;
+        CollectUpgrade(int.Parse(id));
+    }
+
     /* Methoden ------------------------------------------------------------------------------------------------------*/
     private void Reset() //Setzt lokale Variablen zurück
     {
@@ -358,6 +372,37 @@ public class GameManager : MonoBehaviour
         _hitPoints = newHitpoints;
         TriggerEvent("ResizeCore", Math.Sqrt(1.0*_hitPoints / _maxHitPoints).ToString("0.00")); //Neue Coregröße
         if(_hitPoints <= 0) TriggerEvent("BallDeath"); //Ruft BallDeath in PlayerCon auf, welcher Death hier auslöst
+    }
+
+    private static void LoadUpgrades() //Lädt die Upgrades 
+    {
+        if (_collectedPermaUpgrades == null) //Falls es null ist kann es leer instanziert werden
+        {
+            _collectedPermaUpgrades = new bool[100];
+            return;
+        }
+
+        for (var i=0;i<_collectedPermaUpgrades.Length;i++)
+        {
+            if (_collectedPermaUpgrades[i]) CollectUpgrade(i);
+            
+        }
+    }
+
+    private static void CollectUpgrade(int id)
+    {
+        Debug.Log("Aktives Permaupgrade gefunden: "+id);
+        switch (PermaUpgradeList[id])
+            {
+                case "Live":
+                    _maxLivePoints++;
+                    _livePoints = _maxLivePoints; //Wird vollgeheilt
+                    break;
+                case "Hit":
+                    _maxHitPoints++;
+                    _hitPoints = _maxHitPoints; //Wird vollgeheilt
+                    break; 
+            }
     }
     /* Input System Methoden -----------------------------------------------------------------------------------------*/
     [UsedImplicitly]

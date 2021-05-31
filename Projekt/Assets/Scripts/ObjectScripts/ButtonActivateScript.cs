@@ -8,7 +8,8 @@ namespace ObjectScripts
         private bool _buttonPressed;
         private Animator _buttonAnimator;
         private ButtonMoveOnActivation _parentScript;
-        
+        private static readonly int Pressed = Animator.StringToHash("Pressed");
+
         public bool IsPressed()
         {
             return _buttonPressed;
@@ -24,7 +25,7 @@ namespace ObjectScripts
         {
             if (other.gameObject.CompareTag(colliderEntity))
             {
-                _buttonAnimator.SetBool("Pressed",true);
+                _buttonAnimator.SetBool(Pressed,true);
                 _buttonPressed = true;
                 _parentScript.TestIfPuzzleIsSolved();
                 
@@ -36,7 +37,7 @@ namespace ObjectScripts
         {
             if (other.gameObject.CompareTag(colliderEntity))
             {
-                _buttonAnimator.SetBool("Pressed",false);
+                _buttonAnimator.SetBool(Pressed,false);
                 _buttonPressed = false;
             }
         }

@@ -1,11 +1,10 @@
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.ProBuilder;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject player;
+    private GameObject _player;
     public Vector2 zoomRange = new Vector2(4.0f, 12.0f); //Vector, der angibt, dass von Distanz 4(x) bis 12(y) gezoomt sein kann.
     public int currentZoom = 8; //Startwert 8;
     public int defaultFOV = 60;
@@ -46,7 +45,8 @@ public class CameraController : MonoBehaviour
     {
         _camera = GetComponent<Camera>();
         _offset = new Vector3(0.0f, currentZoom, -currentZoom);
-        _playerRigidbody = player.GetComponent<Rigidbody>();
+        _player = transform.parent.parent.gameObject;
+        _playerRigidbody = _player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
         _playerInput = GetComponent<PlayerInput>();
         _animator = gameObject.transform.parent.GetComponent<Animator>();
@@ -58,7 +58,15 @@ public class CameraController : MonoBehaviour
         if (!_cutScene)
         {
             //Position der Kamera
-            transform.position = player.transform.position + _offset;
+            transform.position = _player.transform.position + _offset;
+            //Rotation der Kamera
+            if (_cameraMode == 0) //NormalCameraMode
+            {
+                gameObject.transform.rotation = Quaternion.Euler(45,0,0);
+            }else if (_cameraMode == 1) //TopDownCameraMode
+            {
+                gameObject.transform.rotation = Quaternion.Euler(90,0,0);
+            }
             //Field of View
             Vector3 ballVelocity = _playerRigidbody.velocity;
             //Da ich speed aus der RigidBody info nicht auslesen konnte, habe ich aus der Velocity die Speed berechnet (Vektorbetrag = Länge = Speed)
@@ -129,10 +137,7 @@ public class CameraController : MonoBehaviour
     private void StartPuzzle1SolvedCameraAnimation(string s)
     {
         Animation(true);
-        var tf = transform;
         _animator.SetTrigger(Animator.StringToHash("Puzzle1Solved"));
-        tf.position = tf.parent.position;
-        tf.rotation = tf.parent.rotation;
         _cutSceneDuration = 1.35f;
         TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
     }
@@ -144,6 +149,7 @@ public class CameraController : MonoBehaviour
         _cutScene = active;
         _playerRigidbody.isKinematic = active;
         _playerInput.enabled = !active;
+        transform.parent.parent = active ? null : _player.transform; //Wollte mal den Ternary operation ausprobieren!
     }
     /* Input Methoden -------------------------------------------------------------------------------------------------*/
     [UsedImplicitly]

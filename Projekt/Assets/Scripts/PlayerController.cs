@@ -182,14 +182,13 @@ public class PlayerController : MonoBehaviour
 		_rb.angularVelocity = new Vector3(0, 0, 0);
 		_rb.drag = _standardDrag;
 		_rb.mass = _standardMass;
-		transform.parent.SetParent(null);
+		transform.SetParent(null);
 		ResizeCore("1");
     }
 
     private void ResizeCore(string size)
     {
 	    float newSize = float.Parse(size);
-	    Debug.Log(newSize);
 	    transform.GetChild(0).localScale = new Vector3(newSize, newSize, newSize);
     }
     private void BallDeath(string s ="")

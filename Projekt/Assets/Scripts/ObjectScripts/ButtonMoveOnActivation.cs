@@ -5,7 +5,7 @@ namespace ObjectScripts
     public class ButtonMoveOnActivation : MonoBehaviour
     {
         public GameObject[] buttons;
-
+        private static readonly int Start = Animator.StringToHash("Start");
 
 
         public void TestIfPuzzleIsSolved()
@@ -25,7 +25,7 @@ namespace ObjectScripts
 
         private void PuzzleSolved()
         {
-            gameObject.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Start");
+            gameObject.transform.GetChild(0).GetComponent<Animator>().SetTrigger(Start);
             GameManager.TriggerEvent("Puzzle1Solved");
         }
     }

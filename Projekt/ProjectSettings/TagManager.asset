@@ -17,6 +17,7 @@ TagManager:
   - TopDownCamera
   - BoxType1
   - BoxType2
+  - PermaHeart
   layers:
   - Default
   - TransparentFX
