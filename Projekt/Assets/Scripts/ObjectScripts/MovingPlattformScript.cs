@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace ObjectScripts
@@ -10,7 +11,8 @@ namespace ObjectScripts
         public float pauseTimeMid = 1.0f; //Zeit, die er am Punkt wartet.
         private Vector3 _endPoint;
         private Vector3 _startPoint;
-
+        public GameObject _player;
+        private Vector3 _speed; 
         private void Start()
         {
             _startPoint = transform.position;
@@ -20,7 +22,13 @@ namespace ObjectScripts
 
         private void Update()
         {
-            transform.position = GetPosition(Time.time);
+            var position = transform.position;
+            
+            _speed = position;
+            position = GetPosition(Time.time);
+            transform.position = position; 
+            _speed = position - _speed; //Speed = Neue Postion - Alte Postion 
+            _player.transform.position += _speed;
         }
     
         //Das hat ja mal so viel Zeit gekostet, das so umzusetzen.
@@ -40,6 +48,20 @@ namespace ObjectScripts
             else //Die zweite Hälfte ist die an _endPoint gespiegelte erste Hälfte: f(_intervalTime) = _endPoint +_startPoint - f(0)
                 position = _endPoint + _startPoint - GetPosition(timer - intervalTime / 2);
             return position;
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                _player = other.gameObject;
+            }
+        }private void OnCollisionExit(Collision other)
+        {
+            if (other.gameObject.CompareTag("Player"))
+            {
+                _player = null;
+            }
         }
     }
 }

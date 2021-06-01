@@ -122,19 +122,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Moving"))
-        {
-            //Wird mit der Moving Plattform mitbewegt (Moving Plattform muss Scale (1,1,1) haben!
-            //Debug.Log("Trigger");
-            //TODO: RICHTIG EINBAUEN, TEST IN PLATTFORM, TRANSFORMT DAS OBJEKT IMMER MIT transform.SetParent(other.transform);
-        }else if(other.gameObject.CompareTag("Water"))
+		if(other.gameObject.CompareTag("Water"))
         {
 	        //Im wasser ist man langsam, aber springt höher
 	        _rb.drag = 4;
 	        _rb.mass = 1;
         }else if(other.gameObject.CompareTag("Spike"))
         {
-	        Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion());
+	        Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
 	        GameManager.TriggerEvent("DamageTaken");
 		}else if(other.gameObject.CompareTag("Coin"))
         {
@@ -165,12 +160,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Moving"))
-        {
-            //Debug.Log("Release");
-            //Player wird von der Plattform gelöst
-            transform.SetParent(null);
-        }else if(other.gameObject.CompareTag("Water"))
+		if(other.gameObject.CompareTag("Water"))
         {
 	        _rb.drag = _standardDrag;
 	        _rb.mass = _standardMass;

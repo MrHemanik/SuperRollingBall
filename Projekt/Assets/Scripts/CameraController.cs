@@ -138,7 +138,7 @@ public class CameraController : MonoBehaviour
     {
         Animation(true);
         _animator.SetTrigger(Animator.StringToHash("Puzzle1Solved"));
-        _cutSceneDuration = 1.35f;
+        _cutSceneDuration =3.30f; //Idealerweise wie bei SetAnimation die CutSceneDuration ermitteln, aber das wäre zu viel rechenarbeit, wenn man auch einfach die Fixzahl eingeben kann
         TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
     }
 
