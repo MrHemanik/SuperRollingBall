@@ -45,11 +45,11 @@ public class CameraController : MonoBehaviour
     {
         _camera = GetComponent<Camera>();
         _offset = new Vector3(0.0f, currentZoom, -currentZoom);
-        _player = transform.parent.parent.gameObject;
+        _player = transform.parent.gameObject;
         _playerRigidbody = _player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
         _playerInput = GetComponent<PlayerInput>();
-        _animator = gameObject.transform.parent.GetComponent<Animator>();
+        _animator = gameObject.GetComponent<Animator>();
         GameManager.TriggerEvent("FetchCurrentLevel"); //Aktiviert SetAnimation mit CurLevel & SetSkyboxColor mit Skybox[CurLevel]
     }
     
@@ -149,7 +149,11 @@ public class CameraController : MonoBehaviour
         _cutScene = active;
         _playerRigidbody.isKinematic = active;
         _playerInput.enabled = !active;
-        transform.parent.parent = active ? null : _player.transform; //Wollte mal den Ternary operation ausprobieren!
+        var transform1 = transform;
+        transform1.parent = active ? null : _player.transform; //Wollte mal den Ternary operation ausprobieren!
+        transform1.position = new Vector3();
+        transform1.rotation = new Quaternion();
+        Debug.Log("Kamera Reset");
     }
     /* Input Methoden -------------------------------------------------------------------------------------------------*/
     [UsedImplicitly]
