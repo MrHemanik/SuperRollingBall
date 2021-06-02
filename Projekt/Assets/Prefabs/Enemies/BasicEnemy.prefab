@@ -4880,6 +4880,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11f3f695b554c494cb1872d93753f131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alive: 1
+  deathCloudPrefab: {fileID: 2580169440180884034, guid: 84ee850932fa2024db2dd1fc2228224b,
+    type: 3}
 --- !u!1 &3245362171081127642
 GameObject:
   m_ObjectHideFlags: 0
@@ -9814,6 +9817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21b6711810cabab46a2c629e6418a8af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alive: 1
 --- !u!1 &7919029146469641143
 GameObject:
   m_ObjectHideFlags: 0

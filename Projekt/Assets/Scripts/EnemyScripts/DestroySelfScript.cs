@@ -1,15 +1,22 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroySelfScript : MonoBehaviour
+namespace EnemyScripts
 {
-    private void OnTriggerEnter(Collider other)
+    public class DestroySelfScript : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        public bool alive = true;
+        public GameObject deathCloudPrefab;
+        private void OnTriggerEnter(Collider other)
         {
-            Destroy(gameObject.transform.parent.gameObject);
+            if (other.CompareTag("Player"))
+            {
+                Destroy(gameObject.transform.parent.gameObject,0.2f);
+                Instantiate(deathCloudPrefab, transform.position, new Quaternion());
+                var rb = other.GetComponent<Rigidbody>();
+                var rbVelocity = rb.velocity;
+                rb.velocity = new Vector3(rbVelocity.x,-rbVelocity.y,rbVelocity.x); //"Bounce" vom Objekt, invertiert die Geschwindigkeit der Y-Achse
+                transform.parent.GetComponent<BasicEnemyScript>().alive = false;
+            }
         }
     }
 }

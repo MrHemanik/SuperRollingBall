@@ -149,13 +149,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2700833399312554413}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 8, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2700833400266204903}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!20 &2700833399312554415
 Camera:
   m_ObjectHideFlags: 0
@@ -412,8 +412,6 @@ MonoBehaviour:
   dustCloud: {fileID: 2580169440180884034, guid: e6b3e349e36d88245a47446df9731012,
     type: 3}
   confetti: {fileID: 2580169440180884034, guid: 1cd9cb03fa163aa458c9d5172b2c8f85,
-    type: 3}
-  damageTakenScreenPrefab: {fileID: 6984015658734831992, guid: f5c8a261dedb2ed41930d67d9caa089d,
     type: 3}
   statusPrefab: {fileID: 5692974636813851940, guid: 4ce4828a54e524d47abaf3b0f786bff0,
     type: 3}
