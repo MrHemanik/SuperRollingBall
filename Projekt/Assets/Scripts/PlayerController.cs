@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     public GameObject dustCloud;
     public GameObject confetti;
     public GameObject damageTakenScreenPrefab;
+    public GameObject statusPrefab;
 	#endregion
 	/* Standard Methoden ---------------------------------------------------------------------------------------------*/
 	#region StandardMethods
@@ -92,6 +93,13 @@ public class PlayerController : MonoBehaviour
     {
 	    speedModifier *= modifier;
     }
+
+    public void PlayerWetness(float modifier)
+    {
+	    _rb.drag *= modifier;
+	    _rb.mass *= modifier;
+	    speedModifier *= 1 / modifier;
+    }
     #endregion
     /* Collider und Trigger ------------------------------------------------------------------------------------------*/
     #region Collider&Trigger
@@ -107,6 +115,11 @@ public class PlayerController : MonoBehaviour
             _wallJumpAllowed = true;
             _wallJumpDirection = other.contacts[0].point - transform.position;
             //print("Wand in Richtung: " + _wallJumpDirection);
+        }
+        else if(other.gameObject.CompareTag("Spike"))
+        {
+	        Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
+	        GameManager.TriggerEvent("DamageTaken");
         }
     }
 
@@ -128,9 +141,9 @@ public class PlayerController : MonoBehaviour
 	        _rb.drag = 4;
 	        _rb.mass = 1;
         }else if(other.gameObject.CompareTag("Spike"))
-        {
-	        Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
-	        GameManager.TriggerEvent("DamageTaken");
+		{
+			Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
+			GameManager.TriggerEvent("DamageTaken");
 		}else if(other.gameObject.CompareTag("Coin"))
         {
 	        other.gameObject.SetActive(false);
@@ -164,6 +177,9 @@ public class PlayerController : MonoBehaviour
         {
 	        _rb.drag = _standardDrag;
 	        _rb.mass = _standardMass;
+	        GameObject statusObject = Instantiate(statusPrefab, transform.position, new Quaternion(),
+		        transform.Find("StatusEffects").transform);
+	        statusObject.GetComponent<StatusEffectScript>().Initialize(2,2, GetComponent<PlayerController>(), gameObject);
         }
     }
 	#endregion

@@ -1,22 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletScript : MonoBehaviour
+namespace EnemyScripts
 {
-    public float projectileSpeed;
-    public float sniperRange;
-    private Transform _ownTransform;
-    void Start()
+    public class BulletScript : MonoBehaviour
     {
-        _ownTransform = transform;
-        Destroy(gameObject, sniperRange / projectileSpeed); //Zerstört die Kugel sobald sie außer Reichweite ist
-       
-    }
+        public float projectileSpeed;
+        public float sniperRange;
+        private Transform _ownTransform;
 
-    // Update is called once per frame
-    void Update()
-    {
-        _ownTransform.position += _ownTransform.forward * (Time.deltaTime * projectileSpeed); //Schießt in richtung die er guckt
+        private void Start()
+        {
+            _ownTransform = transform;
+            Destroy(gameObject, sniperRange / projectileSpeed); //Zerstört die Kugel sobald sie außer Reichweite ist
+       
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            _ownTransform.position += _ownTransform.forward * (Time.deltaTime * projectileSpeed); //Schießt in richtung die er guckt
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            //Debug.Log("COLLISION mit: " +other.gameObject.name);
+            Destroy(gameObject);
+        }
     }
 }

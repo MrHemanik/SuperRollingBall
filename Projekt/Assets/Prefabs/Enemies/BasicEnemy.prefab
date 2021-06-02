@@ -3054,7 +3054,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!1 &723741338251344920
@@ -3068,7 +3068,6 @@ GameObject:
   - component: {fileID: 1498265648075891934}
   - component: {fileID: 1668091159250758350}
   - component: {fileID: 8890796235930790632}
-  - component: {fileID: 6969657215066339024}
   m_Layer: 0
   m_Name: InnerSphere
   m_TagString: Untagged
@@ -3139,19 +3138,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &6969657215066339024
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 723741338251344920}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1123440772609364111
 GameObject:
   m_ObjectHideFlags: 0
@@ -4880,8 +4866,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.4
+  m_Center: {x: 0, y: 0.1, z: 0}
 --- !u!114 &4403033832679373535
 MonoBehaviour:
   m_ObjectHideFlags: 0

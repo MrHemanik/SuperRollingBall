@@ -28,7 +28,7 @@ public class StatusEffectScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.rotation = Quaternion.Euler(-90,0,0);
+        transform.rotation = Quaternion.Euler(90,0,0);
     }
 
     private void OnDestroy()
@@ -47,6 +47,9 @@ public class StatusEffectScript : MonoBehaviour
                 break;
             case "SpeedBoost":
                 _player.MultiplySpeedModifier(multiplierInput);
+                break;
+            case "Wet":
+                _player.PlayerWetness(multiplierInput);
                 break;
         }
     }
