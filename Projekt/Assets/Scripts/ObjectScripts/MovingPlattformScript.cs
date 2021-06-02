@@ -12,6 +12,7 @@ namespace ObjectScripts
         private Vector3 _endPoint;
         private Vector3 _startPoint;
         public GameObject _player;
+        private bool _movePlayer;
         private Vector3 _speed; 
         private void Start()
         {
@@ -28,7 +29,7 @@ namespace ObjectScripts
             position = GetPosition(Time.time);
             transform.position = position; 
             _speed = position - _speed; //Speed = Neue Postion - Alte Postion 
-            _player.transform.position += _speed;
+            if(_movePlayer) _player.transform.position += _speed;
         }
     
         //Das hat ja mal so viel Zeit gekostet, das so umzusetzen.
@@ -52,16 +53,14 @@ namespace ObjectScripts
 
         private void OnCollisionEnter(Collision other)
         {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                _player = other.gameObject;
-            }
+            if (!other.gameObject.CompareTag("Player")) return;
+            _player = other.gameObject;
+            _movePlayer = true;
         }private void OnCollisionExit(Collision other)
         {
-            if (other.gameObject.CompareTag("Player"))
-            {
-                _player = null;
-            }
+            if (!other.gameObject.CompareTag("Player")) return;
+            _player = null;
+            _movePlayer = false;
         }
     }
 }

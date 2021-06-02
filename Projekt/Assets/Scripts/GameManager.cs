@@ -137,7 +137,8 @@ public class GameManager : MonoBehaviour
     private static int _livePoints;
     private static int _hitPoints;
     private bool _isInvincible;
-    
+    /*Prefabs*/
+    public GameObject damageTakenScreenPrefab;
     
 
 
@@ -230,7 +231,7 @@ public class GameManager : MonoBehaviour
     private void Death(string s) // Wird beim Tod ausgelöst (Runterfallen oder keine Hitpoints mehr
     {
         _livePoints--;
-        _hitPoints = _maxHitPoints; //Wird visuell beim Respawnknopf aktualisiert
+        ChangeHitPoints(_maxHitPoints); //Wird visuell beim Respawnknopf aktualisiert
         if (_livePoints <= 0)
         {
             LoadScene("GameOverScene");
@@ -254,6 +255,7 @@ public class GameManager : MonoBehaviour
         if (!_isInvincible)
         {
             _isInvincible = true;
+            Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
             TimerManagerScript.StartTimer("MakeVincible", 2f); //Wird so gelöst anstelle des EffectSystems, da das nicht als Effect aufgelistet werden soll
             ChangeHitPoints(_hitPoints-1);
 
@@ -285,7 +287,6 @@ public class GameManager : MonoBehaviour
     private void GiveCurrentLevelInfo(string s)
     {
         //Zum Start des Levels wird die Skybox angepasst und die Startanimation angespielt
-        //TODO: zu Gettern umwandeln, da das verkomplizierte Events sind, also GameManager.GetCurLevel und GetSkybox in Camera
         TriggerEvent("StartCameraAnimation",LevelList[_curLevel].ToString());
         TriggerEvent("SkyboxColor",SkyboxColor[_curLevel]);
     }
@@ -377,6 +378,7 @@ public class GameManager : MonoBehaviour
     {
         _hitPoints = newHitpoints;
         TriggerEvent("ResizeCore", Math.Sqrt(1.0*_hitPoints / _maxHitPoints).ToString("0.00")); //Neue Coregröße
+        TriggerEvent("UpdateHitPointDisplay", (1.0 * _hitPoints / _maxHitPoints).ToString("0.00"));
         if(_hitPoints <= 0) TriggerEvent("BallDeath"); //Ruft BallDeath in PlayerCon auf, welcher Death hier auslöst
     }
 

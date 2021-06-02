@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using ObjectScripts;
+using ScreenScripts;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _wallJumpDirection; //Richtung, in der die Wand liegt - von der man weggeschleudert wird
     private float _standardMass;
     private float _standardDrag;
+    private HudScript _hudScript;
     
     
 
@@ -35,7 +37,6 @@ public class PlayerController : MonoBehaviour
     /*Prefabs*/
     public GameObject dustCloud;
     public GameObject confetti;
-    public GameObject damageTakenScreenPrefab;
     public GameObject statusPrefab;
 	#endregion
 	/* Standard Methoden ---------------------------------------------------------------------------------------------*/
@@ -57,8 +58,10 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
 	    _rb = GetComponent<Rigidbody>();
+	    Transform transform1 = transform;
+	    _hudScript = transform1.Find("UI Screens").Find("HUD").GetComponent<HudScript>();
         _rb.isKinematic = true; //Bewegung wird deaktiviert, wird durch Kameraskript wieder aktiviert.
-        lastCheckPoint = transform.position;
+        lastCheckPoint = transform1.position;
 		_currentJumpCharge = MINJumpSpeed;
 		_standardDrag = _rb.drag;
 		_standardMass = _rb.mass;
@@ -68,10 +71,17 @@ public class PlayerController : MonoBehaviour
 	    //Jump
 	    if (_chargeJump)
 	    {
-		    if (_currentJumpCharge < MAXJumpSpeed) 
-			    _currentJumpCharge += ((MAXJumpSpeed - MINJumpSpeed) / TimeTilMaxJump) * Time.fixedDeltaTime;
-		    else _currentJumpCharge = MAXJumpSpeed; //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
-	    }
+		    if (_currentJumpCharge < MAXJumpSpeed)
+		    {
+			    UpdateCurrentJumpCharge(_currentJumpCharge + ((MAXJumpSpeed - MINJumpSpeed) / TimeTilMaxJump) * Time.fixedDeltaTime);
+			    
+		    }
+		    else
+		    {
+			    UpdateCurrentJumpCharge(MAXJumpSpeed); //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
+		    }
+	    } 
+    
 
 		//Movement 
 		if (_movementVector.sqrMagnitude < 0.01) 
@@ -118,7 +128,6 @@ public class PlayerController : MonoBehaviour
         }
         else if(other.gameObject.CompareTag("Spike"))
         {
-	        Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
 	        GameManager.TriggerEvent("DamageTaken");
         }
     }
@@ -142,7 +151,6 @@ public class PlayerController : MonoBehaviour
 	        _rb.mass = 1;
         }else if(other.gameObject.CompareTag("Spike"))
 		{
-			Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion()); // TODO: Sollte eigentlich mit in DamageTaken sein
 			GameManager.TriggerEvent("DamageTaken");
 		}else if(other.gameObject.CompareTag("Coin"))
         {
@@ -211,6 +219,12 @@ public class PlayerController : MonoBehaviour
 		    GameManager.TriggerEvent("Death");
 	    }
     }
+
+    private void UpdateCurrentJumpCharge(float jumpCharge)
+    {
+	    _currentJumpCharge = jumpCharge;
+	    _hudScript.UpdateJumpChargeDisplay((_currentJumpCharge-MINJumpSpeed)/(MAXJumpSpeed-MINJumpSpeed));
+    }
     #endregion
     /* Input System Methoden -----------------------------------------------------------------------------------------*/
     #region InputSystem
@@ -250,7 +264,7 @@ public class PlayerController : MonoBehaviour
 				    var velocity = _rb.velocity;
 				    _rb.velocity = new Vector3(velocity.x, 0, velocity.z);
 				    _rb.AddForce(new Vector3(0.0f, jumpModifier*_currentJumpCharge, 0.0f));
-				    _currentJumpCharge = MINJumpSpeed;
+				    UpdateCurrentJumpCharge(MINJumpSpeed);
 				    break;
 		    }
 	    }

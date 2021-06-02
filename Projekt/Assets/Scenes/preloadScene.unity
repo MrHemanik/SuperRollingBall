@@ -274,6 +274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fc4c5ac0560f004aaa1f871c6fb8cc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageTakenScreenPrefab: {fileID: 6984015658734831992, guid: f5c8a261dedb2ed41930d67d9caa089d,
+    type: 3}
 --- !u!4 &1344542526
 Transform:
   m_ObjectHideFlags: 0
