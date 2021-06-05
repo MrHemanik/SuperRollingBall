@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
     public bool _cutScene = true; //TODO: Wieder private machen, debug
     private bool _levelStartCutScene = true;
     private float _cutSceneDuration = 100.0f; // Wird in SetAnimation auf die richtige Zeit gesetzt
-    public Vector3 _offset;
+    
     private Rigidbody _playerRigidbody;
     private PlayerInput _playerInput;
     private Animator _animator;
@@ -26,12 +26,13 @@ public class CameraController : MonoBehaviour
     //CameraMovement: Rotation
     public float rotateSpeed = 5;
     private Vector2 _mRotation;
-    private bool _fixedCamera = false; // Kamera ist fest; Kamera ist per Maus bewegbar.
+    public bool _fixedCamera = false; // Kamera ist fest; Kamera ist per Maus bewegbar.
     private float _cameraSmoothness = 0.5f;
-    public Vector3 _curOffset;
-    
-    
-
+    public Vector3 _fixedOffset; //fixed Offset bestimmt vom currentZoom, z.B: [0,8,-8]
+    public Vector3 _curOffset;//Offset der wirklich bei der Kamera herrscht
+    public Vector3 _offsetRotation = new Vector3(0,1,-1); //Für die Rotation der Kamera
+    private float _buttonRotateSensitivity = 4;
+    private float _buttonRotate;
 
 
     // Start is called before the first frame update
@@ -40,6 +41,7 @@ public class CameraController : MonoBehaviour
         GameManager.StartListening("StartCameraAnimation", SetAnimation);
         GameManager.StartListening("EndCameraAnimation", CutSceneEnd);
         GameManager.StartListening("SkyboxColor", SetSkyboxColor);
+        GameManager.StartListening("ResetCamera", ResetCamera);
         GameManager.StartListening("CameraModeNormal", NormalCameraMode);
         GameManager.StartListening("CameraModeTopDown", TopDownCameraMode);
         GameManager.StartListening("Puzzle1Solved", StartPuzzle1SolvedCameraAnimation);
@@ -49,6 +51,7 @@ public class CameraController : MonoBehaviour
         GameManager.StopListening("StartCameraAnimation");
         GameManager.StopListening("EndCameraAnimation");
         GameManager.StopListening("SkyboxColor");
+        GameManager.StopListening("ResetCamera");
         GameManager.StopListening("CameraModeNormal");
         GameManager.StopListening("CameraModeTopDown");
         GameManager.StopListening("Puzzle1Solved");
@@ -57,8 +60,8 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         _camera = GetComponent<Camera>();
-        _offset = new Vector3(0.0f, currentZoom, -currentZoom);
-        _curOffset = _offset;
+        _fixedOffset = new Vector3(0.0f, currentZoom, -currentZoom);
+        _curOffset = _fixedOffset;
         _player = transform.parent.gameObject;
         _playerRigidbody = _player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
@@ -68,7 +71,7 @@ public class CameraController : MonoBehaviour
         GameManager.TriggerEvent("FetchCurrentLevel"); //Aktiviert SetAnimation mit CurLevel & SetSkyboxColor mit Skybox[CurLevel]
     }
     
-    private void LateUpdate() //LateUpdate für Updates die was anzeigen sollen, da die als letztes berechnet werden
+    private void FixedUpdate() //Eigentlich LateUpdate für Updates die was anzeigen sollen, da die als letztes berechnet werden, jedoch wird die Camera Transformed, was in Fixed gehört (sonst entsteht shutter)
     {
         //https://forum.unity.com/threads/free-look-with-new-input-system.676873/
         if (!_cutScene)
@@ -78,13 +81,14 @@ public class CameraController : MonoBehaviour
             var playerPosition = playerTransform.position;
             if (!_fixedCamera)
             {
-                
-                Quaternion camTurnAngle = Quaternion.AngleAxis(_mRotation.x * rotateSpeed/10, Vector3.up);
+                Quaternion camTurnAngle = Quaternion.AngleAxis(_mRotation.x+ _buttonRotate* rotateSpeed/10, Vector3.up);
                 _mRotation.x = 0;
-                _curOffset = camTurnAngle * _curOffset;
-                //_curOffset.Normalize();
-                //_curOffset = _curOffset * (1 / 8);
-                //Debug.Log("OffsetLength: "+_curOffset.magnitude);
+                _offsetRotation = camTurnAngle * _offsetRotation;
+                _curOffset = currentZoom *_offsetRotation;
+            }
+            else
+            {
+                _curOffset = _fixedOffset;
             }
             Vector3 newPosition = playerPosition + _curOffset;
             transform.position = Vector3.Slerp(transform.position, newPosition, _cameraSmoothness);
@@ -104,7 +108,7 @@ public class CameraController : MonoBehaviour
     private void NormalCameraMode(string f)
     {
         _cameraMode = 0;
-        _offset = new Vector3(0.0f, currentZoom, -currentZoom);
+        _fixedOffset = new Vector3(0.0f, currentZoom, -currentZoom);
         Debug.Log("CameraMode:Normal");
         
     }
@@ -112,7 +116,7 @@ public class CameraController : MonoBehaviour
     private void TopDownCameraMode(string f)
     {
         _cameraMode = 1;
-        _offset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
+        _fixedOffset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
         Debug.Log("CameraMode:TopDown");
     }
     private void SetAnimation(string input)
@@ -150,6 +154,12 @@ public class CameraController : MonoBehaviour
             System.Convert.ToByte(color.Substring(2, 2),16),
             System.Convert.ToByte(color.Substring(4, 2),16),1
             );
+    }
+
+    private void ResetCamera(string s)
+    {
+        _offsetRotation = new Vector3(0,1,-1);
+        _curOffset = _fixedOffset;
     }
 
     private void StartPuzzle1SolvedCameraAnimation(string s)
@@ -198,16 +208,24 @@ public class CameraController : MonoBehaviour
             }
         }
         //Neuberechnung des Offsets
-        var _oldOffset = _offset;
-        if(_cameraMode == 0) _offset = new Vector3(0.0f, currentZoom, -currentZoom);
-        else if (_cameraMode == 1) _offset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
-        //_curOffset += _offset;
-        //Debug.Log(player.transform.position);
+        if(_cameraMode == 0) _fixedOffset = new Vector3(0.0f, currentZoom, -currentZoom);
+        else if (_cameraMode == 1) _fixedOffset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
+
     }
-    public void OnLook(InputAction.CallbackContext rotateValue)
+    public void OnLook(InputAction.CallbackContext rotateValue) // Bei Mausbewegung
     {
         if (!rotateValue.started) return;
         _mRotation = rotateValue.ReadValue<Vector2>();
+    }
+
+    public void RotateButton(InputAction.CallbackContext context)
+    {
+        _buttonRotate = _buttonRotateSensitivity*context.ReadValue<float>();
+    }
+
+    public void ToggleFixedCamera(InputAction.CallbackContext context) //Beim Drücken von C
+    {
+        _fixedCamera = !_fixedCamera;
     }
     #endregion
 }

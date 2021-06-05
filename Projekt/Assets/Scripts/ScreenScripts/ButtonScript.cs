@@ -12,6 +12,7 @@ namespace ScreenScripts
             GameManager.TriggerEvent("CloseDeathScreen");
             //GameManager.TriggerEvent("CloseVictoryScreen");
             GameManager.TriggerEvent("BallRespawn");
+            GameManager.TriggerEvent("ResetCamera");
         }
         public void OnNextLevelButtonPressed()
         {

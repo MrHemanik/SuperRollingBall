@@ -134,6 +134,22 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""ToggleFixedCamera"",
+                    ""type"": ""Button"",
+                    ""id"": ""a728f79b-219e-4794-8fb0-77bf1330bc09"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RotatePerButton"",
+                    ""type"": ""Value"",
+                    ""id"": ""2c7772d5-3cb5-4425-bb57-9fcddf07c960"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -153,11 +169,55 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""id"": ""f472a22d-f868-4744-b665-4bcad780a945"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": ""ScaleVector2(x=2,y=2)"",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a6544c8d-3029-4f9a-a959-a3b1f95d0185"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleFixedCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""9f1779f9-954c-472d-9b6a-ac132e517035"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotatePerButton"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""bbe1f8ce-35c5-481c-b502-e37a27dbfa6b"",
+                    ""path"": ""<Keyboard>/rightShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotatePerButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""ceca2324-1977-4e11-ac28-0087795fae62"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotatePerButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -199,6 +259,8 @@ public class @InputActions : IInputActionCollection, IDisposable
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
         m_Camera_Zoom = m_Camera.FindAction("Zoom", throwIfNotFound: true);
         m_Camera_CameraMove = m_Camera.FindAction("CameraMove", throwIfNotFound: true);
+        m_Camera_ToggleFixedCamera = m_Camera.FindAction("ToggleFixedCamera", throwIfNotFound: true);
+        m_Camera_RotatePerButton = m_Camera.FindAction("RotatePerButton", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -294,12 +356,16 @@ public class @InputActions : IInputActionCollection, IDisposable
     private ICameraActions m_CameraActionsCallbackInterface;
     private readonly InputAction m_Camera_Zoom;
     private readonly InputAction m_Camera_CameraMove;
+    private readonly InputAction m_Camera_ToggleFixedCamera;
+    private readonly InputAction m_Camera_RotatePerButton;
     public struct CameraActions
     {
         private @InputActions m_Wrapper;
         public CameraActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Zoom => m_Wrapper.m_Camera_Zoom;
         public InputAction @CameraMove => m_Wrapper.m_Camera_CameraMove;
+        public InputAction @ToggleFixedCamera => m_Wrapper.m_Camera_ToggleFixedCamera;
+        public InputAction @RotatePerButton => m_Wrapper.m_Camera_RotatePerButton;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -315,6 +381,12 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @CameraMove.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnCameraMove;
                 @CameraMove.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnCameraMove;
                 @CameraMove.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnCameraMove;
+                @ToggleFixedCamera.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleFixedCamera;
+                @ToggleFixedCamera.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleFixedCamera;
+                @ToggleFixedCamera.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleFixedCamera;
+                @RotatePerButton.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotatePerButton;
+                @RotatePerButton.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotatePerButton;
+                @RotatePerButton.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotatePerButton;
             }
             m_Wrapper.m_CameraActionsCallbackInterface = instance;
             if (instance != null)
@@ -325,6 +397,12 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @CameraMove.started += instance.OnCameraMove;
                 @CameraMove.performed += instance.OnCameraMove;
                 @CameraMove.canceled += instance.OnCameraMove;
+                @ToggleFixedCamera.started += instance.OnToggleFixedCamera;
+                @ToggleFixedCamera.performed += instance.OnToggleFixedCamera;
+                @ToggleFixedCamera.canceled += instance.OnToggleFixedCamera;
+                @RotatePerButton.started += instance.OnRotatePerButton;
+                @RotatePerButton.performed += instance.OnRotatePerButton;
+                @RotatePerButton.canceled += instance.OnRotatePerButton;
             }
         }
     }
@@ -371,6 +449,8 @@ public class @InputActions : IInputActionCollection, IDisposable
     {
         void OnZoom(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
+        void OnToggleFixedCamera(InputAction.CallbackContext context);
+        void OnRotatePerButton(InputAction.CallbackContext context);
     }
     public interface IGameActions
     {
