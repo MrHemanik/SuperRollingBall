@@ -29,10 +29,11 @@ public class CameraController : MonoBehaviour
     public bool _fixedCamera = false; // Kamera ist fest; Kamera ist per Maus bewegbar.
     private float _cameraSmoothness = 0.5f;
     public Vector3 _fixedOffset; //fixed Offset bestimmt vom currentZoom, z.B: [0,8,-8]
-    public Vector3 _curOffset;//Offset der wirklich bei der Kamera herrscht
-    public Vector3 _offsetRotation = new Vector3(0,1,-1); //Für die Rotation der Kamera
+    public Vector3 _offsetRotationX = new Vector3(1,0,1); //Für die Rotation der Kamera
+    public Vector3 _offsetRotationY = new Vector3(0,1,0); //Für die Rotation der Kamera
     private float _buttonRotateSensitivity = 4;
-    private float _buttonRotate;
+    private float _buttonXRotate;
+    private float _buttonYRotate;
 
 
     // Start is called before the first frame update
@@ -61,7 +62,6 @@ public class CameraController : MonoBehaviour
     {
         _camera = GetComponent<Camera>();
         _fixedOffset = new Vector3(0.0f, currentZoom, -currentZoom);
-        _curOffset = _fixedOffset;
         _player = transform.parent.gameObject;
         _playerRigidbody = _player.GetComponent<Rigidbody>();
         _camera = GetComponent<Camera>();
@@ -81,17 +81,22 @@ public class CameraController : MonoBehaviour
             var playerPosition = playerTransform.position;
             if (!_fixedCamera)
             {
-                Quaternion camTurnAngle = Quaternion.AngleAxis(_mRotation.x+ _buttonRotate* rotateSpeed/10, Vector3.up);
-                _mRotation.x = 0;
-                _offsetRotation = camTurnAngle * _offsetRotation;
-                _curOffset = currentZoom *_offsetRotation;
+                Quaternion camTurnAngle = Quaternion.AngleAxis(_mRotation.x+ _buttonXRotate* rotateSpeed/10, Vector3.up);
+                Quaternion camTurnAngle2 = Quaternion.AngleAxis(_mRotation.y+ _buttonYRotate* rotateSpeed/10, Vector3.right);
+                
+                //Debug.Log("TA "+camTurnAngle);
+                _mRotation = Vector2.zero;
+                _offsetRotationX = camTurnAngle* _offsetRotationX;
+                _offsetRotationY = camTurnAngle2* _offsetRotationY;
+                Vector3 offset = currentZoom *(_offsetRotationX+_offsetRotationY);
+                
+                Vector3 newPosition = playerPosition + offset;
+                transform.position = Vector3.Slerp(transform.position, newPosition, _cameraSmoothness);
             }
             else
             {
-                _curOffset = _fixedOffset;
+                transform.position = playerPosition + _fixedOffset;
             }
-            Vector3 newPosition = playerPosition + _curOffset;
-            transform.position = Vector3.Slerp(transform.position, newPosition, _cameraSmoothness);
             //Rotation der Kamera
             gameObject.transform.LookAt(playerTransform);
             //Field of View
@@ -116,7 +121,7 @@ public class CameraController : MonoBehaviour
     private void TopDownCameraMode(string f)
     {
         _cameraMode = 1;
-        _fixedOffset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
+        _fixedOffset = new Vector3(0.0f, currentZoom*1.5f, 0);
         Debug.Log("CameraMode:TopDown");
     }
     private void SetAnimation(string input)
@@ -158,8 +163,8 @@ public class CameraController : MonoBehaviour
 
     private void ResetCamera(string s)
     {
-        _offsetRotation = new Vector3(0,1,-1);
-        _curOffset = _fixedOffset;
+        _offsetRotationX = new Vector3(0,1,-1);
+        _offsetRotationY = new Vector3(0,1,0);
     }
 
     private void StartPuzzle1SolvedCameraAnimation(string s)
@@ -209,7 +214,7 @@ public class CameraController : MonoBehaviour
         }
         //Neuberechnung des Offsets
         if(_cameraMode == 0) _fixedOffset = new Vector3(0.0f, currentZoom, -currentZoom);
-        else if (_cameraMode == 1) _fixedOffset = new Vector3(0.0f, currentZoom*1.5f, 0.0f);
+        else if (_cameraMode == 1) _fixedOffset = new Vector3(0.0f, currentZoom*1.5f, 0);
 
     }
     public void OnLook(InputAction.CallbackContext rotateValue) // Bei Mausbewegung
@@ -218,9 +223,13 @@ public class CameraController : MonoBehaviour
         _mRotation = rotateValue.ReadValue<Vector2>();
     }
 
-    public void RotateButton(InputAction.CallbackContext context)
+    public void RotateXButton(InputAction.CallbackContext context)
     {
-        _buttonRotate = _buttonRotateSensitivity*context.ReadValue<float>();
+        _buttonXRotate = _buttonRotateSensitivity*context.ReadValue<float>();
+    }
+    public void RotateYButton(InputAction.CallbackContext context)
+    {
+        _buttonYRotate = _buttonRotateSensitivity*context.ReadValue<float>();
     }
 
     public void ToggleFixedCamera(InputAction.CallbackContext context) //Beim Drücken von C

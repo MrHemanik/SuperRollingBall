@@ -144,9 +144,17 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""RotatePerButton"",
+                    ""name"": ""RotateXPerButton"",
                     ""type"": ""Value"",
                     ""id"": ""2c7772d5-3cb5-4425-bb57-9fcddf07c960"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""RotateYPerButton"",
+                    ""type"": ""Value"",
+                    ""id"": ""b2a2cb07-0e0f-48d4-b3d8-2ec9ff0dead6"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
@@ -193,7 +201,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""interactions"": ""Hold"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotatePerButton"",
+                    ""action"": ""RotateXPerButton"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -204,7 +212,18 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotatePerButton"",
+                    ""action"": ""RotateXPerButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""f9ec0c3f-b8b9-45d0-87a5-920626d3f2c1"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateXPerButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -215,7 +234,51 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""RotatePerButton"",
+                    ""action"": ""RotateXPerButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""817e9bd8-bdf9-47cf-a625-d910342a573c"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateXPerButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""1ec6d003-1626-4117-a0e3-a5e8702e403e"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateYPerButton"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""73e66a90-5e78-44ba-a3e9-ba963e751d44"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateYPerButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""7f084166-cc43-492d-b3f8-633ed9c1ba72"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateYPerButton"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -260,7 +323,8 @@ public class @InputActions : IInputActionCollection, IDisposable
         m_Camera_Zoom = m_Camera.FindAction("Zoom", throwIfNotFound: true);
         m_Camera_CameraMove = m_Camera.FindAction("CameraMove", throwIfNotFound: true);
         m_Camera_ToggleFixedCamera = m_Camera.FindAction("ToggleFixedCamera", throwIfNotFound: true);
-        m_Camera_RotatePerButton = m_Camera.FindAction("RotatePerButton", throwIfNotFound: true);
+        m_Camera_RotateXPerButton = m_Camera.FindAction("RotateXPerButton", throwIfNotFound: true);
+        m_Camera_RotateYPerButton = m_Camera.FindAction("RotateYPerButton", throwIfNotFound: true);
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Pause = m_Game.FindAction("Pause", throwIfNotFound: true);
@@ -357,7 +421,8 @@ public class @InputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Camera_Zoom;
     private readonly InputAction m_Camera_CameraMove;
     private readonly InputAction m_Camera_ToggleFixedCamera;
-    private readonly InputAction m_Camera_RotatePerButton;
+    private readonly InputAction m_Camera_RotateXPerButton;
+    private readonly InputAction m_Camera_RotateYPerButton;
     public struct CameraActions
     {
         private @InputActions m_Wrapper;
@@ -365,7 +430,8 @@ public class @InputActions : IInputActionCollection, IDisposable
         public InputAction @Zoom => m_Wrapper.m_Camera_Zoom;
         public InputAction @CameraMove => m_Wrapper.m_Camera_CameraMove;
         public InputAction @ToggleFixedCamera => m_Wrapper.m_Camera_ToggleFixedCamera;
-        public InputAction @RotatePerButton => m_Wrapper.m_Camera_RotatePerButton;
+        public InputAction @RotateXPerButton => m_Wrapper.m_Camera_RotateXPerButton;
+        public InputAction @RotateYPerButton => m_Wrapper.m_Camera_RotateYPerButton;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -384,9 +450,12 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @ToggleFixedCamera.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleFixedCamera;
                 @ToggleFixedCamera.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleFixedCamera;
                 @ToggleFixedCamera.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleFixedCamera;
-                @RotatePerButton.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotatePerButton;
-                @RotatePerButton.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotatePerButton;
-                @RotatePerButton.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotatePerButton;
+                @RotateXPerButton.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotateXPerButton;
+                @RotateXPerButton.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotateXPerButton;
+                @RotateXPerButton.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotateXPerButton;
+                @RotateYPerButton.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotateYPerButton;
+                @RotateYPerButton.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotateYPerButton;
+                @RotateYPerButton.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotateYPerButton;
             }
             m_Wrapper.m_CameraActionsCallbackInterface = instance;
             if (instance != null)
@@ -400,9 +469,12 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @ToggleFixedCamera.started += instance.OnToggleFixedCamera;
                 @ToggleFixedCamera.performed += instance.OnToggleFixedCamera;
                 @ToggleFixedCamera.canceled += instance.OnToggleFixedCamera;
-                @RotatePerButton.started += instance.OnRotatePerButton;
-                @RotatePerButton.performed += instance.OnRotatePerButton;
-                @RotatePerButton.canceled += instance.OnRotatePerButton;
+                @RotateXPerButton.started += instance.OnRotateXPerButton;
+                @RotateXPerButton.performed += instance.OnRotateXPerButton;
+                @RotateXPerButton.canceled += instance.OnRotateXPerButton;
+                @RotateYPerButton.started += instance.OnRotateYPerButton;
+                @RotateYPerButton.performed += instance.OnRotateYPerButton;
+                @RotateYPerButton.canceled += instance.OnRotateYPerButton;
             }
         }
     }
@@ -450,7 +522,8 @@ public class @InputActions : IInputActionCollection, IDisposable
         void OnZoom(InputAction.CallbackContext context);
         void OnCameraMove(InputAction.CallbackContext context);
         void OnToggleFixedCamera(InputAction.CallbackContext context);
-        void OnRotatePerButton(InputAction.CallbackContext context);
+        void OnRotateXPerButton(InputAction.CallbackContext context);
+        void OnRotateYPerButton(InputAction.CallbackContext context);
     }
     public interface IGameActions
     {
