@@ -145,6 +145,22 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "ToggleXRotation",
+                    "type": "Button",
+                    "id": "0a46e040-97ee-45bd-a9e3-891c7dbbd8c4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ToggleYRotation",
+                    "type": "Button",
+                    "id": "debcb624-077e-4f1f-a987-eaa332e151e8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -268,6 +284,28 @@
                     "action": "RotateYPerButton",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b7ae07ba-18c2-4bbd-819d-397011fdb589",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleXRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "37eab2c0-f1b6-4a0c-aafe-48ae2d3cf1dc",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleYRotation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
