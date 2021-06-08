@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using ObjectScripts;
 using ScreenScripts;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private float _standardMass;
     private float _standardDrag;
     private HudScript _hudScript;
+    private Transform _cameraTransform;
     
     
 
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
 	    transform.position = GameObject.Find("SpawnpointTrigger").GetComponent<SpawnpointScript>().transform.position;
+	    _cameraTransform = transform.Find("Camera");
 	    GameManager.StartListening("BallRespawn", BallRespawn);
 	    GameManager.StartListening("ResizeCore", ResizeCore);
 	    GameManager.StartListening("BallDeath", BallDeath);
@@ -86,8 +89,13 @@ public class PlayerController : MonoBehaviour
 		//Movement 
 		if (_movementVector.sqrMagnitude < 0.01) 
 			return;
-		Vector3 movement = new Vector3(_movementVector.x, 0.0f,_movementVector.y);
-        _rb.AddForce(movement * (Speed * speedModifier));
+		Vector3 forward = _cameraTransform.forward;
+		forward = new Vector3(forward.x, 0.0f, forward.z);
+		forward.Normalize();
+		float angle = (int) (Mathf.Atan2(_movementVector.x, _movementVector.y)*180/Math.PI); //https://answers.unity.com/questions/914088/get-angle-of-vector2.html
+		Vector3 movement = Quaternion.AngleAxis(angle, Vector3.up) * forward;
+
+		_rb.AddForce(movement * (Speed * speedModifier));
         //Entfernt die Physikelemente des RigidBodys
         //rb.velocity = new Vector3(0, 0, 0);
         //rb.angularVelocity = new Vector3(0, 0, 0);
