@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace EnemyScripts
 {
-    public class DestroySelfScript : MonoBehaviour
+    public class DestroyEnemyScript : MonoBehaviour
     {
         public bool alive = true;
         public GameObject deathCloudPrefab;
@@ -15,7 +15,8 @@ namespace EnemyScripts
                 var rb = other.GetComponent<Rigidbody>();
                 var rbVelocity = rb.velocity;
                 rb.velocity = new Vector3(rbVelocity.x,-rbVelocity.y,rbVelocity.x); //"Bounce" vom Objekt, invertiert die Geschwindigkeit der Y-Achse
-                transform.parent.GetComponent<BasicEnemyScript>().alive = false;
+                BasicEnemyScript bes = transform.parent.GetComponent<BasicEnemyScript>();
+                if (bes != null) bes.alive = false;
             }
         }
     }

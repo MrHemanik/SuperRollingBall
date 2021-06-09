@@ -88,7 +88,6 @@ GameObject:
   - component: {fileID: 6790644503871068621}
   - component: {fileID: 7373290660451740291}
   - component: {fileID: 7376125617798332892}
-  - component: {fileID: 6590586621967985752}
   m_Layer: 0
   m_Name: InnerSphere
   m_TagString: Untagged
@@ -159,17 +158,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6590586621967985752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5737605376483538127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11f3f695b554c494cb1872d93753f131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  alive: 1
-  deathCloudPrefab: {fileID: 0}

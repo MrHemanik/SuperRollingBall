@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 
 namespace EnemyScripts
 {
@@ -13,13 +11,13 @@ namespace EnemyScripts
         public GameObject bulletPrefab;
         private Transform _scope;
         private float _timeTilNextShot;
-        public bool resetAim = false;
-        private Quaternion defaultRotation;
+        public bool resetAim;
+        private Quaternion _defaultRotation;
 
         private void Start()
         {
             _scope = gameObject.transform.GetChild(0).gameObject.transform;
-            defaultRotation = _scope.rotation;
+            _defaultRotation = _scope.rotation;
             GetComponent<SphereCollider>().radius = range;
 
         }
@@ -28,8 +26,8 @@ namespace EnemyScripts
         {
             if (resetAim)
             {
-                _scope.rotation = Quaternion.Slerp(_scope.rotation, defaultRotation, rotationSpeed * Time.deltaTime);
-                if (Quaternion.Angle(_scope.rotation,defaultRotation) < 0.01f) resetAim = false;
+                _scope.rotation = Quaternion.Slerp(_scope.rotation, _defaultRotation, rotationSpeed * Time.deltaTime);
+                if (Quaternion.Angle(_scope.rotation,_defaultRotation) < 0.01f) resetAim = false;
             }
         }
 

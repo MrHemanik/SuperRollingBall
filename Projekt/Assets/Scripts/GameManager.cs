@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 
 public class GameManager : MonoBehaviour
 {
+    #region Fremdcode-EventListener
     /*Fremdcode Anfang
     Vom UnityTutorial:
     https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
@@ -72,8 +73,10 @@ public class GameManager : MonoBehaviour
         }
     }
     /*Fremdcode zu Message-System ENDE*/
+    #endregion
+    #region Fremdcode-Speichern
     /*Fremdcode fürs Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
-
+    
     private static string _path;
     private static void LoadDataFromFile()
     {
@@ -119,6 +122,8 @@ public class GameManager : MonoBehaviour
         File.Delete(_path);
         LoadScene("StartScene");
     }
+    #endregion
+    #region variablen
     
     private static readonly int[] LevelList = {1001, 1002, 1003, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
     private static readonly string[] SkyboxColor = {"BFFFFD", "A995A5","000000", "FFFFFF"}; //Jedes level hat auch eine Skybox
@@ -140,7 +145,8 @@ public class GameManager : MonoBehaviour
     /*Prefabs*/
     public GameObject damageTakenScreenPrefab;
     
-
+    #endregion
+    #region awake/start
 
     private void Awake()
     {
@@ -175,8 +181,9 @@ public class GameManager : MonoBehaviour
         }
         else Destroy(gameObject);
     }
+    #endregion
     /* Getter und Setter ---------------------------------------------------------------------------------------------*/
-    
+    #region GetterSetter
     //Getter und Setter für _timeHighscore, für den Fall, dass außerhalb der Arraygröße abgefragt wird (z.B durch alte Spieldaten)
     public static float GetHighscoreFromIndex(int i) //Ich musste es public machen, da sonst die LevelSelectionHighscores keinen guten Weg hätten, das abzufragen
     {
@@ -211,7 +218,11 @@ public class GameManager : MonoBehaviour
     {
         return _collectedPermaUpgrades[id];
     }
-    /* Eventmethoden -------------------------------------------------------------------------------------------------*/
+    #endregion
+    /* Eventmethoden bzw. Listenermethoden ---------------------------------------------------------------------------*/
+
+    #region EventMethoden
+    
     private void CoinCollected(string s) // Wird beim Münzaufsammeln ausgelöst
     {
         _collectedCoinsTotal++;
@@ -260,7 +271,15 @@ public class GameManager : MonoBehaviour
 
         }
     }
-    //Callback Methoden
+    
+    private void PermaUpgradeCollected(string id)
+    {
+        _collectedPermaUpgrades[int.Parse(id)] = true;
+        CollectUpgrade(int.Parse(id));
+    }
+    
+    //Callback Methoden, also Methoden die im GameManager starten, was anderes ausführen und danach hier den callback aufrufen 
+    #region CallbackMethoden
     private void StartLevelTimer(string s) //Wird ausgeführt nachdem die Startkamerafahrt des Levels fertig ist
     {
         _levelStartTime = Time.time;
@@ -289,7 +308,9 @@ public class GameManager : MonoBehaviour
         TriggerEvent("StartCameraAnimation",LevelList[_curLevel].ToString());
         TriggerEvent("SkyboxColor",SkyboxColor[_curLevel]);
     }
+    #endregion CallbackMethoden
     //SceneManagement
+    #region SceneManagement
     private void LoadScene(string sceneName) //Lädt eine Scene
     {
         Debug.Log("Scene wird geladen: "+sceneName);
@@ -332,14 +353,10 @@ public class GameManager : MonoBehaviour
     {
         LoadScene(LevelList[_curLevel]+"_Level");
     }
-
-    private void PermaUpgradeCollected(string id)
-    {
-        _collectedPermaUpgrades[int.Parse(id)] = true;
-        CollectUpgrade(int.Parse(id));
-    }
-
+    #endregion SceneManagement
+    #endregion EventMethoden
     /* Methoden ------------------------------------------------------------------------------------------------------*/
+    #region Methoden
     private void Reset() //Setzt lokale Variablen zurück
     {
         
@@ -411,7 +428,9 @@ public class GameManager : MonoBehaviour
                     break; 
             }
     }
+    #endregion Methoden
     /* Input System Methoden -----------------------------------------------------------------------------------------*/
+    #region InputSystem
     [UsedImplicitly]
     public void OnPause() //Pausiert das Spiel (Auslöser: p)
     {
@@ -419,4 +438,5 @@ public class GameManager : MonoBehaviour
         else Time.timeScale = 1;
         TriggerEvent("TogglePauseScreen");
     }
+    #endregion
 }

@@ -92,7 +92,10 @@ public class CameraController : MonoBehaviour
                 Quaternion yMovement = _newQuaternion;
                 if (_yRotation)
                     //Falls Y-Rotation aktiviert ist
-                    yMovement = Quaternion.AngleAxis(_mRotation.y + _buttonYRotate * rotateSpeed / 10, transform.right);
+                    yMovement = Quaternion.AngleAxis(_mRotation.y + _buttonYRotate * rotateSpeed / 10, 
+                        transform.right // Orthogonaler Vektor zu forward, was die lookat direction zum Ball ist.
+                        );
+                
 
                 Quaternion movement = xMovement * yMovement;
                 //Debug.Log("TA "+camTurnAngle);
