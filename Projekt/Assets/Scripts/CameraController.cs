@@ -35,6 +35,7 @@ public class CameraController : MonoBehaviour
     private bool _fixedCamera = true; // Kamera ist fest; Kamera ist per Maus bewegbar.
     private bool _xRotation = true;
     private bool _yRotation = false;
+    private Vector3 _yRotationAxis;
     private readonly Quaternion _newQuaternion = Quaternion.Euler(0,0,0);
 
 
@@ -86,12 +87,13 @@ public class CameraController : MonoBehaviour
                 //https://forum.unity.com/threads/free-look-with-new-input-system.676873/
                 //Ich habe viel durch StackOverflow gelernt, jedoch habe ich dort nur die Befehle wie AngleAxis oder Slerp gelernt und habe daraus die Kamerabewegung erstellt
                 Quaternion xMovement = _newQuaternion;
-                if(_xRotation)
+                if(_xRotation) //Falls X-Rotation aktiviert ist
                     xMovement = Quaternion.AngleAxis(_mRotation.x+ _buttonXRotate* rotateSpeed/10, Vector3.up);
                 Quaternion yMovement = _newQuaternion;
-                if(_yRotation)
-                    yMovement = xMovement * Quaternion.AngleAxis(_mRotation.y+ _buttonYRotate* rotateSpeed/10, Vector3.right);
-                
+                if (_yRotation)
+                    //Falls Y-Rotation aktiviert ist
+                    yMovement = Quaternion.AngleAxis(_mRotation.y + _buttonYRotate * rotateSpeed / 10, transform.right);
+
                 Quaternion movement = xMovement * yMovement;
                 //Debug.Log("TA "+camTurnAngle);
                 _mRotation = Vector2.zero;
