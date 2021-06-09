@@ -1,6 +1,6 @@
-using System.Numerics;
+
+using System;
 using JetBrains.Annotations;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Quaternion = UnityEngine.Quaternion;
@@ -24,19 +24,27 @@ public class CameraController : MonoBehaviour
     private int _cameraMode;
     private Camera _camera;
     //CameraMovement: Rotation
-    public float rotateSpeed = 5;
-    private Vector2 _mRotation;
-    private float _cameraSmoothness = 0.5f;
-    public Vector3 _fixedOffset; //fixed Offset bestimmt vom currentZoom, z.B: [0,8,-8]
-    private float _buttonRotateSensitivity = 4;
-    private Vector3 _offsetRotation = new Vector3(0,1,-1);
-    private float _buttonXRotate;
-    private float _buttonYRotate;
-    private bool _fixedCamera = true; // Kamera ist fest; Kamera ist per Maus bewegbar.
-    private bool _xRotation = true;
-    private bool _yRotation = false;
-    private Vector3 _yRotationAxis;
+    private const float RotateSpeed = 5;            // RotSpeed für Maus
+    private const float ButtonRotateSensitivity = 4;// RotSpeed für Buttons
+    private const float CameraSmoothness = 0.5f;
+        //Die Kamera-Höhen sind relativ zu einer Kugel mit R = Wurzel(2), so ist Wurzel(2) die Spitze der Kugel und -Wurzel(2) der tiefste Punkt.
+    private const float MINCameraHeight = 0.1f;     // Minimal Y Höhe des Kugelorbits
+    private const float MAXCameraHeight = 1.2f;     // Maximal Y Höhe des Kugelorbits
+    //CameraMovementInputVariablen
+    private Vector2 _mRotation;         // MouseRotation
+    private float _buttonXRotate;       // Button XZ-Plane-Rotation Input
+    private float _buttonYRotate;       // Button Y-Rotation Input
+    private bool _fixedCamera = true;   // Kamera ist fest; Kamera ist per Maus bewegbar.
+    private bool _xRotation = true;     // X-Rotation ist fest
+    private bool _yRotation;            // Y-Rotation ist fest
+    
+    private Vector3 _fixedOffset;                                // fixed Offset bestimmt vom currentZoom, z.B: [0,8,-8]
+    private Vector3 _offsetRotation = new Vector3(0,1,-1);  // KameraOffset, eigentliche Kameraposition relativ zum Player
+    
     private readonly Quaternion _newQuaternion = Quaternion.Euler(0,0,0);
+    private readonly float _rootOfTwo = Mathf.Sqrt(2);
+    private readonly bool[] _cameraUpDownMovement = new bool[2]; //Das erste für Up, das zweite für Down
+    
 
 
     // Start is called before the first frame update
@@ -86,26 +94,37 @@ public class CameraController : MonoBehaviour
             {
                 //https://forum.unity.com/threads/free-look-with-new-input-system.676873/
                 //Ich habe viel durch StackOverflow gelernt, jedoch habe ich dort nur die Befehle wie AngleAxis oder Slerp gelernt und habe daraus die Kamerabewegung erstellt
+                
+                //input einlesen
+                float x = _mRotation.x;
+                float y = _mRotation.y;
+                _mRotation = Vector2.zero; //Setzt den Input wieder zurück
+                
+                //Berechnung ob Input akzeptiert wird;
+                if (_cameraUpDownMovement[0] && y > 0) y = 0; //Falls man nicht nach oben bewegen darf, der Input aber nach oben geht, wird der Input gelöscht
+                if (_cameraUpDownMovement[1] && y < 0) y = 0; // -||-
+
+                //Berechnung der Rotation
                 Quaternion xMovement = _newQuaternion;
                 if(_xRotation) //Falls X-Rotation aktiviert ist
-                    xMovement = Quaternion.AngleAxis(_mRotation.x+ _buttonXRotate* rotateSpeed/10, Vector3.up);
+                    xMovement = Quaternion.AngleAxis(x+ _buttonXRotate* RotateSpeed/10, Vector3.up);
                 Quaternion yMovement = _newQuaternion;
                 if (_yRotation)
                     //Falls Y-Rotation aktiviert ist
-                    yMovement = Quaternion.AngleAxis(_mRotation.y + _buttonYRotate * rotateSpeed / 10, 
+                    yMovement = Quaternion.AngleAxis(y + _buttonYRotate * RotateSpeed / 10, 
                         transform.right // Orthogonaler Vektor zu forward, was die lookat direction zum Ball ist.
                         );
-                
-
                 Quaternion movement = xMovement * yMovement;
-                //Debug.Log("TA "+camTurnAngle);
-                _mRotation = Vector2.zero;
-                //_offsetRotationX = camTurnAngle* _offsetRotationX;
-                _offsetRotation = movement* _offsetRotation;
-                Vector3 offset = currentZoom *(_offsetRotation);
                 
+                _offsetRotation = movement* _offsetRotation;
+                //Erkärung zum Orbitsbereich: https://i.imgur.com/uytrurW.png *Outdated*
+                _cameraUpDownMovement[0] = (_offsetRotation.y >= MAXCameraHeight); //Muss false sein, bei true darf nicht bewegt werden
+                _cameraUpDownMovement[1] = (_offsetRotation.y <= MINCameraHeight);
+                Vector3 offset = currentZoom *(_offsetRotation);
+
                 Vector3 newPosition = playerPosition + offset;
-                transform.position = Vector3.Slerp(transform.position, newPosition, _cameraSmoothness);
+                transform.position = Vector3.Slerp(transform.position, newPosition, CameraSmoothness);
+                
             }
             else
             {
@@ -202,6 +221,8 @@ public class CameraController : MonoBehaviour
         transform1.rotation = new Quaternion();
         Debug.Log("Kamera Reset");
     }
+    
+    
     #endregion
     /* Input Methoden -------------------------------------------------------------------------------------------------*/
     #region InputSystem
@@ -239,11 +260,11 @@ public class CameraController : MonoBehaviour
 
     public void RotateXButton(InputAction.CallbackContext context)
     {
-        _buttonXRotate = _buttonRotateSensitivity*context.ReadValue<float>();
+        _buttonXRotate = ButtonRotateSensitivity*context.ReadValue<float>();
     }
     public void RotateYButton(InputAction.CallbackContext context)
     {
-        _buttonYRotate = _buttonRotateSensitivity*context.ReadValue<float>();
+        _buttonYRotate = ButtonRotateSensitivity*context.ReadValue<float>();
     }
     public void ToggleFixedCamera(InputAction.CallbackContext context) //Beim Drücken von C
     {
