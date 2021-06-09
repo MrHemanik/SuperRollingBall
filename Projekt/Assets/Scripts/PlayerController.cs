@@ -210,7 +210,7 @@ public class PlayerController : MonoBehaviour
 		_rb.drag = _standardDrag;
 		_rb.mass = _standardMass;
 		transform.SetParent(null);
-		ResizeCore("1");
+		GameManager.TriggerEvent("HitPointsCollected"); //Setzt das Leben wieder voll und ruft danach ResizeCore auf
     }
 
     private void ResizeCore(string size)

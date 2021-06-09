@@ -35,7 +35,7 @@ public class CameraController : MonoBehaviour
     private bool _fixedCamera = true; // Kamera ist fest; Kamera ist per Maus bewegbar.
     private bool _xRotation = true;
     private bool _yRotation = false;
-    private Quaternion _newQuaternion = Quaternion.Euler(0,0,0);
+    private readonly Quaternion _newQuaternion = Quaternion.Euler(0,0,0);
 
 
     // Start is called before the first frame update
@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
     
     private void FixedUpdate() //Eigentlich LateUpdate für Updates die was anzeigen sollen, da die als letztes berechnet werden, jedoch wird die Camera Transformed, was in Fixed gehört (sonst entsteht shutter)
     {
-        //https://forum.unity.com/threads/free-look-with-new-input-system.676873/
+        
         if (!_cutScene)
         {
             //Position der Kamera
@@ -83,6 +83,8 @@ public class CameraController : MonoBehaviour
             var playerPosition = playerTransform.position;
             if (!_fixedCamera)
             {
+                //https://forum.unity.com/threads/free-look-with-new-input-system.676873/
+                //Ich habe viel durch StackOverflow gelernt, jedoch habe ich dort nur die Befehle wie AngleAxis oder Slerp gelernt und habe daraus die Kamerabewegung erstellt
                 Quaternion xMovement = _newQuaternion;
                 if(_xRotation)
                     xMovement = Quaternion.AngleAxis(_mRotation.x+ _buttonXRotate* rotateSpeed/10, Vector3.up);
@@ -133,13 +135,13 @@ public class CameraController : MonoBehaviour
     }
     private void SetAnimation(string input)
     {
+        Animation(true);
         // Reminder: Die Animation muss im Animator hinzugefügt und die transition gesetzt sein!
         _animator.SetInteger(Animator.StringToHash("Level"),int.Parse(input));
         foreach (AnimationClip a in _animator.runtimeAnimatorController.animationClips)
         {
             if (a.name == input)
             {
-                Animation(true);
                 _cutSceneDuration = a.length;
                 Debug.Log("Cutscene Duration:"+_cutSceneDuration);
                 TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
@@ -186,6 +188,7 @@ public class CameraController : MonoBehaviour
     private void Animation(bool active)
     {
         //Werte, die beim Start/Ende der Animation geändert werden müssen
+        _animator.enabled = active;
         _cutScene = active;
         _playerRigidbody.isKinematic = active;
         _playerInput.enabled = !active;
@@ -240,6 +243,7 @@ public class CameraController : MonoBehaviour
     public void ToggleFixedCamera(InputAction.CallbackContext context) //Beim Drücken von C
     {
         _fixedCamera = !_fixedCamera;
+        _offsetRotation = new Vector3(0,1,-1);
         GameManager.TriggerEvent("UpdateFixedDisplay", _fixedCamera.ToString());
     }
     public void ToggleXRotation(InputAction.CallbackContext context) //Beim Drücken von V

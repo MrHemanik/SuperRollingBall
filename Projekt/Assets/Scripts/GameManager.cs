@@ -231,7 +231,6 @@ public class GameManager : MonoBehaviour
     private void Death(string s) // Wird beim Tod ausgelöst (Runterfallen oder keine Hitpoints mehr
     {
         _livePoints--;
-        ChangeHitPoints(_maxHitPoints); //Wird visuell beim Respawnknopf aktualisiert
         if (_livePoints <= 0)
         {
             LoadScene("GameOverScene");

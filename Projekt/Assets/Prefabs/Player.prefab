@@ -297,12 +297,8 @@ MonoBehaviour:
   zoomRange: {x: 2, y: 12}
   currentZoom: 8
   defaultFOV: 60
-  _cutScene: 1
   rotateSpeed: 5
   _fixedOffset: {x: 0, y: 0, z: 0}
-  _fixedCamera: 0
-  _xRotation: 0
-  _yRotation: 0
 --- !u!114 &2700833399312554410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,7 +494,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2700833399312554413}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 43531276584727545a2ccf23f9535d38, type: 2}
   m_CullingMode: 0
@@ -7704,7 +7700,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8512938584463092710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8512938586042264540}
@@ -8647,7 +8643,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8512938585365866718}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2700833400266204903}
@@ -8785,7 +8781,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8512938585497473317}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2700833400266204903}
