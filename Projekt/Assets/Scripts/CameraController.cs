@@ -10,7 +10,7 @@ using Vector3 = UnityEngine.Vector3;
 public class CameraController : MonoBehaviour
 {
     private GameObject _player;
-    public Vector2 zoomRange = new Vector2(4.0f, 12.0f); //Vector, der angibt, dass von Distanz 4(x) bis 12(y) gezoomt sein kann.
+    public Vector2 zoomRange = new Vector2(2.0f, 12.0f); //Vector, der angibt, dass von Distanz 2(x) bis 12(y) gezoomt sein kann.
     public int currentZoom = 8; //Startwert 8;
     public int defaultFOV = 60;
     private bool _cutScene = true;
@@ -20,8 +20,7 @@ public class CameraController : MonoBehaviour
     private Rigidbody _playerRigidbody;
     private PlayerInput _playerInput;
     private Animator _animator;
-    //private string[] _cameraModeList ={"Normal","TopDown"};
-    private int _cameraMode;
+    private int _cameraMode; //0 Normal; 1 TopDown
     private Camera _camera;
     //CameraMovement: Rotation
     private const float RotateSpeed = 5;            // RotSpeed für Maus
@@ -29,7 +28,7 @@ public class CameraController : MonoBehaviour
     private const float CameraSmoothness = 0.5f;
         //Die Kamera-Höhen sind relativ zu einer Kugel mit R = Wurzel(2), so ist Wurzel(2) die Spitze der Kugel und -Wurzel(2) der tiefste Punkt.
     private const float MINCameraHeight = 0.1f;     // Minimal Y Höhe des Kugelorbits
-    private const float MAXCameraHeight = 1.2f;     // Maximal Y Höhe des Kugelorbits
+    private const float MAXCameraHeight = 1.4f;     // Maximal Y Höhe des Kugelorbits, muss < Wurzel(2) bzw radius sein
     //CameraMovementInputVariablen
     private Vector2 _mRotation;         // MouseRotation
     private float _buttonXRotate;       // Button XZ-Plane-Rotation Input
@@ -41,8 +40,7 @@ public class CameraController : MonoBehaviour
     private Vector3 _fixedOffset;                                // fixed Offset bestimmt vom currentZoom, z.B: [0,8,-8]
     private Vector3 _offsetRotation = new Vector3(0,1,-1);  // KameraOffset, eigentliche Kameraposition relativ zum Player
     
-    private readonly Quaternion _newQuaternion = Quaternion.Euler(0,0,0);
-    private readonly float _rootOfTwo = Mathf.Sqrt(2);
+    private readonly Quaternion _newQuaternion = Quaternion.Euler(0,0,0); //Quaternion mit keiner Rotation
     private readonly bool[] _cameraUpDownMovement = new bool[2]; //Das erste für Up, das zweite für Down
     
 
@@ -103,6 +101,8 @@ public class CameraController : MonoBehaviour
                 //Berechnung ob Input akzeptiert wird;
                 if (_cameraUpDownMovement[0] && y > 0) y = 0; //Falls man nicht nach oben bewegen darf, der Input aber nach oben geht, wird der Input gelöscht
                 if (_cameraUpDownMovement[1] && y < 0) y = 0; // -||-
+                if (_cameraUpDownMovement[0] && _buttonYRotate > 0) _buttonYRotate = 0;
+                if (_cameraUpDownMovement[1] && _buttonYRotate < 0) _buttonYRotate = 0;
 
                 //Berechnung der Rotation
                 Quaternion xMovement = _newQuaternion;
@@ -188,9 +188,9 @@ public class CameraController : MonoBehaviour
         Debug.Log("Skybox-Farbe wird geladen: "+color);
         //Rechnet den Hexadeximal-Farbenwert zum Objekt Color um
         _camera.backgroundColor = new Color32(
-            System.Convert.ToByte(color.Substring(0, 2),16),
-            System.Convert.ToByte(color.Substring(2, 2),16),
-            System.Convert.ToByte(color.Substring(4, 2),16),1
+            Convert.ToByte(color.Substring(0, 2),16),
+            Convert.ToByte(color.Substring(2, 2),16),
+            Convert.ToByte(color.Substring(4, 2),16),1
             );
     }
 

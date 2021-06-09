@@ -193,7 +193,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""id"": ""f472a22d-f868-4744-b665-4bcad780a945"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""InvertVector2(invertX=false)"",
                     ""groups"": """",
                     ""action"": ""CameraMove"",
                     ""isComposite"": false,
