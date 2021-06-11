@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour
         GameManager.StartListening("ResetCamera", ResetCamera);
         GameManager.StartListening("CameraModeNormal", NormalCameraMode);
         GameManager.StartListening("CameraModeTopDown", TopDownCameraMode);
-        GameManager.StartListening("Puzzle1Solved", StartPuzzle1SolvedCameraAnimation);
+        GameManager.StartListening("PuzzleSolved", StartPuzzleSolvedCameraAnimation);
     }
     private void OnDestroy()
     {
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
         GameManager.StopListening("ResetCamera");
         GameManager.StopListening("CameraModeNormal");
         GameManager.StopListening("CameraModeTopDown");
-        GameManager.StopListening("Puzzle1Solved");
+        GameManager.StopListening("PuzzleSolved");
     }
     
     private void Start()
@@ -199,12 +199,19 @@ public class CameraController : MonoBehaviour
         _offsetRotation = new Vector3(1,1,1);
     }
 
-    private void StartPuzzle1SolvedCameraAnimation(string s)
+    private void StartPuzzleSolvedCameraAnimation(string puzzleID)
     {
         Animation(true);
-        _animator.SetTrigger(Animator.StringToHash("Puzzle1Solved"));
-        _cutSceneDuration =3.30f; //Idealerweise wie bei SetAnimation die CutSceneDuration ermitteln, aber das wäre zu viel rechenarbeit, wenn man auch einfach die Fixzahl eingeben kann
-        TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
+        _animator.SetInteger(Animator.StringToHash("PuzzleSolved"),int.Parse(puzzleID));
+        foreach (AnimationClip a in _animator.runtimeAnimatorController.animationClips)
+        {
+            if (a.name == "PuzzleSolved"+puzzleID+"Camera")
+            {
+                _cutSceneDuration = a.length;
+                TimerManagerScript.StartTimer("EndCameraAnimation",_cutSceneDuration);
+                return;
+            }
+        }
     }
     #endregion
     /* Methoden ------------------------------------------------------------------------------------------------------*/
