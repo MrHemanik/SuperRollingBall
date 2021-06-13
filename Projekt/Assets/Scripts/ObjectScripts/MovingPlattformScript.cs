@@ -11,7 +11,7 @@ namespace ObjectScripts
         public float pauseTimeMid = 1.0f; //Zeit, die er am Punkt wartet.
         private Vector3 _endPoint;
         private Vector3 _startPoint;
-        public GameObject _player;
+        private GameObject _player;
         private bool _movePlayer;
         private Vector3 _speed; 
         private void Start()
