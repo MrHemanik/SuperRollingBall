@@ -1,4 +1,5 @@
 using System;
+using PlayerScripts;
 using UnityEngine;
 
 public class StatusEffectPickupScript : MonoBehaviour

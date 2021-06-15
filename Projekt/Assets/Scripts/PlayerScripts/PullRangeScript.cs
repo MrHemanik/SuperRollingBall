@@ -6,6 +6,7 @@ namespace PlayerScripts
 {
     public class PullRangeScript : MonoBehaviour
     {
+        //Skript welches Objekte mit Tag die in im pullableObjectTags array stehen zur Liste hinzufügt, sobald eins in der Range ist.
         public string[] pullableObjectTags;
         private PlayerController pc;
 
