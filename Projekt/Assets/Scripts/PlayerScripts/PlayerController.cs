@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using ObjectScripts;
 using ScreenScripts;
@@ -18,7 +19,6 @@ public class PlayerController : MonoBehaviour
     private const float MAXJumpSpeed = 600;
     private const float TimeTilMaxJump = 2.0f; //Sekunden, bis der volle Sprung ausgeführt wird
     
-    
     private float _currentJumpCharge;
     private bool _jumpAllowed; // Gibt an, ob ein Sprung erlaubt ist (Bodenberührung)
     private bool _chargeJump;
@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour
     private float _standardDrag;
     private HudScript _hudScript;
     private Transform _cameraTransform;
+    
+    public bool _pullObjects;
+    public List<GameObject> pullableObjectsInRange;
     
     
 
@@ -84,21 +87,29 @@ public class PlayerController : MonoBehaviour
 			    UpdateCurrentJumpCharge(MAXJumpSpeed); //Damit aus sowas wie 4,000001 eine 4 wird - im generellen aber redundant, da es keinen Unterschied macht.
 		    }
 	    } 
-    
-
+	    
 		//Movement 
-		if (_movementVector.sqrMagnitude < 0.01) 
-			return;
-		Vector3 forward = _cameraTransform.forward;
+		if (_movementVector.sqrMagnitude > 0.01){
+			Vector3 forward = _cameraTransform.forward;
 		forward = new Vector3(forward.x, 0.0f, forward.z);
 		forward.Normalize();
 		float angle = (int) (Mathf.Atan2(_movementVector.x, _movementVector.y)*180/Math.PI); //https://answers.unity.com/questions/914088/get-angle-of-vector2.html
 		Vector3 movement = Quaternion.AngleAxis(angle, Vector3.up) * forward;
 
 		_rb.AddForce(movement * (Speed * speedModifier));
-        //Entfernt die Physikelemente des RigidBodys
-        //rb.velocity = new Vector3(0, 0, 0);
-        //rb.angularVelocity = new Vector3(0, 0, 0);
+		}
+		//Pull Objects
+		if (_pullObjects)
+		{
+			Debug.Log("BANAN");
+			Vector3 playerPos = transform.position;
+			foreach (var pullObject in pullableObjectsInRange)
+			{
+				Vector3 pullPos = pullObject.transform.position;
+
+				pullObject.GetComponent<Rigidbody>().AddForce(playerPos - pullPos);
+			}
+		}
     }
 	#endregion
     /* Getter und Setter ---------------------------------------------------------------------------------------------*/
@@ -276,6 +287,13 @@ public class PlayerController : MonoBehaviour
 				    break;
 		    }
 	    }
+    }
+
+    [UsedImplicitly]
+    public void OnBoxPull(InputAction.CallbackContext context)
+    {
+	    if (context.started) _pullObjects = true;
+	    if (context.canceled) _pullObjects = false;
     }
     #endregion
 
