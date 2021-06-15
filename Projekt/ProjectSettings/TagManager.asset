@@ -7,7 +7,6 @@ TagManager:
   - Goal
   - Ground
   - Walljump
-  - Moving
   - Death
   - Coin
   - Bounce
@@ -22,6 +21,7 @@ TagManager:
   - PermaHitpoints
   - BoxType3
   - BoxType4
+  - BoxResetArea
   layers:
   - Default
   - TransparentFX

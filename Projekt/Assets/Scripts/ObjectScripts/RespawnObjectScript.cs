@@ -21,7 +21,7 @@ namespace ObjectScripts
         // Update is called once per frame
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Death"))
+            if (other.CompareTag("Death")||other.CompareTag("BoxResetArea"))
             {
                 Respawn();
             }
@@ -29,10 +29,16 @@ namespace ObjectScripts
 
         public void Respawn()
         {
+            SpawnRespawnParticles();
             _tf.position = _respawnPosition;
             _tf.rotation = _respawnRotation;
             _rb.velocity = new Vector3(0, 0, 0);
             _rb.angularVelocity = new Vector3(0, 0, 0);
+            SpawnRespawnParticles();
+        }
+
+        private void SpawnRespawnParticles()
+        {
             Instantiate (respawnEffect, transform.position, new Quaternion()); //Partikelwolke
         }
     }

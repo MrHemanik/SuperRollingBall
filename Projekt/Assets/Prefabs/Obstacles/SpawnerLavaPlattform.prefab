@@ -45,3 +45,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 2663240014550385674, guid: c11b538f3237ef047ab3b70f7471b3b5, type: 3}
   spawnEveryXSeconds: 5
+  randomRange: 0.2

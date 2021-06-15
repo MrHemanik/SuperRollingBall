@@ -9,8 +9,8 @@ namespace ObjectScripts
         private bool _movePlayer;
         private Vector3 _speed;
         private Vector3 _lastPosition;
-        
-        private void Update()
+
+        private void FixedUpdate()
         {
             if (!_movePlayer) return;
             var position = transform.position;

@@ -222,7 +222,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""negative"",
+                    ""name"": ""positive"",
                     ""id"": ""bbe1f8ce-35c5-481c-b502-e37a27dbfa6b"",
                     ""path"": ""<Keyboard>/rightShift"",
                     ""interactions"": """",
@@ -244,7 +244,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""positive"",
+                    ""name"": ""negative"",
                     ""id"": ""ceca2324-1977-4e11-ac28-0087795fae62"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
