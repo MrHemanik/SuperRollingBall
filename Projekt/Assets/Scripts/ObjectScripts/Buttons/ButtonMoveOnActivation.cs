@@ -25,6 +25,7 @@ namespace ObjectScripts
 
         private void PuzzleSolved()
         {
+            Debug.Log("Puzzle "+puzzleID+" gelöst");
             gameObject.transform.GetChild(0).GetComponent<Animator>().SetInteger(Animator.StringToHash("PuzzleSolved"),puzzleID);
             GameManager.TriggerEvent("PuzzleSolved",puzzleID.ToString());
         }

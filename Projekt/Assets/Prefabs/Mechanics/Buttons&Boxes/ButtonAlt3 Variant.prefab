@@ -1857,6 +1857,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7682309063439312105, guid: dbb0deb9332c7bd42a747b0adde12004,
+        type: 3}
+      propertyPath: colliderEntity
+      value: BoxType3
+      objectReference: {fileID: 0}
     - target: {fileID: 7867230257409254830, guid: dbb0deb9332c7bd42a747b0adde12004,
         type: 3}
       propertyPath: m_Mesh
@@ -1875,7 +1880,7 @@ PrefabInstance:
     - target: {fileID: 8375818696616744624, guid: dbb0deb9332c7bd42a747b0adde12004,
         type: 3}
       propertyPath: m_Name
-      value: ButtonAlt3
+      value: ButtonAlt3 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8375818696616744631, guid: dbb0deb9332c7bd42a747b0adde12004,
         type: 3}

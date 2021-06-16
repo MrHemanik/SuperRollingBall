@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace ObjectScripts.Buttons
@@ -9,6 +10,7 @@ namespace ObjectScripts.Buttons
         private string _colliderEntity;
         private GameObject _objectToMove;
         private bool _moveObject;
+        private static readonly Quaternion zeroQuaternion = Quaternion.Euler(0,0,0);
         private void Start()
         {
             _colliderEntity = gameObject.GetComponent<ButtonActivateScript>().colliderEntity;
@@ -17,7 +19,8 @@ namespace ObjectScripts.Buttons
         private void Update()
         {
             if (!_moveObject) return;
-            _objectToMove.transform.position = Vector3.Slerp(_objectToMove.transform.position, transform.position, 0.005f);
+            _objectToMove.transform.position = Vector3.Lerp(_objectToMove.transform.position, transform.position, 0.005f);
+            _objectToMove.transform.rotation = Quaternion.Slerp(_objectToMove.transform.rotation, zeroQuaternion, 0.005f);
             if ((_objectToMove.transform.position - transform.position).sqrMagnitude < 0.001) _moveObject = false;
         }
 
@@ -25,7 +28,6 @@ namespace ObjectScripts.Buttons
         {
             if (other.gameObject.CompareTag(_colliderEntity))
             {
-                other.GetComponent<Rigidbody>().isKinematic = true;
                 _objectToMove = other.gameObject;
                 _moveObject = true;
             }
@@ -35,7 +37,6 @@ namespace ObjectScripts.Buttons
         {
             if (other.gameObject.CompareTag(_colliderEntity))
             {
-                _objectToMove.GetComponent<Rigidbody>().isKinematic = false;
                 _moveObject = false;
                 _objectToMove = null;
             }

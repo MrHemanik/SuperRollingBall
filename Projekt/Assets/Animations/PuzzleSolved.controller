@@ -96,8 +96,7 @@ AnimatorState:
   m_Name: PuzzleSolved2Animation
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -4573048223594592408}
+  m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: 7806484716730340036}
   m_Position: {x: 50, y: 50, z: 0}
@@ -177,8 +176,7 @@ AnimatorState:
   m_Name: PlattformMoveOutOfWall
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: 9181858746106545391}
+  m_Transitions: []
   m_StateMachineBehaviours:
   - {fileID: -5173624206732110762}
   m_Position: {x: 50, y: 50, z: 0}
@@ -238,9 +236,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -40858716872641780}
     m_Position: {x: 240, y: 30, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -4719772831813850457}
-    m_Position: {x: 480, y: 10, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 3277963393969649642}

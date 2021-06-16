@@ -14,8 +14,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.3
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
@@ -25,7 +40,7 @@ PrefabInstance:
     - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 53.2
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 8715061062794843169, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
@@ -72,10 +87,25 @@ PrefabInstance:
       propertyPath: m_TagString
       value: BoxType4
       objectReference: {fileID: 0}
+    - target: {fileID: 8715061062794843174, guid: c28098441eac9f74498926daf6a7d3f5,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8715061062794843175, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
       propertyPath: m_Mass
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8715061062794843175, guid: c28098441eac9f74498926daf6a7d3f5,
+        type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8715061062794843175, guid: c28098441eac9f74498926daf6a7d3f5,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 116
       objectReference: {fileID: 0}
     - target: {fileID: 8715061063144770128, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
@@ -23040,12 +23070,12 @@ PrefabInstance:
     - target: {fileID: 2795296295113962437, guid: d527d328081057c4ca5ae71059e401cf,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2795296295113962437, guid: d527d328081057c4ca5ae71059e401cf,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2795296295113962437, guid: d527d328081057c4ca5ae71059e401cf,
         type: 3}
@@ -23060,7 +23090,7 @@ PrefabInstance:
     - target: {fileID: 2795296295113962437, guid: d527d328081057c4ca5ae71059e401cf,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 2795296295113962437, guid: d527d328081057c4ca5ae71059e401cf,
         type: 3}
@@ -23081,6 +23111,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Mesh
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039944909736189029, guid: d527d328081057c4ca5ae71059e401cf,
+        type: 3}
+      propertyPath: m_SelectedEdges.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039944909736189029, guid: d527d328081057c4ca5ae71059e401cf,
+        type: 3}
+      propertyPath: m_SelectedFaces.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8039944909736189029, guid: d527d328081057c4ca5ae71059e401cf,
+        type: 3}
+      propertyPath: m_SelectedVertices.Array.size
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d527d328081057c4ca5ae71059e401cf, type: 3}

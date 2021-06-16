@@ -1,5 +1,93 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1699309023
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1699309024}
+  - component: {fileID: 1699309026}
+  - component: {fileID: 1699309025}
+  - component: {fileID: 1699309027}
+  - component: {fileID: 2700833400241009886}
+  m_Layer: 0
+  m_Name: PullRange
+  m_TagString: PullRange
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1699309024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699309023}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2700833400266204903}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &1699309026
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699309023}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!135 &1699309025
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699309023}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1699309027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699309023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b49d1b99684c32c4f83284c152d287f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullableObjectTags:
+  - BoxType1
+  - BoxType2
+  - BoxType3
+  - BoxType4
+--- !u!54 &2700833400241009886
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699309023}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &35114331772703177
 GameObject:
   m_ObjectHideFlags: 0
@@ -35,7 +123,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -145}
+  m_AnchoredPosition: {x: 63.23291, y: -145}
   m_SizeDelta: {x: 420, y: 60}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &6534534693309783595
@@ -195,6 +283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9966a7f930f13434ca1bdc02d52ec26c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSpeed: 50
 --- !u!1 &2700833399312554413
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,8 +386,6 @@ MonoBehaviour:
   zoomRange: {x: 2, y: 12}
   currentZoom: 8
   defaultFOV: 60
-  rotateSpeed: 5
-  _fixedOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &2700833399312554410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,6 +630,7 @@ Transform:
   - {fileID: 8512938584463092711}
   - {fileID: 8512938585497473318}
   - {fileID: 8512938585365866719}
+  - {fileID: 1699309024}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -609,6 +697,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedModifier: 1
   jumpModifier: 1
+  pullableObjectsInRange: []
   lastCheckPoint: {x: 0, y: 0, z: 0}
   dustCloud: {fileID: 2580169440180884034, guid: e6b3e349e36d88245a47446df9731012,
     type: 3}
@@ -735,6 +824,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: debcb624-077e-4f1f-a987-eaa332e151e8
     m_ActionName: Camera/ToggleYRotation[/Keyboard/b]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2700833400266204829}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnBoxPull
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: d8801418-aef6-4b26-9a55-7527783d7236
+    m_ActionName: Player/PullBox[/Keyboard/e]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -3012,6 +3117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9966a7f930f13434ca1bdc02d52ec26c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rotationSpeed: 50
 --- !u!1 &5742063231196931545
 GameObject:
   m_ObjectHideFlags: 0

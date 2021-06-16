@@ -35,6 +35,13 @@ namespace ObjectScripts
         {
             if (other.gameObject.CompareTag(colliderEntity))
             {
+                var otherRb = other.GetComponent<Rigidbody>();
+                if (otherRb.isKinematic == false) //Aktiviert den isKinematic und returned (durch Wechsel wirds noch einmal getriggered), löst Doppelauslöser bzw infinite auslöser
+                {
+                    otherRb.isKinematic = true;
+                    return;
+                }
+
                 _buttonAnimator.SetBool(Pressed,true);
                 _buttonPressed = true;
                 _defaultMaterial.color = _darkenedColor;

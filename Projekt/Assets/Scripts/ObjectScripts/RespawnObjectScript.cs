@@ -32,6 +32,7 @@ namespace ObjectScripts
             SpawnRespawnParticles();
             _tf.position = _respawnPosition;
             _tf.rotation = _respawnRotation;
+            _rb.isKinematic = false; //Löst infinite Trigger
             _rb.velocity = new Vector3(0, 0, 0);
             _rb.angularVelocity = new Vector3(0, 0, 0);
             SpawnRespawnParticles();

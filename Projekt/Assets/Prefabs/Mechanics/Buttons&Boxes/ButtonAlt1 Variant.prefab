@@ -1875,7 +1875,7 @@ PrefabInstance:
     - target: {fileID: 8375818696616744624, guid: dbb0deb9332c7bd42a747b0adde12004,
         type: 3}
       propertyPath: m_Name
-      value: ButtonAlt1
+      value: ButtonAlt1 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8375818696616744631, guid: dbb0deb9332c7bd42a747b0adde12004,
         type: 3}

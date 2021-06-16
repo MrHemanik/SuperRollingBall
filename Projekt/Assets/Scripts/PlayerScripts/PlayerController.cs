@@ -164,6 +164,7 @@ namespace PlayerScripts
 
 		private void OnTriggerEnter(Collider other)
 		{
+			if (other.gameObject.CompareTag("PullRange")) return; //Falls die PullRange versucht das hier zu triggern wirds blockiert
 			if(other.gameObject.CompareTag("Water"))
 			{
 				//Im wasser ist man langsam, aber springt höher
@@ -171,6 +172,7 @@ namespace PlayerScripts
 				_rb.mass = 1;
 			}else if(other.gameObject.CompareTag("Spike"))
 			{
+				Debug.Log("Damage");
 				GameManager.TriggerEvent("DamageTaken");
 			}else if(other.gameObject.CompareTag("Coin"))
 			{
@@ -190,7 +192,7 @@ namespace PlayerScripts
 			{
 				BallDeath();
 			}
-			if(other.gameObject.CompareTag("Goal"))
+			else if(other.gameObject.CompareTag("Goal"))
 			{
 				_rb.GetComponent<SphereCollider>().enabled = false;
 				_rb.isKinematic = true;
@@ -201,6 +203,7 @@ namespace PlayerScripts
 
 		private void OnTriggerExit(Collider other)
 		{
+			if (other.gameObject.CompareTag("PullRange")) return; //Falls die PullRange versucht das hier zu triggern wirds blockiert
 			if(other.gameObject.CompareTag("Water"))
 			{
 				_rb.drag = _standardDrag;
