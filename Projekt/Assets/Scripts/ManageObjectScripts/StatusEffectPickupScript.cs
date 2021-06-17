@@ -1,30 +1,32 @@
-using System;
 using PlayerScripts;
 using UnityEngine;
 
-public class StatusEffectPickupScript : MonoBehaviour
+namespace ManageObjectScripts
 {
-    public float duration;
-    public float multiplier;
-    public GameObject statusPrefab;
-    
-
-    // Update is called once per frame
-    private void CreateStatusEffect(GameObject player)
+    public class StatusEffectPickupScript : MonoBehaviour
     {
-        //Kein Instantiate, da so sonst 2 GameObjects entstehen
-        GameObject statusObject = Instantiate(this.statusPrefab, player.transform.position, new Quaternion(),
-            player.transform.Find("StatusEffects").transform);
-        statusObject.GetComponent<StatusEffectScript>().Initialize(duration,multiplier, player.GetComponent<PlayerController>(), gameObject);
-        Debug.Log("Statuseffekt initialisiert");
-    }
+        public float duration;
+        public float multiplier;
+        public GameObject statusPrefab;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
+
+        // Update is called once per frame
+        private void CreateStatusEffect(GameObject player)
         {
-            CreateStatusEffect(other.gameObject);
-            gameObject.SetActive(false);
+            //Kein Instantiate, da so sonst 2 GameObjects entstehen
+            GameObject statusObject = Instantiate(this.statusPrefab, player.transform.position, new Quaternion(),
+                player.transform.Find("StatusEffects").transform);
+            statusObject.GetComponent<StatusEffectScript>().Initialize(duration, multiplier,
+                player.GetComponent<PlayerController>(), gameObject);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                CreateStatusEffect(other.gameObject);
+                gameObject.SetActive(false);
+            }
         }
     }
 }

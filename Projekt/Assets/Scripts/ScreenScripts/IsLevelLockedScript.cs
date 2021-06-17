@@ -1,3 +1,4 @@
+using ManageObjectScripts;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,6 @@ namespace ScreenScripts
             gameObject.transform.Find("Button").GetComponent<Button>().onClick.AddListener(() =>    //Setzt Knopflogik
                 {
                     GameManager.TriggerEvent("LoadScene", levelNumber + "_Level");
-                    Debug.Log("BUTTON WILL");
                 });
         }
     }

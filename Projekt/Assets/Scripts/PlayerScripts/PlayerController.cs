@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using ManageObjectScripts;
 using ObjectScripts;
 using ScreenScripts;
 using UnityEngine;
@@ -191,6 +192,7 @@ namespace PlayerScripts
 			}else if(other.gameObject.CompareTag("Death"))
 			{
 				BallDeath();
+				Debug.Log("Tod durch "+other.gameObject.name);
 			}
 			else if(other.gameObject.CompareTag("Goal"))
 			{

@@ -136,6 +136,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1326160457}
+    - target: {fileID: 745907575339232101, guid: b106d2eca40067347abd33c7c2e27fe3,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnHighestLevelButtonPressed
+      objectReference: {fileID: 0}
     - target: {fileID: 2046263412258746352, guid: b106d2eca40067347abd33c7c2e27fe3,
         type: 3}
       propertyPath: m_text
@@ -1767,6 +1772,12 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4791086067225937631, guid: 3f76938354441a842bdd2b2567b6d6a6,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0290402aeafaee045a4b7752e741a944,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f76938354441a842bdd2b2567b6d6a6, type: 3}
 --- !u!4 &611016147 stripped
@@ -4176,6 +4187,12 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4791086067225937631, guid: 3f76938354441a842bdd2b2567b6d6a6,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e3294a8e30148c342aaba71b31a34083,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f76938354441a842bdd2b2567b6d6a6, type: 3}
 --- !u!4 &1928880490 stripped

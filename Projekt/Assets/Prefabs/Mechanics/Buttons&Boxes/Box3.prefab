@@ -145,12 +145,12 @@ PrefabInstance:
     - target: {fileID: 8715061063144770131, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
       propertyPath: m_SelectedEdges.Array.size
-      value: 62
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8715061063144770131, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
       propertyPath: m_SelectedFaces.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8715061063144770131, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
@@ -8785,7 +8785,7 @@ PrefabInstance:
     - target: {fileID: 8715061063144770131, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
       propertyPath: m_SelectedVertices.Array.size
-      value: 62
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8715061063144770131, guid: c28098441eac9f74498926daf6a7d3f5,
         type: 3}
@@ -23070,7 +23070,7 @@ PrefabInstance:
     - target: {fileID: 8644573881429025036, guid: ed924507ecf2d3d47b3ee2516bd793be,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8644573881429025036, guid: ed924507ecf2d3d47b3ee2516bd793be,
         type: 3}
