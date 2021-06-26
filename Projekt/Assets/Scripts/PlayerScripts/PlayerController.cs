@@ -34,7 +34,7 @@ namespace PlayerScripts
         private Transform _cameraTransform;
 
         private bool _pullObjects;
-        public List<GameObject> pullableObjectsInRange;
+        public List<Rigidbody> pullableObjectsInRange;
 
 
         /* General */
@@ -121,8 +121,7 @@ namespace PlayerScripts
                 foreach (var pullObject in pullableObjectsInRange)
                 {
                     Vector3 pullPos = pullObject.transform.position;
-
-                    pullObject.GetComponent<Rigidbody>().AddForce(playerPos - pullPos);
+                    pullObject.AddForce(playerPos - pullPos);
                 }
             }
         }

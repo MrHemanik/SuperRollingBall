@@ -19,7 +19,7 @@ namespace PlayerScripts
             {
                 if (other.gameObject.CompareTag(pullTag))
                 {
-                    AddToObjects(other.gameObject);
+                    AddToObjects(other.gameObject.GetComponent<Rigidbody>());
                 }
             }
         }
@@ -30,17 +30,17 @@ namespace PlayerScripts
             {
                 if (other.gameObject.CompareTag(pullTag))
                 {
-                    RemoveFromObjects(other.gameObject);
+                    RemoveFromObjects(other.gameObject.GetComponent<Rigidbody>());
                 }
             }
         }
 
-        private void AddToObjects(GameObject pullObject)
+        private void AddToObjects(Rigidbody pullObject)
         {
             _pc.pullableObjectsInRange.Add(pullObject);
         }
 
-        private void RemoveFromObjects(GameObject pullObject)
+        private void RemoveFromObjects(Rigidbody pullObject)
         {
             _pc.pullableObjectsInRange.Remove(pullObject);
         }

@@ -16,7 +16,7 @@ namespace ManageObjectScripts
         Vom UnityTutorial:
         https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
         Mit StackOverflow Änderungen für Parameterübergabe (UnityEvent zu  Action):
-        https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent
+        https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent -> https://stackoverflow.com/a/42180617/14520765
         Und großen eigenen Anpassungen
         */
         private Dictionary<string, Action<string>> _eventDictionary;
