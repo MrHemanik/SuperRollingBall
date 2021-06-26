@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace ObjectScripts.Buttons
@@ -20,17 +19,16 @@ namespace ObjectScripts.Buttons
             _defaultMaterial = transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
             _defaultColor = _defaultMaterial.color;
             _darkenedColor = new Color(
-                _defaultColor.r * ColorDarkenFactor, 
+                _defaultColor.r * ColorDarkenFactor,
                 _defaultColor.g * ColorDarkenFactor,
                 _defaultColor.b * ColorDarkenFactor);
-
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                _buttonAnimator.SetBool(Pressed,true);
+                _buttonAnimator.SetBool(Pressed, true);
                 _defaultMaterial.color = _darkenedColor;
                 foreach (var respawnObject in resetObjects)
                 {
@@ -43,7 +41,7 @@ namespace ObjectScripts.Buttons
         {
             if (other.gameObject.CompareTag("Player"))
             {
-                _buttonAnimator.SetBool(Pressed,false);
+                _buttonAnimator.SetBool(Pressed, false);
                 _defaultMaterial.color = _defaultColor;
             }
         }

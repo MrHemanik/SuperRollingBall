@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ObjectScripts
+namespace ObjectScripts.Buttons
 {
     public class ButtonActivateScript : MonoBehaviour
     {
@@ -18,7 +18,7 @@ namespace ObjectScripts
         {
             return _buttonPressed;
         }
-        
+
         private void Start()
         {
             _buttonAnimator = GetComponentInChildren<Animator>();
@@ -26,7 +26,7 @@ namespace ObjectScripts
             _defaultMaterial = transform.GetChild(0).gameObject.GetComponent<Renderer>().material;
             _defaultColor = _defaultMaterial.color;
             _darkenedColor = new Color(
-                _defaultColor.r * ColorDarkenFactor, 
+                _defaultColor.r * ColorDarkenFactor,
                 _defaultColor.g * ColorDarkenFactor,
                 _defaultColor.b * ColorDarkenFactor);
         }
@@ -36,18 +36,17 @@ namespace ObjectScripts
             if (other.gameObject.CompareTag(colliderEntity))
             {
                 var otherRb = other.GetComponent<Rigidbody>();
-                if (otherRb.isKinematic == false) //Aktiviert den isKinematic und returned (durch Wechsel wirds noch einmal getriggered), löst Doppelauslöser bzw infinite auslöser
+                if (otherRb.isKinematic == false
+                ) //Aktiviert den isKinematic und returned (durch Wechsel wirds noch einmal getriggered), löst Doppelauslöser bzw infinite auslöser
                 {
                     otherRb.isKinematic = true;
                     return;
                 }
 
-                _buttonAnimator.SetBool(Pressed,true);
+                _buttonAnimator.SetBool(Pressed, true);
                 _buttonPressed = true;
                 _defaultMaterial.color = _darkenedColor;
                 _parentScript.TestIfPuzzleIsSolved();
-                
-                
             }
         }
 
@@ -55,7 +54,7 @@ namespace ObjectScripts
         {
             if (other.gameObject.CompareTag(colliderEntity))
             {
-                _buttonAnimator.SetBool(Pressed,false);
+                _buttonAnimator.SetBool(Pressed, false);
                 _defaultMaterial.color = _defaultColor;
                 _buttonPressed = false;
             }

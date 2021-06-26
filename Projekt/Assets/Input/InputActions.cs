@@ -9,6 +9,7 @@ using UnityEngine.InputSystem.Utilities;
 public class @InputActions : IInputActionCollection, IDisposable
 {
     public InputActionAsset asset { get; }
+
     public @InputActions()
     {
         asset = InputActionAsset.FromJson(@"{
@@ -440,18 +441,42 @@ public class @InputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_PullBox;
+
     public struct PlayerActions
     {
         private @InputActions m_Wrapper;
-        public PlayerActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+
+        public PlayerActions(@InputActions wrapper)
+        {
+            m_Wrapper = wrapper;
+        }
+
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @PullBox => m_Wrapper.m_Player_PullBox;
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
+
+        public InputActionMap Get()
+        {
+            return m_Wrapper.m_Player;
+        }
+
+        public void Enable()
+        {
+            Get().Enable();
+        }
+
+        public void Disable()
+        {
+            Get().Disable();
+        }
+
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
+
+        public static implicit operator InputActionMap(PlayerActions set)
+        {
+            return set.Get();
+        }
+
         public void SetCallbacks(IPlayerActions instance)
         {
             if (m_Wrapper.m_PlayerActionsCallbackInterface != null)
@@ -466,6 +491,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @PullBox.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPullBox;
                 @PullBox.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPullBox;
             }
+
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
             {
@@ -481,6 +507,7 @@ public class @InputActions : IInputActionCollection, IDisposable
             }
         }
     }
+
     public PlayerActions @Player => new PlayerActions(this);
 
     // Camera
@@ -493,10 +520,16 @@ public class @InputActions : IInputActionCollection, IDisposable
     private readonly InputAction m_Camera_RotateYPerButton;
     private readonly InputAction m_Camera_ToggleXRotation;
     private readonly InputAction m_Camera_ToggleYRotation;
+
     public struct CameraActions
     {
         private @InputActions m_Wrapper;
-        public CameraActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+
+        public CameraActions(@InputActions wrapper)
+        {
+            m_Wrapper = wrapper;
+        }
+
         public InputAction @Zoom => m_Wrapper.m_Camera_Zoom;
         public InputAction @CameraMove => m_Wrapper.m_Camera_CameraMove;
         public InputAction @ToggleFixedCamera => m_Wrapper.m_Camera_ToggleFixedCamera;
@@ -504,11 +537,29 @@ public class @InputActions : IInputActionCollection, IDisposable
         public InputAction @RotateYPerButton => m_Wrapper.m_Camera_RotateYPerButton;
         public InputAction @ToggleXRotation => m_Wrapper.m_Camera_ToggleXRotation;
         public InputAction @ToggleYRotation => m_Wrapper.m_Camera_ToggleYRotation;
-        public InputActionMap Get() { return m_Wrapper.m_Camera; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
+
+        public InputActionMap Get()
+        {
+            return m_Wrapper.m_Camera;
+        }
+
+        public void Enable()
+        {
+            Get().Enable();
+        }
+
+        public void Disable()
+        {
+            Get().Disable();
+        }
+
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(CameraActions set) { return set.Get(); }
+
+        public static implicit operator InputActionMap(CameraActions set)
+        {
+            return set.Get();
+        }
+
         public void SetCallbacks(ICameraActions instance)
         {
             if (m_Wrapper.m_CameraActionsCallbackInterface != null)
@@ -535,6 +586,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @ToggleYRotation.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleYRotation;
                 @ToggleYRotation.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnToggleYRotation;
             }
+
             m_Wrapper.m_CameraActionsCallbackInterface = instance;
             if (instance != null)
             {
@@ -562,22 +614,47 @@ public class @InputActions : IInputActionCollection, IDisposable
             }
         }
     }
+
     public CameraActions @Camera => new CameraActions(this);
 
     // Game
     private readonly InputActionMap m_Game;
     private IGameActions m_GameActionsCallbackInterface;
     private readonly InputAction m_Game_Pause;
+
     public struct GameActions
     {
         private @InputActions m_Wrapper;
-        public GameActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+
+        public GameActions(@InputActions wrapper)
+        {
+            m_Wrapper = wrapper;
+        }
+
         public InputAction @Pause => m_Wrapper.m_Game_Pause;
-        public InputActionMap Get() { return m_Wrapper.m_Game; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
+
+        public InputActionMap Get()
+        {
+            return m_Wrapper.m_Game;
+        }
+
+        public void Enable()
+        {
+            Get().Enable();
+        }
+
+        public void Disable()
+        {
+            Get().Disable();
+        }
+
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(GameActions set) { return set.Get(); }
+
+        public static implicit operator InputActionMap(GameActions set)
+        {
+            return set.Get();
+        }
+
         public void SetCallbacks(IGameActions instance)
         {
             if (m_Wrapper.m_GameActionsCallbackInterface != null)
@@ -586,6 +663,7 @@ public class @InputActions : IInputActionCollection, IDisposable
                 @Pause.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
                 @Pause.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnPause;
             }
+
             m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
             {
@@ -595,13 +673,16 @@ public class @InputActions : IInputActionCollection, IDisposable
             }
         }
     }
+
     public GameActions @Game => new GameActions(this);
+
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnPullBox(InputAction.CallbackContext context);
     }
+
     public interface ICameraActions
     {
         void OnZoom(InputAction.CallbackContext context);
@@ -612,6 +693,7 @@ public class @InputActions : IInputActionCollection, IDisposable
         void OnToggleXRotation(InputAction.CallbackContext context);
         void OnToggleYRotation(InputAction.CallbackContext context);
     }
+
     public interface IGameActions
     {
         void OnPause(InputAction.CallbackContext context);

@@ -18,14 +18,18 @@ namespace ObjectScripts
             var playerPosition = _player.transform.position;
             _player.transform.position = Vector3.Slerp(playerPosition, playerPosition + _speed, 0.5f);
             _lastPosition = position;
-;        }
+            ;
+        }
+
         private void OnCollisionEnter(Collision other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
             _player = other.gameObject;
             _lastPosition = transform.position; //Damit der lastPosition akkurat ist.
             _movePlayer = true;
-        }private void OnCollisionExit(Collision other)
+        }
+
+        private void OnCollisionExit(Collision other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
             _player = null;

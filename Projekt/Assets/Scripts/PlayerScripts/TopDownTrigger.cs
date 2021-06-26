@@ -1,23 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using ManageObjectScripts;
 using UnityEngine;
 
-public class TopDownTrigger : MonoBehaviour
+namespace PlayerScripts
 {
-    private void OnTriggerEnter(Collider other)
+    public class TopDownTrigger : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        private void OnTriggerEnter(Collider other)
         {
-            GameManager.TriggerEvent("CameraModeTopDown");
+            if (other.CompareTag("Player"))
+            {
+                GameManager.TriggerEvent("CameraModeTopDown");
+            }
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+
+        private void OnTriggerExit(Collider other)
         {
-            GameManager.TriggerEvent("CameraModeNormal");
+            if (other.CompareTag("Player"))
+            {
+                GameManager.TriggerEvent("CameraModeNormal");
+            }
         }
     }
 }

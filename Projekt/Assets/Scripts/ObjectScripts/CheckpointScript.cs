@@ -8,6 +8,7 @@ namespace ObjectScripts
         private ParticleSystem.EmissionModule _particleRing;
 
         public GameObject checkpointPopup;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -20,10 +21,12 @@ namespace ObjectScripts
             if (other.gameObject.CompareTag("Player"))
             {
                 Destroy(gameObject.GetComponent<MeshCollider>()); //Zerstört den Trigger
-                other.gameObject.GetComponent<PlayerController>().lastCheckPoint = gameObject.transform.position; //Setzt checkpoint
+                other.gameObject.GetComponent<PlayerController>().lastCheckPoint =
+                    gameObject.transform.position; //Setzt checkpoint
                 _particleRing.enabled = false; //Deaktiviert die Partikel
                 Instantiate(checkpointPopup, new Vector3(), new Quaternion()); //Pop-Up Screen
-                Destroy(gameObject.transform.parent.gameObject,3); //Warte 3 Sekunden, bis es ganz gelöscht wird (Dann ist die Partikelanimation vorbei)
+                Destroy(gameObject.transform.parent.gameObject,
+                    3); //Warte 3 Sekunden, bis es ganz gelöscht wird (Dann ist die Partikelanimation vorbei)
             }
         }
     }

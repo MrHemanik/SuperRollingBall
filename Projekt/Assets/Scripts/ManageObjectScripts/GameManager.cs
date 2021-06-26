@@ -13,12 +13,12 @@ namespace ManageObjectScripts
         #region Fremdcode-EventListener
 
         /*Fremdcode Anfang
-    Vom UnityTutorial:
-    https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
-    Mit StackOverflow Änderungen für Parameterübergabe (UnityEvent zu  Action):
-    https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent
-    Und eigenen Anpassungen
-    */
+        Vom UnityTutorial:
+        https://learn.unity.com/tutorial/create-a-simple-messaging-system-with-events#5cf5960fedbc2a281acd21fa
+        Mit StackOverflow Änderungen für Parameterübergabe (UnityEvent zu  Action):
+        https://stackoverflow.com/questions/42177820/pass-argument-to-unityevent
+        Und großen eigenen Anpassungen
+        */
         private Dictionary<string, Action<string>> _eventDictionary;
         private static GameManager _gameManager;
 
@@ -84,7 +84,10 @@ namespace ManageObjectScripts
 
         #region Fremdcode-Speichern
 
-        /*Fremdcode fürs Savingsystem in BinaryFormat, Fremdcode aus der Quelle: https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys*/
+        /*Fremdcode fürs Savingsystem in BinaryFormat, Fremdcode aus der Quelle:
+         https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys
+         ohne viel Selbstanpassung
+        */
 
         private static string _path;
 
@@ -123,7 +126,7 @@ namespace ManageObjectScripts
 
         /*Ende Fremdcode zum Savingsystem*/
         //Variablen
-        /* Global */ /* Muss noch Funktionalität hinzugefügt werden! */
+        /* Global */
         private void DeleteSaveFile(string s)
         {
             _maxUnlockedLevel = 0;
@@ -140,7 +143,7 @@ namespace ManageObjectScripts
         #region variablen
 
         private static readonly int[]
-            LevelList = {1001, 1002, 1003, 99999}; //MAINTAIN! Liste der Level im Spiel (99999 = VictoryScene)
+            LevelList = {1001, 1002, 1003, 99999}; // Liste der Level im Spiel (99999 = VictoryScene)
 
         private static readonly string[]
             SkyboxColor = {"BFFFFD", "A995A5", "000000", "FFFFFF"}; //Jedes level hat auch eine Skybox
@@ -180,6 +183,7 @@ namespace ManageObjectScripts
         private void Awake()
         {
             _path = Application.persistentDataPath + "/gameData.binary";
+            // Refacotoring von EventListener zu UnityEvents für die Variablen wäre gut, jedoch frisst das zu viel Zeit
             StartListening("CoinCollected", CoinCollected);
             StartListening("HeartCollected", HeartCollected);
             StartListening("HitPointsCollected", HitPointsCollected);
@@ -310,7 +314,7 @@ namespace ManageObjectScripts
             {
                 _isInvincible = true;
                 Instantiate(damageTakenScreenPrefab, transform.position, new Quaternion());
-                TimerManagerScript.StartTimer("MakeVincible", 2f); 
+                TimerManagerScript.StartTimer("MakeVincible", 2f);
                 //Wird so gelöst anstelle des EffectSystems, da das nicht als Effect aufgelistet werden soll
                 ChangeHitPoints(_hitPoints - 1);
             }
@@ -372,14 +376,16 @@ namespace ManageObjectScripts
             SaveDataToFile(); //Speichert die Spieldaten
             if (sceneName == "99999_Level")
             {
-                //Falls das Level das "letzte" Level ist (99999), also der letzte eintrag in LevelList, dann soll VictoryScene geöffnet werden
+                //Falls das Level das "letzte" Level ist (99999), also der letzte eintrag in LevelList,
+                //dann soll VictoryScene geöffnet werden
                 SceneManager.LoadScene("VictoryScene");
             }
             else
             {
                 try //Falls es ein Level ist, soll _curLevel angepasst werden
                 {
-                    _curLevel = Array.IndexOf(LevelList, int.Parse(sceneName.Split('_')[0])); //Zahl vor _; 1002_Level = 1;;
+                    _curLevel = Array.IndexOf(LevelList,
+                        int.Parse(sceneName.Split('_')[0])); //Zahl vor _; 1002_Level = 1;;
                 }
                 catch
                 {
@@ -457,7 +463,8 @@ namespace ManageObjectScripts
             _hitPoints = newHitpoints;
             TriggerEvent("ResizeCore", Math.Sqrt(1.0 * _hitPoints / _maxHitPoints).ToString("0.00")); //Neue Coregröße
             TriggerEvent("UpdateHitPointDisplay", (1.0 * _hitPoints / _maxHitPoints).ToString("0.00"));
-            if (_hitPoints <= 0) TriggerEvent("BallDeath"); //Ruft BallDeath in PlayerCon auf, welcher Death hier auslöst
+            if (_hitPoints <= 0)
+                TriggerEvent("BallDeath"); //Ruft BallDeath in PlayerCon auf, welcher Death hier auslöst
         }
 
         private static void LoadUpgrades() //Lädt die Upgrades 

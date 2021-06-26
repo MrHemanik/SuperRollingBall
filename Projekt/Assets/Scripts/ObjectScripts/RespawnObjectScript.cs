@@ -9,18 +9,18 @@ namespace ObjectScripts
         private Rigidbody _rb;
         private Transform _tf;
         public GameObject respawnEffect;
-        void Start()
+
+        private void Start()
         {
             _tf = transform;
             _respawnPosition = _tf.position;
             _respawnRotation = _tf.rotation;
             _rb = gameObject.GetComponent<Rigidbody>();
         }
-
-        // Update is called once per frame
+        
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Death")||other.CompareTag("BoxResetArea"))
+            if (other.CompareTag("Death") || other.CompareTag("BoxResetArea"))
             {
                 Respawn();
             }
@@ -39,7 +39,7 @@ namespace ObjectScripts
 
         private void SpawnRespawnParticles()
         {
-            Instantiate (respawnEffect, transform.position, new Quaternion()); //Partikelwolke
+            Instantiate(respawnEffect, transform.position, new Quaternion()); //Partikelwolke
         }
     }
 }

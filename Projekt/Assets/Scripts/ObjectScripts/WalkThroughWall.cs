@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace ObjectScripts
@@ -6,7 +5,7 @@ namespace ObjectScripts
     public class WalkThroughWall : MonoBehaviour
     {
         public Material transparentMaterial;
-        public Material _normalMaterial;
+        private Material _normalMaterial;
 
         private void OnTriggerEnter(Collider other)
         {

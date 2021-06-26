@@ -17,7 +17,7 @@ namespace ScreenScripts
             GameManager.StopListening("ToggleDeleteSaveFileScreen");
         }
 
-        private void ToggleDeleteSaveFileScreen(string f ="")
+        private void ToggleDeleteSaveFileScreen(string f = "")
         {
             gameObject.SetActive(!gameObject.activeSelf);
         }

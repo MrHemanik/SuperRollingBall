@@ -1,8 +1,7 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace ObjectScripts
+namespace ScreenScripts
 {
     public class DamageTakenScreenScript : MonoBehaviour
     {
@@ -10,9 +9,10 @@ namespace ObjectScripts
         private Image _image;
         private Color _imageColor;
         private float _currentTime = 0;
+
         void Awake()
         {
-            Destroy(gameObject,ttl);
+            Destroy(gameObject, ttl);
             _image = gameObject.transform.GetComponentInChildren<Image>();
             _imageColor = _image.color;
         }
@@ -26,11 +26,10 @@ namespace ObjectScripts
             }
             else if (_currentTime > ttl - ttl / 4)
             {
-                _imageColor.a = (ttl- _currentTime)/(ttl/4);
+                _imageColor.a = (ttl - _currentTime) / (ttl / 4);
             }
-        
+
             _image.color = _imageColor;
         }
     }
 }
-

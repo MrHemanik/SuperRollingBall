@@ -4,6 +4,7 @@ namespace ManageObjectScripts
 {
     public class TimerScript : MonoBehaviour
     {
+        //Timer, der nach dem duration abgelaufen ist, das Event eventName triggered.
         public string eventName;
         public float duration;
 

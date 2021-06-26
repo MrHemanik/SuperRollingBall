@@ -13,7 +13,8 @@ namespace ObjectScripts
         private Vector3 _startPoint;
         private GameObject _player;
         private bool _movePlayer;
-        private Vector3 _speed; 
+        private Vector3 _speed;
+
         private void Start()
         {
             _startPoint = transform.position;
@@ -24,14 +25,14 @@ namespace ObjectScripts
         private void Update()
         {
             var position = transform.position;
-            
+
             _speed = position;
             position = GetPosition(Time.time);
-            transform.position = position; 
+            transform.position = position;
             _speed = position - _speed; //Speed = Neue Postion - Alte Postion 
-            if(_movePlayer) _player.transform.position += _speed;
+            if (_movePlayer) _player.transform.position += _speed;
         }
-    
+
         //Das hat ja mal so viel Zeit gekostet, das so umzusetzen.
         private Vector3 GetPosition(float time)
         {
@@ -56,7 +57,9 @@ namespace ObjectScripts
             if (!other.gameObject.CompareTag("Player")) return;
             _player = other.gameObject;
             _movePlayer = true;
-        }private void OnCollisionExit(Collision other)
+        }
+
+        private void OnCollisionExit(Collision other)
         {
             if (!other.gameObject.CompareTag("Player")) return;
             _player = null;

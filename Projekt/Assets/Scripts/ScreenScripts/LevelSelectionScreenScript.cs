@@ -6,7 +6,7 @@ namespace ScreenScripts
     public class LevelSelectionScreenScript : MonoBehaviour
     {
         // Start is called before the first frame update
-        void Awake()
+        private void Awake()
         {
             GameManager.StartListening("ToggleLevelSelectionScreen", ToggleLevelSelectionScreen);
             ToggleLevelSelectionScreen("");

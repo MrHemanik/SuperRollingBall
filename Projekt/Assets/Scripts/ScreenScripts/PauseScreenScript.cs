@@ -1,24 +1,25 @@
-using System;
 using ManageObjectScripts;
-using TMPro;
 using UnityEngine;
 
-public class PauseScreenScript : MonoBehaviour
+namespace ScreenScripts
 {
-    private void Awake()
+    public class PauseScreenScript : MonoBehaviour
     {
-        TogglePauseScreen("");
-        GameManager.StartListening("TogglePauseScreen", TogglePauseScreen);
-    }
+        private void Awake()
+        {
+            TogglePauseScreen("");
+            GameManager.StartListening("TogglePauseScreen", TogglePauseScreen);
+        }
 
-    private void OnDestroy()
-    {
-        GameManager.StopListening("TogglePauseScreen");
-    }
+        private void OnDestroy()
+        {
+            GameManager.StopListening("TogglePauseScreen");
+        }
 
-    private void TogglePauseScreen(string coins)
-    {
-        if(gameObject.activeSelf) gameObject.SetActive(false);
-        else gameObject.SetActive(true);
+        private void TogglePauseScreen(string coins)
+        {
+            if (gameObject.activeSelf) gameObject.SetActive(false);
+            else gameObject.SetActive(true);
+        }
     }
 }

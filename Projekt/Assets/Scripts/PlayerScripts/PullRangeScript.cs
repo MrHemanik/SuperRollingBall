@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using UnityEngine;
 
 namespace PlayerScripts
@@ -8,11 +6,11 @@ namespace PlayerScripts
     {
         //Skript welches Objekte mit Tag die in im pullableObjectTags array stehen zur Liste hinzufügt, sobald eins in der Range ist.
         public string[] pullableObjectTags;
-        private PlayerController pc;
+        private PlayerController _pc;
 
         private void Start()
         {
-            pc = transform.parent.GetComponent<PlayerController>();
+            _pc = transform.parent.GetComponent<PlayerController>();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -24,7 +22,9 @@ namespace PlayerScripts
                     AddToObjects(other.gameObject);
                 }
             }
-        }private void OnTriggerExit(Collider other)
+        }
+
+        private void OnTriggerExit(Collider other)
         {
             foreach (var pullTag in pullableObjectTags)
             {
@@ -37,12 +37,12 @@ namespace PlayerScripts
 
         private void AddToObjects(GameObject pullObject)
         {
-            pc.pullableObjectsInRange.Add(pullObject);
+            _pc.pullableObjectsInRange.Add(pullObject);
         }
 
         private void RemoveFromObjects(GameObject pullObject)
         {
-            pc.pullableObjectsInRange.Remove(pullObject);
+            _pc.pullableObjectsInRange.Remove(pullObject);
         }
     }
 }

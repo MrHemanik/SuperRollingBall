@@ -19,7 +19,6 @@ namespace EnemyScripts
             _scope = gameObject.transform.GetChild(0).gameObject.transform;
             _defaultRotation = _scope.rotation;
             GetComponent<SphereCollider>().radius = range;
-
         }
 
         private void Update()
@@ -27,7 +26,7 @@ namespace EnemyScripts
             if (resetAim)
             {
                 _scope.rotation = Quaternion.Slerp(_scope.rotation, _defaultRotation, rotationSpeed * Time.deltaTime);
-                if (Quaternion.Angle(_scope.rotation,_defaultRotation) < 0.01f) resetAim = false;
+                if (Quaternion.Angle(_scope.rotation, _defaultRotation) < 0.01f) resetAim = false;
             }
         }
 
@@ -45,11 +44,11 @@ namespace EnemyScripts
             if (other.CompareTag("Player"))
             {
                 // Fremdcode: Berechnung eines langsamen LookAt: https://answers.unity.com/questions/166666/slow-lookat.html
-                Vector3 direction =  other.transform.position-_scope.position;
+                Vector3 direction = other.transform.position - _scope.position;
                 Quaternion toRotation = Quaternion.LookRotation(direction);
                 _scope.rotation = Quaternion.Slerp(_scope.rotation, toRotation, rotationSpeed * Time.deltaTime);
                 //Fremdcode ENDE
-                
+
                 _timeTilNextShot -= Time.deltaTime;
                 if (_timeTilNextShot <= 0)
                 {
@@ -69,10 +68,11 @@ namespace EnemyScripts
 
         private void ShootBullet()
         {
-            BulletScript bulletScript = Instantiate(bulletPrefab, _scope.transform.GetChild(0).position, _scope.rotation, gameObject.transform).GetComponent<BulletScript>();
+            BulletScript bulletScript =
+                Instantiate(bulletPrefab, _scope.transform.GetChild(0).position, _scope.rotation, gameObject.transform)
+                    .GetComponent<BulletScript>();
             bulletScript.projectileSpeed = projectileSpeed;
-            bulletScript.sniperRange = range-1.5f; // Minus 1,5, da das Scope so lang ist
-
+            bulletScript.sniperRange = range - 1.5f; // Minus 1,5, da das Scope so lang ist
         }
     }
 }

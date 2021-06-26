@@ -7,15 +7,15 @@ namespace ScreenScripts
     {
         private void Awake()
         {
-        
             CloseDeathScreen("");
             GameManager.StartListening("OpenDeathScreen", OpenDeathScreen);
-            GameManager.StartListening ("CloseDeathScreen", CloseDeathScreen);
+            GameManager.StartListening("CloseDeathScreen", CloseDeathScreen);
         }
+
         private void OnDestroy()
         {
             GameManager.StopListening("OpenDeathScreen");
-            GameManager.StopListening ("CloseDeathScreen");
+            GameManager.StopListening("CloseDeathScreen");
         }
 
         // Update is called once per frame
@@ -23,6 +23,7 @@ namespace ScreenScripts
         {
             gameObject.SetActive(true);
         }
+
         private void CloseDeathScreen(string s)
         {
             Time.timeScale = 1;

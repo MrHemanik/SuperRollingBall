@@ -8,6 +8,7 @@ namespace ObjectScripts
         public int id;
         public GameObject collectedPopup;
         private GameObject _parent;
+
         private void Start()
         {
             _parent = transform.parent.gameObject;
@@ -20,7 +21,6 @@ namespace ObjectScripts
             _parent.SetActive(false);
             GameManager.TriggerEvent("PermaUpgradeCollected", id.ToString());
             Instantiate(collectedPopup, new Vector3(), new Quaternion()); //Pop-Up Screen
-            
         }
     }
 }

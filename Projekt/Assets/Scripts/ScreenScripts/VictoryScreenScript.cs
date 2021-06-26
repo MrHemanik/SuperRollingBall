@@ -8,12 +8,13 @@ namespace ScreenScripts
     {
         private GameObject _highscoreText;
         private GameObject _highscoreNumber;
+
         private void Awake()
         {
             GameManager.StartListening("OpenVictoryScreen", OpenVictoryScreen);
-            GameManager.StartListening ("CloseVictoryScreen", CloseVictoryScreen);
-            GameManager.StartListening ("NewHighscore", NewHighscore);
-            GameManager.StartListening ("SetLevelTime",SetLevelTime);
+            GameManager.StartListening("CloseVictoryScreen", CloseVictoryScreen);
+            GameManager.StartListening("NewHighscore", NewHighscore);
+            GameManager.StartListening("SetLevelTime", SetLevelTime);
         }
 
         private void Start()
@@ -27,17 +28,17 @@ namespace ScreenScripts
         private void OnDestroy()
         {
             GameManager.StopListening("OpenVictoryScreen");
-            GameManager.StopListening ("CloseVictoryScreen");
-            GameManager.StopListening ("NewHighscore");
-            GameManager.StopListening ("SetLevelTime");
+            GameManager.StopListening("CloseVictoryScreen");
+            GameManager.StopListening("NewHighscore");
+            GameManager.StopListening("SetLevelTime");
         }
 
         private void OpenVictoryScreen(string coins)
         {
             gameObject.SetActive(true);
             GameObject.Find("CollectedCoinsNumber").GetComponent<TextMeshProUGUI>().text = coins;
-            
         }
+
         private void CloseVictoryScreen(string s)
         {
             gameObject.SetActive(false);
@@ -45,12 +46,12 @@ namespace ScreenScripts
 
         private void SetLevelTime(string time)
         {
-            _highscoreNumber.GetComponent<TextMeshProUGUI>().text= "Zeit: "+time+" Sekunden";
+            _highscoreNumber.GetComponent<TextMeshProUGUI>().text = "Zeit: " + time + " Sekunden";
         }
+
         private void NewHighscore(string highscore)
         {
             _highscoreText.SetActive(true);
-            
         }
     }
 }
