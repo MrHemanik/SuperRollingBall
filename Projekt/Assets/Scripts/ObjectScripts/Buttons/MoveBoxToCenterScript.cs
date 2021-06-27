@@ -19,9 +19,9 @@ namespace ObjectScripts.Buttons
         {
             if (!_moveObject) return;
             _objectToMove.transform.position =
-                Vector3.Lerp(_objectToMove.transform.position, transform.position, 0.005f);
+                Vector3.Lerp(_objectToMove.transform.position, transform.position, 0.008f);
             _objectToMove.transform.rotation =
-                Quaternion.Slerp(_objectToMove.transform.rotation, ZeroQuaternion, 0.005f);
+                Quaternion.Slerp(_objectToMove.transform.rotation, ZeroQuaternion, 0.008f);
             if ((_objectToMove.transform.position - transform.position).sqrMagnitude < 0.001) _moveObject = false;
         }
 

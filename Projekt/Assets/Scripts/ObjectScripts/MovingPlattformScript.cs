@@ -22,7 +22,7 @@ namespace ObjectScripts
             //Debug.Log(_startPoint +""+ _endPoint);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             var position = transform.position;
 

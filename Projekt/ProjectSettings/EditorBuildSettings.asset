@@ -14,18 +14,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameOverScene.unity
     guid: fb5c117f388197a438dafd6fc4b18897
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/DemoLevel.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Scenes/VictoryScene.unity
+    guid: c9e501c206d8e0a4f9ca2d72ddb0e71f
   - enabled: 1
     path: Assets/Scenes/1001_Level.unity
     guid: f8faab7926b951d4492d87678bc372d0
   - enabled: 1
     path: Assets/Scenes/1002_Level.unity
     guid: 4cd3fac41476b7b4ba95885b09bf387a
-  - enabled: 1
-    path: Assets/Scenes/VictoryScene.unity
-    guid: c9e501c206d8e0a4f9ca2d72ddb0e71f
   - enabled: 1
     path: Assets/Scenes/1003_Level.unity
     guid: 615296d4bfef3284db5871e7a5e258e7

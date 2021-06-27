@@ -118,7 +118,7 @@ namespace ManageObjectScripts
         {
             BinaryFormatter formatter = new BinaryFormatter();
             FileStream stream = new FileStream(_path, FileMode.Create);
-            PlayerData data = new PlayerData(_maxUnlockedLevel, _maxLivePoints, _collectedCoinsTotal, _timeHighscore,
+            PlayerData data = new PlayerData(_maxUnlockedLevel, _collectedCoinsTotal, _timeHighscore,
                 _collectedPermaUpgrades);
             formatter.Serialize(stream, data);
             stream.Close();
@@ -130,6 +130,8 @@ namespace ManageObjectScripts
         private void DeleteSaveFile(string s)
         {
             _maxUnlockedLevel = 0;
+            _maxLivePoints = 3;
+            _maxHitPoints = 3;
             _collectedCoinsTotal = 0;
             _timeHighscore = null;
             _curLevel = 0;
@@ -274,13 +276,13 @@ namespace ManageObjectScripts
             TriggerEvent("UpdateCoinDisplay", _collectedCoinsInLevel + " / " + _coinCountInLevel);
         }
 
-        private void HeartCollected(string s) // Wird beim Herzaufsammeln ausgelöst
+        private static void HeartCollected(string s) // Wird beim Herzaufsammeln ausgelöst
         {
-            _livePoints++;
+            _livePoints = _maxLivePoints;
             TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
         }
 
-        private void HitPointsCollected(string s) // Wird beim Herzaufsammeln ausgelöst
+        private static void HitPointsCollected(string s) // Wird beim Herzaufsammeln ausgelöst
         {
             ChangeHitPoints(_maxHitPoints); // Regeneriert voll
         }
@@ -320,7 +322,7 @@ namespace ManageObjectScripts
             }
         }
 
-        private void PermaUpgradeCollected(string id)
+        private static void PermaUpgradeCollected(string id)
         {
             _collectedPermaUpgrades[int.Parse(id)] = true;
             CollectUpgrade(int.Parse(id));
@@ -489,6 +491,7 @@ namespace ManageObjectScripts
                 case "Live":
                     _maxLivePoints++;
                     _livePoints = _maxLivePoints; //Wird vollgeheilt
+                    TriggerEvent("UpdateLiveDisplay", _livePoints.ToString());
                     break;
                 case "Hit":
                     _maxHitPoints++;
