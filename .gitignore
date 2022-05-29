@@ -71,3 +71,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/osx,linux,windows
+/.idea/
+/Projekt/.idea/
+/Projekt/.idea/
+/Projekt/.vscode/
